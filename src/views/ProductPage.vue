@@ -1,11 +1,14 @@
 <template>
-  <h1>Product page</h1>
-  <h1>Товар номер {{ id }}</h1>
-  <h3>{{ productData }}</h3>
+  <section class="container">
+    <h1>Product page</h1>
+    <h1>Товар номер {{ id }}</h1>
+    <h3>{{ productData }}</h3>
+  </section>
 </template>
 
 <script>
 import axios from "axios";
+
 export default {
   name: "ProductPage",
   props: ["id"],

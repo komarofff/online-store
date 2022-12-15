@@ -1,5 +1,9 @@
 <template>
-  <h1></h1>
+  <aside class="filter">
+    <div>
+      <h1>I`m a filter section</h1>
+    </div>
+  </aside>
 </template>
 
 <script>
@@ -8,4 +12,12 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.filter {
+  align-self: stretch;
+  flex-basis: 30%;
+}
+aside {
+  border: 1px solid red;
+}
+</style>

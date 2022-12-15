@@ -1,7 +1,8 @@
 <template>
-  <div class="about">
+  <section class="container">
     <h1>This is an 404 page</h1>
-  </div>
+  </section>
+  >
 </template>
 
 <script>

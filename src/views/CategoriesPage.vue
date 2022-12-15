@@ -1,16 +1,19 @@
 <template>
-  <h1>Categories</h1>
-  <template v-for="category in catData" :key="category">
-    <button @click="getCategoryProducts(category)">
-      {{ category.toUpperCase() }}
-    </button>
-  </template>
-  <hr />
-  <p>{{ catProducts }}</p>
+  <section class="container">
+    <h1>Categories</h1>
+    <template v-for="category in catData" :key="category">
+      <button @click="getCategoryProducts(category)">
+        {{ category.toUpperCase() }}
+      </button>
+    </template>
+    <hr />
+    <p>{{ catProducts }}</p>
+  </section>
 </template>
 
 <script>
 import axios from "axios";
+
 export default {
   name: "CategoriesPage",
   data() {

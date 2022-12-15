@@ -1,5 +1,7 @@
 <template>
-  <h1>This is a checkout page (Modal window)</h1>
+  <section class="container">
+    <h1>This is a checkout page (Modal window)</h1>
+  </section>
 </template>
 
 <script>
