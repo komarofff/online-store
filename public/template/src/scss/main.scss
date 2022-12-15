@@ -1,15 +1,19 @@
-// base
-@import "./base/normalize";
-
 // abstracts
 @import "./abstracts/variables";
 
 // components
 @import "./components/button";
 @import "./components/block";
+@import "./components/main";
+
+// layout
+@import "./layout/header";
+@import "./layout/footer";
 
 // pages
-@import "./pages/start";
-@import "./pages/game";
-@import "./pages/output";
-@import "./pages/galery";
+@import "./pages/home";
+@import "./pages/categories";
+@import "./pages/cart";
+@import "./pages/checkout";
+@import "./pages/product";
+@import "./pages/error";
