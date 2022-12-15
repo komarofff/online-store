@@ -1,0 +1,76 @@
+////
+https://dummyjson.com/products?limit=100
+"id":1,
+"title":"iPhone 9",
+"description":"An apple mobile which is nothing like apple",
+"price":549,"discountPercentage":12.96,
+"rating":4.69,
+"stock":94,
+"brand":"Apple",
+"category":"smartphones",
+"thumbnail":"https://i.dummyjson.com/data/products/1/thumbnail.jpg",
+"images":["https://i.dummyjson.com/data/products/1/1.jpg","https://i.dummyjson.com/data/products/1/2.jpg","https://i.dummyjson.com/data/products/1/3.jpg","https://i.dummyjson.com/data/products/1/4.jpg","https://i.dummyjson.com/data/products/1/thumbnail.jpg"]
+//////
+
+As suggested in official docs you could use mitt library to dispatch events between components, let suppose that we have a sidebar and header which contains a button that close/open the sidebar and we need that button to toggle some property inside the sidebar component :
+
+in main.js import that library and create an instance of that emitter and define as a global property:
+
+Installation :
+
+npm install --save mitt
+
+main.js:
+import { createApp } from 'vue'
+import App from './App.vue'
+import mitt from 'mitt';
+const emitter = mitt();
+const app = createApp(App);
+app.config.globalProperties.emitter = emitter;
+app.mount('#app');
+
+
+in header emit the toggle-sidebar event with some payload :
+
+<template>
+  <header>
+    <button @click="toggleSidebar"/>toggle</button>
+  </header>
+</template>
+<script >
+export default {
+  data() {
+    return {
+      sidebarOpen: true
+    };
+  },
+  methods: {
+    toggleSidebar() {
+      this.sidebarOpen = !this.sidebarOpen;
+      this.emitter.emit("toggle-sidebar", this.sidebarOpen);
+    }
+  }
+};
+</script>
+In sidebar receive the event with the payload:
+
+<template>
+  <aside class="sidebar" :class="{'sidebar--toggled': !isOpen}">
+  ....
+  </aside>
+</template>
+<script>
+export default {
+  name: "sidebar",
+  data() {
+    return {
+      isOpen: true
+    };
+  },
+  mounted() {
+    this.emitter.on("toggle-sidebar", isOpen => {
+      this.isOpen = isOpen;
+    });
+  }
+};
+</script>
