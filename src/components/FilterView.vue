@@ -15,7 +15,7 @@ export default {
 <style scoped lang="scss">
 .filter {
   align-self: stretch;
-  flex-basis: 30%;
+  flex-basis: 20%;
 }
 aside {
   border: 1px solid red;
