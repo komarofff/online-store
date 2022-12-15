@@ -3,10 +3,17 @@
     <h1>Here is a list of products and filter</h1>
     <h2>{{ msg }}</h2>
     <h2>{{ text }}</h2>
+    <p v-for="index in 5" :key="index">
+      <button @click="addToCart(index)">Add to cart</button>
+      |id={{ index }}|
+      <button @click="delFromCart(index)" :ref="`id-${index}`">
+        Delete from cart
+      </button>
+    </p>
   </div>
 </template>
 
-<script lang="ts">
+<script>
 export default {
   props: {
     msg: String,
@@ -15,6 +22,14 @@ export default {
     return {
       text: "I`m a text from components",
     };
+  },
+  methods: {
+    addToCart(val) {
+      this.emitter.emit("addToCart", val);
+    },
+    delFromCart(val) {
+      this.emitter.emit("delFromCart", val);
+    },
   },
 };
 </script>
@@ -34,5 +49,8 @@ li {
 }
 a {
   color: #42b983;
+}
+.delete {
+  background: red;
 }
 </style>
