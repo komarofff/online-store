@@ -25,7 +25,7 @@ const routes: Array<RouteRecordRaw> = [
     props: true,
   },
   {
-    path: "/categories",
+    path: "/categories/:id?",
     name: "categories",
     component: CategoriesPage,
     props: true,

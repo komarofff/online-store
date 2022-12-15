@@ -45,6 +45,7 @@ export default {
 button {
   margin: 5px;
 }
+
 .container {
   max-width: 1560px;
   margin-left: auto;
