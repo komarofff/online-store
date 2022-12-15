@@ -1,7 +1,7 @@
 import { InjectionKey } from "vue";
 import { createStore, Store } from "vuex";
-import Products from "../modules/Products";
-import Categories from "../modules/Categories";
+import Products from "./modules/Products";
+import Categories from "./modules/Categories";
 
 export interface RootState {
   modules: {

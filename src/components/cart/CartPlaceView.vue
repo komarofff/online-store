@@ -7,9 +7,14 @@ export default {
   name: "CartPlaceView",
   data() {
     return {
-      cartAmount: JSON.parse(localStorage.getItem("cart")).length || 0,
+      cartAmount: 0,
       idInCart: [],
     };
+  },
+  beforeMount() {
+    if (localStorage.getItem("cart")) {
+      this.cartAmount = JSON.parse(localStorage.getItem("cart")).length;
+    }
   },
   mounted() {
     this.emitter.on("addToCart", (data) => {
