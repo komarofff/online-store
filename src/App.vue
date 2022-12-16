@@ -10,12 +10,19 @@
 import HeaderView from "./components/HeaderView";
 import FooterView from "./components/FooterView";
 import CheckoutModalView from "./components/modals/CheckoutModalView";
+import { mapActions } from "vuex";
 
 export default {
   data() {
     return {
       isShowCheckoutModal: false,
     };
+  },
+  async beforeMount() {
+    await this.getFromStorage();
+  },
+  methods: {
+    ...mapActions("Cart", ["getFromStorage"]),
   },
   components: {
     HeaderView,

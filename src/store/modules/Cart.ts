@@ -1,5 +1,5 @@
 import { RootState } from "@/store";
-import { ActionTree, MutationTree, GetterTree } from "vuex";
+import { ActionTree, GetterTree, MutationTree } from "vuex";
 
 export interface CartArr {
   id: number;
@@ -17,7 +17,7 @@ export interface CartArr {
 }
 
 const state = {
-  cartArray: [] as Array<CartArr[]>,
+  cartArray: [] as Array<CartArr>,
 };
 
 export const getters: GetterTree<State, RootState> = {
@@ -30,23 +30,40 @@ export const getters: GetterTree<State, RootState> = {
 };
 
 export const mutations: MutationTree<State> = {
-  push(state: State, val: CartArr[]) {
-    state.cartArray.push(val);
+  push(state: State, val: CartArr) {
+    const el = state.cartArray.find((el) => el.id === val.id);
+    if (!el) {
+      state.cartArray.push(val);
+      localStorage.setItem("cart", JSON.stringify(state.cartArray));
+    }
   },
   delete(state: State, val: number) {
-    state.cartArray.splice(val, 1);
+    const idx = state.cartArray.findIndex((el) => el.id === val);
+    if (idx !== -1) {
+      state.cartArray.splice(idx, 1);
+      localStorage.setItem("cart", JSON.stringify(state.cartArray));
+    }
+  },
+  getDataFromStorage(state: State) {
+    if (
+      localStorage.getItem("cart") &&
+      JSON.parse(localStorage.getItem("cart") || "").length > 0
+    ) {
+      state.cartArray = JSON.parse(localStorage.getItem("cart") || "");
+      //console.log(JSON.parse(localStorage.getItem("cart") || ""));
+    }
   },
 };
 
 const actions: ActionTree<RootState, RootState> = {
-  // getCart({ commit }, payload?: CartArr[]) {
-  //   commit("setCart", payload);
-  // },
-  pushToCart({ commit }, payload?: CartArr[]) {
+  pushToCart({ commit }, payload?: CartArr) {
     commit("push", payload);
   },
-  delFromCart({ commit }, payload?: number) {
+  delFromCart({ commit }, payload: number) {
     commit("delete", payload);
+  },
+  getFromStorage({ commit }) {
+    commit("getDataFromStorage");
   },
 };
 
