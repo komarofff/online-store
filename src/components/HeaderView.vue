@@ -2,6 +2,7 @@
   <header class="header">
     <div class="container header__nav">
       <NavLinks></NavLinks>
+      <SearchBlock></SearchBlock>
       <CartPlaceView></CartPlaceView>
     </div>
   </header>
@@ -10,12 +11,14 @@
 <script>
 import CartPlaceView from "@/components/cart/CartPlaceView";
 import NavLinks from "@/components/header/NavLinks";
+import SearchBlock from "@/components/header/SearchBlock";
 
 export default {
   name: "HeaderView",
   components: {
     CartPlaceView,
     NavLinks,
+    SearchBlock,
   },
 };
 </script>
