@@ -1,11 +1,7 @@
 <template>
   <div class="center-section">
     <!--      <img alt="Vue logo" src="../assets/logo.png" />-->
-    <HelloWorld msg="I`m a text from another component. See props ))" />
-    <p>{{ categories }}</p>
-    <p>{{ text }}</p>
-    <p>getAllCategories {{ getAllCategories }}</p>
-    <p>{{ text5 }}</p>
+    <h1>Here is a list of products according of filter rules</h1>
     <p>
       Select number of products -
       <input
@@ -23,7 +19,6 @@
 <script>
 import axios from "axios";
 import { mapActions, mapGetters, mapState } from "vuex";
-import HelloWorld from "@/components/HelloWorld.vue"; // @ is an alias to /src
 export default {
   data() {
     return {
@@ -60,7 +55,7 @@ export default {
       });
     },
   },
-  components: { HelloWorld },
+  components: {},
 };
 </script>
 
