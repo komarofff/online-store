@@ -4,7 +4,7 @@
     <HelloWorld msg="I`m a text from another component. See props ))" />
     <p>{{ categories }}</p>
     <p>{{ text }}</p>
-    <p>{{ getCategories }}</p>
+    <p>getAllCategories {{ getAllCategories }}</p>
     <p>{{ text5 }}</p>
     <p>
       Select number of products -
@@ -40,20 +40,20 @@ export default {
   },
   async mounted() {
     this.loading = true;
-    await this.getCat();
+    await this.getAllCat();
     this.loading = false;
   },
   computed: {
     // mapState mapGetters
     ...mapState("Categories", ["categories", "text"]),
-    ...mapGetters("Categories", ["getCategories"]),
+    ...mapGetters("Categories", ["getAllCategories"]),
     text5() {
-      return this.$store.getters["Categories/getCategories"];
+      return this.$store.getters["Categories/getAllCategories"];
     },
   },
   methods: {
     // mutations && actions
-    ...mapActions("Categories", ["getCat"]),
+    ...mapActions("Categories", ["getAllCat"]),
     getData() {
       axios.get(this.url + this.limit).then((response) => {
         this.productsList = response.data;

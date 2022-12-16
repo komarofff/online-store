@@ -1,19 +1,14 @@
 <template>
   <section class="container">
-    <!--    <template v-if="id === false">-->
-
-    <!--    </template>-->
+    <template v-for="category in catData" :key="category">
+      <a :href="`/categories/${category}`">
+        <button>
+          {{ category.toUpperCase() }}
+        </button>
+      </a>
+    </template>
     <h1 v-if="id">Category {{ id }}</h1>
-    <div v-else>
-      <h1>Categories list</h1>
-      <template v-for="category in catData" :key="category">
-        <a :href="`/categories/${category}`">
-          <button>
-            {{ category.toUpperCase() }}
-          </button>
-        </a>
-      </template>
-    </div>
+    <h1 v-else>Categories list</h1>
     <hr />
     <img v-if="isLoader" src="../assets/loader.gif" alt="loader" />
     <div class="product__list">
@@ -72,7 +67,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters, mapState } from "vuex";
+import axios from "axios";
+import { mapActions } from "vuex";
 
 export default {
   name: "CategoriesPage",
@@ -81,53 +77,67 @@ export default {
     return {
       cart: [{ id: 74 }],
       isLoader: false,
-      catProducts: [],
       catData: [],
+      catProducts: [],
+      url: "https://dummyjson.com/products/categories",
+      catUrl: "https://dummyjson.com/products/category/",
     };
   },
-  async mounted() {
+  async beforeMount() {
     this.isLoader = true;
     await this.getAllCat();
-    //this.catData = this.$store.getters["Categories/getAllCategories"];
-    this.catData = this.categories; // categories from mapState
-    if (this.id) {
-      await this.getSingleCat(this.id);
-      this.catProducts = this.$store.getters["Categories/getSingleCategory"];
-      if (this.catProducts.products.length === 0) {
-        this.catProducts = [];
-        return this.$router.push({ name: "error" });
-      }
-    } else {
-      this.catProducts = [];
-    }
+    this.catData = this.$store.getters["Categories/getAllCategories"];
     this.isLoader = false;
   },
   watch: {
-    $route() {
+    id() {
       if (!this.id) {
         this.catProducts = [];
       }
     },
   },
   computed: {
-    ...mapState("Categories", ["categories"]),
-    ...mapGetters("Categories", ["getAllCategories", "getSingleCategory"]),
     // carts() {},
     // mapGetters cart - получаю всё время данные из стора
   },
   methods: {
-    ...mapActions("Categories", ["getAllCat", "getSingleCat"]),
+    ...mapActions("Categories", ["getAllCat"]),
     isActive(val) {
       // подключаем показ кнопки удалить если товар в сторе в массиве корзины
       //console.log("val", val);
-      //let answer = this.cart.find((product) => {
-      //  return product.id === val;
-      //});
-      //console.log("answer", answer);
-      //return answer;
-      return this.cart.find((product) => {
+      let answer = this.cart.find((product) => {
         return product.id === val;
       });
+      //console.log("answer", answer);
+      return answer;
+    },
+    async getCategoryProducts(val) {
+      this.catProducts = [];
+      this.isLoader = true;
+      await axios.get(this.catUrl + val).then((response) => {
+        this.catProducts = response.data;
+      });
+      this.isLoader = false;
+    },
+    async getSingleCategory() {
+      if (this.id) {
+        this.isLoader = true;
+        await axios
+          .get(this.catUrl + this.id)
+          .then((response) => {
+            if (response.data.products.length > 0) {
+              this.catProducts = response.data;
+            } else {
+              this.catProducts = [];
+              return this.$router.push({ name: "error" });
+            }
+          })
+          .catch(() => {
+            this.catProducts = [];
+            return this.$router.push({ name: "error" });
+          });
+        this.isLoader = false;
+      }
     },
     addToCart(val) {
       this.emitter.emit("addToCart", val);

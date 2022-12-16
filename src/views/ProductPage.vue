@@ -64,7 +64,7 @@ export default {
         if (!response.data.id) return this.$router.push({ name: "error" });
         this.productData = response.data;
       })
-      .catch((e) => {
+      .catch(() => {
         this.$router.push({ name: "error" });
       });
     this.isLoader = false;

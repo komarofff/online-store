@@ -1,7 +1,6 @@
 import { RootState } from "@/store";
 import { ActionTree, MutationTree, GetterTree } from "vuex";
 import axios from "axios";
-
 export interface ProdArr {
   id: number;
   title: string;
@@ -16,33 +15,52 @@ export interface ProdArr {
   images: Array<string>;
 }
 
-export const getters: GetterTree<Array<ProdArr>, RootState> = {
-  getProduct(state) {
-    return state;
+const state = {
+  products: [] as ProdArr[],
+  singleProduct: {} as ProdArr[],
+};
+
+export const getters: GetterTree<State, RootState> = {
+  getAllProducts(state: State) {
+    return state.products;
+  },
+  getSingleProduct(state: State) {
+    return state.products;
   },
 };
 
-export const mutations: MutationTree<Array<ProdArr>> = {
-  addProduct(state, val: ProdArr) {
-    state.push(val);
+export const mutations: MutationTree<State> = {
+  getAll(state: State, val: ProdArr[]) {
+    state.products = val;
+  },
+  getSingle(state: State, val: ProdArr[]) {
+    state.singleProduct = val;
   },
 };
 
-const actions: ActionTree<ProdArr, RootState> = {
-  addNewProduct({ commit }, payload: string) {
-    commit("addProduct", payload);
-  },
-};
-
-export default {
-  state: {
-    products: axios
+const actions: ActionTree<RootState, RootState> = {
+  async getAllProd({ commit }) {
+    return await axios
       .get("https://dummyjson.com/products?limit=100")
       .then((response) => {
-        response.data as ProdArr[];
-      }),
+        commit("getAll", response.data as ProdArr[]);
+      });
   },
+  async getSingleProd({ commit }, payload: number) {
+    return await axios
+      .get(`https://dummyjson.com/products/${payload}`)
+      .then((response) => {
+        commit("getSingle", response.data as ProdArr[]);
+      });
+  },
+};
+
+const store = {
+  namespaced: true,
+  state,
   getters,
   mutations,
   actions,
 };
+export type State = typeof state;
+export default store;

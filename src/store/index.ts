@@ -2,11 +2,13 @@ import { InjectionKey } from "vue";
 import { createStore, Store } from "vuex";
 import Products from "./modules/Products";
 import Categories from "./modules/Categories";
+import Cart from "./modules/Cart";
 
 export interface RootState {
   modules: {
     Products: typeof Products;
     Categories: typeof Categories;
+    Cart: typeof Cart;
   };
 }
 
@@ -16,6 +18,7 @@ const store = createStore<RootState>({
   modules: {
     Products,
     Categories,
+    Cart,
   },
 });
 
