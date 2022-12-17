@@ -4,18 +4,73 @@
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Document</title>
+   <link rel="preconnect" href="https://fonts.googleapis.com">
+   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+   <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+   <title>K&K</title>
    <link rel="stylesheet" href="styles/main.min.css" />
 </head>
 <body class="body">
-   <header class="header"></header>
+   <header class="header">
+      <div class="container">
+         <div class="header__body">
+            <div class="header__logo">
+               <a href="../dist/index.html"><img src="assets/icon/logo.svg" alt="logo"></a>
+            </div>
+
+            <div class="header__modal">
+               <div class="header__menu">
+                  <ul class="header__list">
+                     <li>
+                        <a class="header__link" href="../dist/index.html">Home</a>
+                     </li>
+                     <li>
+                        <a class="header__link" href="">Categories</a>
+                        <span class="header__link-arrow link-arrow"></span>
+                        <ul class="sub-header__list">
+                           <li>
+                              <a class="sub-header__link" href="">Catalog 1</a>
+                           </li>
+                           <li>
+                              <a class="sub-header__link" href="">Catalog 2</a>
+                           </li>
+                           <li>
+                              <a class="sub-header__link" href="">Catalog 3</a>
+                           </li>
+                        </ul>
+                     </li>
+                     <li>
+                        <a class="header__link" href="cart.html">Cart</a>
+                     </li>
+                  </ul>
+               </div>
+            </div>
+
+            <div class="header__search">
+               <input id="header__search" type="text" placeholder="Search">
+            </div>
+
+            <div class="header__cart">
+               <div class="header__cart-count-item">0</div>
+               <img src="assets/icon/cart2.svg" alt="cart">
+               <span class="header__cart-count-sum">0</span><span>$</span>
+            </div>
+
+            <div class="header__burger">
+               <span></span>
+            </div>            
+         </div>
+      </div>
+   </header>
+
    <main class="main">
-    <div class="container">
+      <div class="container">
          <aside></aside>
          <section></section>
     </div>
    </main>
    <footer class="footer"></footer>
-   
+
+   <script src="js/script.js"></script>
 </body>
 </html>
