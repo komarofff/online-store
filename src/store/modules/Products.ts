@@ -25,7 +25,7 @@ export const getters: GetterTree<State, RootState> = {
     return state.products;
   },
   getSingleProduct(state: State) {
-    return state.products;
+    return state.singleProduct;
   },
 };
 

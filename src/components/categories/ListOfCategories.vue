@@ -3,11 +3,13 @@
     <h1>Categories list</h1>
     <img v-if="isLoader" src="../../assets/loader.gif" alt="loader" />
     <template v-for="category in catData" :key="category">
-      <a :href="`/categories/${category}`">
+      <router-link :to="`/categories/${category}`">
+        <!--      <a :href="`/categories/${category}`">-->
         <button>
           {{ category.toUpperCase() }}
         </button>
-      </a>
+        <!--      </a>-->
+      </router-link>
     </template>
   </div>
 </template>
@@ -18,21 +20,20 @@ export default {
   data() {
     return {
       isLoader: false,
-      catData: [],
+      catData: this.categories,
     };
   },
   async mounted() {
     this.isLoader = true;
     await this.getAllCat();
-    //this.catData = this.getAllCategories; // getAllCategories from mapGetters
-    this.catData = this.categories; // categories from mapState
+    //this.catData = this.categories; // categories from mapState
+    this.catData = this.getAllCategories; // getAllCategories from mapGetters
     this.isLoader = false;
-    this.cart = this.getCartArray;
   },
   watch: {},
   computed: {
     ...mapState("Categories", ["categories"]),
-    ...mapGetters("Categories", ["getAllCategories"]),
+    ...mapGetters("Categories", ["getAllCategories", "getCatLength"]),
   },
   methods: {
     ...mapActions("Categories", ["getAllCat"]),
