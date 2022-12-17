@@ -50,7 +50,9 @@
             Delete from cart
           </button>
         </p>
-        <p><a :href="`/product/${product.id}`"> Details </a></p>
+        <p>
+          <router-link :to="`/product/${product.id}`">Details</router-link>
+        </p>
       </div>
     </template>
   </div>
@@ -131,6 +133,7 @@ export default {
   margin: 5px;
   border: 1px solid red;
 }
+
 .thumbnail {
   max-width: 100px;
   margin: 10px;

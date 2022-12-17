@@ -1,7 +1,6 @@
 import { RootState } from "@/store";
-import { ActionTree, GetterTree, MutationTree } from "vuex";
+import { ActionTree, MutationTree, GetterTree } from "vuex";
 import axios from "axios";
-
 export interface ProdArr {
   id: number;
   title: string;
@@ -15,7 +14,6 @@ export interface ProdArr {
   thumbnail: string;
   images: Array<string>;
 }
-
 export type CatArr = string[];
 
 const state = {
@@ -47,15 +45,11 @@ export const mutations: MutationTree<State> = {
 
 const actions: ActionTree<RootState, RootState> = {
   async getAllCat({ commit }) {
-    if (!state.categories.length) {
-      return await axios
-        .get("https://dummyjson.com/products/categories")
-        .then((response) => {
-          commit("setAllCat", response.data as CatArr[]);
-        });
-    } else {
-      console.log("data is here");
-    }
+    return await axios
+      .get("https://dummyjson.com/products/categories")
+      .then((response) => {
+        commit("setAllCat", response.data as CatArr[]);
+      });
   },
   async getSingleCat({ commit }, payload: string) {
     return await axios
