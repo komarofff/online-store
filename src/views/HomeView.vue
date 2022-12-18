@@ -8,6 +8,7 @@
 <script>
 import FilterView from "@/components/home/FilterView";
 import CenterSection from "@/components/home/CenterSection";
+import { mapActions } from "vuex";
 
 export default {
   data() {
@@ -15,8 +16,15 @@ export default {
       isLoader: false,
     };
   },
+  async beforeMount() {
+    await this.getAllProd();
+    await this.getAllCat();
+    await this.getAllBrands();
+  },
   computed: {},
-  methods: {},
+  methods: {
+    ...mapActions("Filter", ["getAllProd", "getAllCat", "getAllBrands"]),
+  },
   components: { FilterView, CenterSection },
 };
 </script>

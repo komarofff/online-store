@@ -2,10 +2,6 @@
   <aside class="filter">
     <div>
       <h1>I`m a filter section</h1>
-      <!--      {{ getCategories }}-->
-      <!--      {{ getBrands }}-->
-      {{ getPrice }}
-      {{ getStock }}
       <p>
         <button v-if="successCopyLink">Link was copied successfully</button>
         <button v-else @click="copyLink()">Copy link</button>
@@ -96,8 +92,6 @@ export default {
   async mounted() {
     await this.getAllCat();
     await this.getAllProd();
-    await this.getPriceDiff(this.getAllProducts.products);
-    await this.getStockDiff(this.getAllProducts.products);
     this.data = this.getAllProducts.products;
     this.priceMax = Math.max(...this.data.map((item) => item.price));
     this.priceMin = Math.min(...this.data.map((item) => item.price));
@@ -144,13 +138,6 @@ export default {
   computed: {
     ...mapGetters("Categories", ["getAllCategories"]),
     ...mapGetters("Products", ["getAllProducts"]),
-    ...mapGetters("Filter", [
-      "getProducts",
-      "getCategories",
-      "getBrands",
-      "getPrice",
-      "getStock",
-    ]),
     categories() {
       if (this.data) {
         return this.getAllCategories;
@@ -175,7 +162,6 @@ export default {
   methods: {
     ...mapActions("Categories", ["getAllCat"]),
     ...mapActions("Products", ["getAllProd"]),
-    ...mapActions("Filter", ["getPriceDiff", "getStockDiff"]),
     isActiveCat(val) {
       if (this.queryCat) {
         return this.queryCat.find((el) => {
