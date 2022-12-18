@@ -48,28 +48,22 @@ export const mutations: MutationTree<State> = {
 
 const actions: ActionTree<RootState, RootState> = {
   async getAllProd({ commit }) {
-    console.log("state.products.length", state.products.length);
     if (!state.products.length) {
-      console.log("from server");
       return await axios
         .get("https://dummyjson.com/products?limit=100")
         .then((response) => {
           commit("getAll", response.data as ProdArr[]);
         });
-    } else {
-      console.log("from data");
     }
   },
   async getSingleProd({ commit }, payload: number) {
     if (!state.products.length) {
-      console.log("single from server");
       return await axios
         .get(`https://dummyjson.com/products/${payload}`)
         .then((response) => {
           commit("getSingle", response.data as ProdArr[]);
         });
     } else {
-      console.log("single from data");
       commit("getSingleId", payload);
     }
   },

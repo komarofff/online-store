@@ -60,12 +60,22 @@ export default {
       search: "",
       queryCat: [],
       queryBrand: [],
+      priceMax: 0,
+      priceMin: 0,
     };
   },
   async beforeMount() {
     await this.getAllCat();
   },
   mounted() {
+    if (this.products) {
+      this.priceMax = Math.max(...this.products.map((item) => item.price));
+      this.priceMin = Math.min(...this.products.map((item) => item.price));
+    }
+    this.emitter.on("newMinMaxPrice", (val) => {
+      this.priceMin = val[0];
+      this.priceMax = val[1];
+    });
     this.emitter.on("searchText", (val) => {
       this.search = val;
     });
@@ -74,25 +84,9 @@ export default {
       this.queryBrand = this.$route.query.brand.join("|");
     }
   },
-  watch: {
-    // $route() {
-    //   if (this.$route.query.category) {
-    //     console.log("this.$route.query.category", this.$route.query.category);
-    //     if (this.$route.query.category.length > 1) {
-    //       this.queryCat = this.$route.query.category;
-    //     }
-    //   }
-    //   if (this.$route.query.brand) {
-    //     console.log("this.$route.query.brand", this.$route.query.brand);
-    //     this.queryBrand = this.$route.query.brand;
-    //   }
-    // },
-  },
+  watch: {},
   computed: {
     ...mapGetters("Categories", ["getAllCategories"]),
-    // data() {
-    //   return this.products;
-    // },
     categories() {
       if (this.products) {
         return this.getAllCategories;
@@ -113,20 +107,7 @@ export default {
         return "";
       }
     },
-    priceMax() {
-      if (this.products) {
-        return Math.max(...this.products.map((item) => item.price));
-      } else {
-        return 0;
-      }
-    },
-    priceMin() {
-      if (this.products) {
-        return Math.min(...this.products.map((item) => item.price));
-      } else {
-        return 0;
-      }
-    },
+
     stockMax() {
       if (this.products) {
         return Math.max(...this.products.map((item) => item.stock));
