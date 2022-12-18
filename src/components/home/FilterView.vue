@@ -110,7 +110,7 @@ export default {
         price: [2, 123],
         stock: [200, 1976],
         search: "",
-        sort: 'price-ASC'
+        sort: "price-ASC",
       },
     ]);
     this.data = this.getAllProducts.products;
