@@ -16,6 +16,7 @@ export default {
     return {
       loading: false,
       searchText: null,
+      fullData: [],
       data: [],
     };
   },
@@ -24,11 +25,12 @@ export default {
     await this.getAllProd();
     this.isLoader = false;
 
-    this.data = this.getAllProducts.products;
+    this.fullData = this.getAllProducts.products;
+    this.data = this.fullData;
     //console.log("this.data", this.data);
     this.emitter.on("changeCat", (val) => {
       if (val.length) {
-        this.data = this.getAllProducts.products.filter((el) => {
+        this.data = this.fullData.filter((el) => {
           for (let i = 0; i < val.length; i++) {
             if (el.category === val[i]) {
               return el;
@@ -36,12 +38,12 @@ export default {
           }
         });
       } else {
-        this.data = this.getAllProducts.products;
+        this.data = this.fullData;
       }
     });
     this.emitter.on("changeBrand", (val) => {
       if (val.length) {
-        this.data = this.getAllProducts.products.filter((el) => {
+        this.data = this.fullData.filter((el) => {
           for (let i = 0; i < val.length; i++) {
             if (el.brand === val[i]) {
               return el;
@@ -49,17 +51,17 @@ export default {
           }
         });
       } else {
-        this.data = this.getAllProducts.products;
+        this.data = this.fullData;
       }
     });
 
     this.emitter.on("changePrice", (min, max) => {
-      this.data = this.getAllProducts.products.filter(
+      this.data = this.fullData.filter(
         (el) => el.price >= min && el.price <= max
       );
     });
     this.emitter.on("changeStock", (min, max) => {
-      this.data = this.getAllProducts.products.filter(
+      this.data = this.fullData.filter(
         (el) => el.stock >= min && el.stock <= max
       );
     });
