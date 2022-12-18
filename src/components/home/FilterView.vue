@@ -53,28 +53,35 @@ import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "FilterView",
-  props: ["products"],
+  //props: ["products"],
   data() {
     return {
-      data: this.products,
+      data: [],
       search: "",
       queryCat: [],
       queryBrand: [],
       priceMax: 0,
       priceMin: 0,
+      stockMin: 0,
+      stockMax: 0,
     };
   },
-  async beforeMount() {
+  async mounted() {
     await this.getAllCat();
-  },
-  mounted() {
-    if (this.products) {
-      this.priceMax = Math.max(...this.products.map((item) => item.price));
-      this.priceMin = Math.min(...this.products.map((item) => item.price));
-    }
+    await this.getAllProd();
+    this.data = this.getAllProducts.products;
+    this.priceMax = Math.max(...this.data.map((item) => item.price));
+    this.priceMin = Math.min(...this.data.map((item) => item.price));
+    this.stockMin = Math.min(...this.data.map((item) => item.stock));
+    this.stockMax = Math.min(...this.data.map((item) => item.stock));
+
     this.emitter.on("newMinMaxPrice", (val) => {
       this.priceMin = val[0];
       this.priceMax = val[1];
+    });
+    this.emitter.on("newMinMaxStock", (val) => {
+      this.stockMin = val[0];
+      this.stockMax = val[1];
     });
     this.emitter.on("searchText", (val) => {
       this.search = val;
@@ -87,17 +94,18 @@ export default {
   watch: {},
   computed: {
     ...mapGetters("Categories", ["getAllCategories"]),
+    ...mapGetters("Products", ["getAllProducts"]),
     categories() {
-      if (this.products) {
+      if (this.data) {
         return this.getAllCategories;
       } else {
         return "";
       }
     },
     brands() {
-      if (this.products) {
+      if (this.data) {
         let brand = [];
-        this.products.forEach((el) => {
+        this.data.forEach((el) => {
           if (!brand.includes(el.brand)) {
             brand.push(el.brand);
           }
@@ -107,24 +115,10 @@ export default {
         return "";
       }
     },
-
-    stockMax() {
-      if (this.products) {
-        return Math.max(...this.products.map((item) => item.stock));
-      } else {
-        return 0;
-      }
-    },
-    stockMin() {
-      if (this.products) {
-        return Math.min(...this.products.map((item) => item.stock));
-      } else {
-        return 0;
-      }
-    },
   },
   methods: {
     ...mapActions("Categories", ["getAllCat"]),
+    ...mapActions("Products", ["getAllProd"]),
     changeCat(val) {
       if (!this.queryCat.includes(val)) {
         this.queryCat.push(val);

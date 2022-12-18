@@ -1,6 +1,7 @@
 <template>
   <div class="center">
     <h1>Products list</h1>
+    <img v-if="isLoader" src="../../assets/loader.gif" alt="loader" />
     <input type="text" v-model="searchText" />
     <div class="center-section">
       {{ data }}
@@ -14,7 +15,7 @@ import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
-      loading: false,
+      isLoader: false,
       searchText: null,
       fullData: [],
       data: [],
@@ -22,9 +23,9 @@ export default {
       dataForCategoriesFilter: null,
       isHaveChangesForBrands: false,
       dataForBrandsFilter: null,
-      isHaveChangesForPrice: true,
+      isHaveChangesForPrice: false,
       dataForPriceFilter: null,
-      isHaveChangesStock: true,
+      isHaveChangesStock: false,
       dataForStockFilter: null,
     };
   },
@@ -87,16 +88,39 @@ export default {
     emitSearch() {
       this.emitter.emit("searchText", this.searchText);
     },
+    startEmitPriceStock(arr) {
+      let maxPrice = this.getMaxPrice(arr);
+      let minPrice = this.getMinPrice(arr);
+      let maxStock = this.getMaxStock(arr);
+      let minStock = this.getMinStock(arr);
+
+      this.emitter.emit("newMinMaxPrice", [minPrice, maxPrice]);
+      this.emitter.emit("newMinMaxStock", [minStock, maxStock]);
+    },
     getMaxPrice(data) {
-      if (data) {
+      if (data.length) {
         return Math.max(...data.map((item) => item.price));
       } else {
         return 0;
       }
     },
     getMinPrice(data) {
-      if (data) {
+      if (data.length) {
         return Math.min(...data.map((item) => item.price));
+      } else {
+        return 0;
+      }
+    },
+    getMaxStock(data) {
+      if (data.length) {
+        return Math.max(...data.map((item) => item.stock));
+      } else {
+        return 0;
+      }
+    },
+    getMinStock(data) {
+      if (data.length) {
+        return Math.min(...data.map((item) => item.stock));
       } else {
         return 0;
       }
@@ -109,24 +133,28 @@ export default {
       if (!this.isHaveChangesForBrands && this.isHaveChangesForCategories) {
         this.data = this.fullData.filter((el) => {
           for (let i = 0; i < this.dataForCategoriesFilter.length; i++) {
-            if (el.category === this.dataForCategoriesFilter[i]) {
+            if (
+              el.category.toUpperCase() ===
+              this.dataForCategoriesFilter[i].toUpperCase()
+            ) {
               return el;
             }
           }
         });
-        let maxPrice = this.getMaxPrice(this.data);
-        let minPrice = this.getMinPrice(this.data);
-        this.emitter.emit("newMinMaxPrice", [minPrice, maxPrice]);
-        //this.emitter.emit("newMinMaxStock", minPrice);
+        this.startEmitPriceStock(this.data);
       }
       if (this.isHaveChangesForBrands && !this.isHaveChangesForCategories) {
         this.data = this.fullData.filter((el) => {
           for (let i = 0; i < this.dataForBrandsFilter.length; i++) {
-            if (el.brand === this.dataForBrandsFilter[i]) {
+            if (
+              el.brand.toUpperCase() ===
+              this.dataForBrandsFilter[i].toUpperCase()
+            ) {
               return el;
             }
           }
         });
+        this.startEmitPriceStock(this.data);
       }
 
       if (this.isHaveChangesForBrands && this.isHaveChangesForCategories) {
@@ -134,24 +162,18 @@ export default {
           for (let i = 0; i < this.dataForCategoriesFilter.length; i++) {
             for (let q = 0; q < this.dataForBrandsFilter.length; q++) {
               if (
-                el.category === this.dataForCategoriesFilter[i] &&
-                el.brand === this.dataForBrandsFilter[q]
+                el.category.toUpperCase() ===
+                  this.dataForCategoriesFilter[i].toUpperCase() &&
+                el.brand.toUpperCase() ===
+                  this.dataForBrandsFilter[q].toUpperCase()
               ) {
                 return el;
               }
             }
           }
         });
+        this.startEmitPriceStock(this.data);
       }
-    },
-    arrayUnique(array) {
-      let a = array.concat();
-      for (let i = 0; i < a.length; ++i) {
-        for (let j = i + 1; j < a.length; ++j) {
-          if (a[i].id === a[j].id) a.splice(j--, 1);
-        }
-      }
-      return a;
     },
   },
   components: {},
