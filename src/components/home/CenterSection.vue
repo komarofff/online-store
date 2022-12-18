@@ -24,9 +24,9 @@ export default {
       isHaveChangesForBrands: false,
       dataForBrandsFilter: null,
       isHaveChangesForPrice: false,
-      dataForPriceFilter: null,
+      dataForPriceFilter: [],
       isHaveChangesStock: false,
-      dataForStockFilter: null,
+      dataForStockFilter: [],
     };
   },
   async mounted() {
@@ -36,7 +36,11 @@ export default {
 
     this.fullData = this.getAllProducts.products;
     this.data = this.fullData;
-    //console.log("this.data", this.data);
+    this.dataForPriceFilter[0] = this.getMinPrice(this.data);
+    this.dataForPriceFilter[1] = this.getMaxPrice(this.data);
+    this.dataForStockFilter[0] = this.getMinStock(this.data);
+    this.dataForStockFilter[1] = this.getMaxStock(this.data);
+
     this.emitter.on("changeCat", (val) => {
       console.log("change category");
       if (val.length) {
@@ -63,16 +67,23 @@ export default {
     });
 
     this.emitter.on("changePrice", (min, max) => {
-      this.dataForPriceFilter = [min, max];
-      this.data = this.fullData.filter(
-        (el) => el.price >= min && el.price <= max
-      );
+      console.log("changePrice");
+
+      this.dataForPriceFilter[0] = min;
+      this.dataForPriceFilter[1] = max;
+      this.getFiltersData();
+      // this.data = this.fullData.filter(
+      //   (el) => el.price >= min && el.price <= max
+      // );
     });
     this.emitter.on("changeStock", (min, max) => {
-      this.dataForStockFilter = [min, max];
-      this.data = this.fullData.filter(
-        (el) => el.stock >= min && el.stock <= max
-      );
+      console.log("changeStock");
+      this.dataForStockFilter[0] = min;
+      this.dataForStockFilter[1] = max;
+      this.getFiltersData();
+      // this.data = this.fullData.filter(
+      //   (el) => el.stock >= min && el.stock <= max
+      // );
     });
   },
   watch: {
@@ -93,7 +104,10 @@ export default {
       let minPrice = this.getMinPrice(arr);
       let maxStock = this.getMaxStock(arr);
       let minStock = this.getMinStock(arr);
-
+      this.dataForPriceFilter[0] = minPrice;
+      this.dataForPriceFilter[1] = maxPrice;
+      this.dataForStockFilter[0] = minStock;
+      this.dataForStockFilter[1] = maxStock;
       this.emitter.emit("newMinMaxPrice", [minPrice, maxPrice]);
       this.emitter.emit("newMinMaxStock", [minStock, maxStock]);
     },
@@ -128,6 +142,13 @@ export default {
     getFiltersData() {
       //здесь объединяем все фильтры в зависимости от того что какой фильтр включён
       if (!this.isHaveChangesForBrands && !this.isHaveChangesForCategories) {
+        console.log("1-", this.dataForPriceFilter[0]);
+        console.log("2-", this.dataForStockFilter[0]);
+        // this.data = this.fullData.filter(
+        //   (el) =>
+        //     el.price >= this.dataForPriceFilter[0][0] &&
+        //     el.price <= this.dataForPriceFilter[0][1]
+        // );
         this.data = this.fullData;
       }
       if (!this.isHaveChangesForBrands && this.isHaveChangesForCategories) {

@@ -2,6 +2,13 @@
   <aside class="filter">
     <div>
       <h1>I`m a filter section</h1>
+      <p>
+        <button v-if="successCopyLink">Link was copied successfully</button>
+        <button v-else @click="copyLink()">Copy link</button>
+      </p>
+      <p>
+        <button @click="clearFilters()">Clear filters</button>
+      </p>
       search text - {{ search }}
 
       <hr />
@@ -37,12 +44,18 @@
       <hr />
       <div>
         <h2>Price</h2>
-        min- {{ priceMin }} | max- {{ priceMax }}
+        min-
+        <input type="number" v-model="priceMin" @input="changePriceMin()" />|
+        max-
+        <input type="number" v-model="priceMax" @input="changePriceMax()" />
       </div>
       <hr />
       <div>
         <h2>Stock</h2>
-        min- {{ stockMin }} | max- {{ stockMax }}
+        min-
+        <input type="number" v-model="stockMin" @input="changeStockMin()" />|
+        max-
+        <input type="number" v-model="stockMax" @input="changeStockMax()" />
       </div>
     </div>
   </aside>
@@ -60,6 +73,12 @@ export default {
       search: "",
       queryCat: [],
       queryBrand: [],
+      queryPrice: [],
+      queryStock: [],
+      querySearch: this.search,
+      url: window.location.href,
+      successCopyLink: false,
+      big: true,
       priceMax: 0,
       priceMin: 0,
       stockMin: 0,
@@ -87,11 +106,23 @@ export default {
       this.search = val;
     });
     if (this.query) {
-      this.queryCat = this.$route.query.category.join("|");
-      this.queryBrand = this.$route.query.brand.join("|");
+      this.queryCat = this.$route.query.category.join("↕");
+      this.queryBrand = this.$route.query.brand.join("↕");
+      this.queryPrice = this.$route.query.price.join("↕");
+      this.queryStock = this.$route.query.stock.join("↕");
     }
   },
-  watch: {},
+  watch: {
+    $route() {
+      //  console.log("route", this.$route);
+    },
+    url() {
+      return window.location.href;
+    },
+    search() {
+      this.pushToRouter();
+    },
+  },
   computed: {
     ...mapGetters("Categories", ["getAllCategories"]),
     ...mapGetters("Products", ["getAllProducts"]),
@@ -119,13 +150,115 @@ export default {
   methods: {
     ...mapActions("Categories", ["getAllCat"]),
     ...mapActions("Products", ["getAllProd"]),
+    pushToRouter() {
+      //?category=laptops&brand=apple&price=1249↕1749&stock=83↕92&search=sbsbdf&big=false
+      //sort=discount-ASC sort=discount-DESC
+      //sort=price-ASC sort=price-DESC
+      //sort=rating-ASC sort=rating-DESC
+      this.$router.push({
+        query: {
+          category: this.queryCat.join("↕"),
+          brand: this.queryBrand.join("↕"),
+          price: this.queryPrice.join("↕"),
+          stock: this.queryStock.join("↕"),
+          search: this.search,
+          big: false,
+        },
+      });
+    },
+    copyLink() {
+      //copy router
+      //console.log(linkToBuffer.href)
+      //add link to buffer
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        //success
+        this.successCopyLink = true;
+        setTimeout(() => {
+          this.successCopyLink = false;
+        }, 2000);
+      });
+    },
+    clearFilters() {
+      // clear all filters
+      this.data = this.getAllProducts.products;
+      this.priceMax = Math.max(...this.data.map((item) => item.price));
+      this.priceMin = Math.min(...this.data.map((item) => item.price));
+      this.stockMin = Math.min(...this.data.map((item) => item.stock));
+      this.stockMax = Math.min(...this.data.map((item) => item.stock));
+      this.search = "";
+      this.queryCat = [];
+      this.queryBrand = [];
+      this.queryPrice = [];
+      this.queryStock = [];
+      this.querySearch = this.search;
+      this.emitter.emit("changeCat", this.queryCat);
+      this.emitter.emit("changeBrand", this.queryBrand);
+      this.emitter.emit("changePrice", [this.priceMin, this.priceMax]);
+      this.emitter.emit("changeStock", [this.stockMin, this.stockMax]);
+      this.emitter.emit("changeCat", this.queryCat);
+      this.emitter.emit("changeBrand", this.queryBrand);
+      this.$router.push({
+        query: {},
+      });
+      console.log("clear all filters");
+    },
+    changeCards() {
+      //big false or true change size of cards
+      this.pushToRouter();
+    },
+    sortPriceAsc() {
+      // code
+      this.pushToRouter();
+    },
+    sortPriceDESC() {
+      // code
+      this.pushToRouter();
+    },
+    sortRatingAsc() {
+      // code
+      this.pushToRouter();
+    },
+    sortRatingDESC() {
+      // code
+      this.pushToRouter();
+    },
+    sortDiscountAsc() {
+      // code
+      this.pushToRouter();
+    },
+    sortDiscountDESC() {
+      // code
+      this.pushToRouter();
+    },
+    changePriceMax() {
+      this.queryPrice = [this.priceMin, this.priceMax];
+      this.emitter.emit("changePrice", [this.priceMin, this.priceMax]);
+      this.pushToRouter();
+    },
+    changePriceMin() {
+      this.queryPrice = [this.priceMin, this.priceMax];
+      this.emitter.emit("changePrice", [this.priceMin, this.priceMax]);
+      this.pushToRouter();
+    },
+    changeStockMax() {
+      this.queryStock = [this.stockMin, this.stockMax];
+      this.emitter.emit("changeStock", [this.stockMin, this.stockMax]);
+      this.pushToRouter();
+    },
+    changeStockMin() {
+      this.queryStock = [this.stockMin, this.stockMax];
+      this.emitter.emit("changeStock", [this.stockMin, this.stockMax]);
+      this.pushToRouter();
+    },
     changeCat(val) {
       if (!this.queryCat.includes(val)) {
         this.queryCat.push(val);
       } else {
         this.queryCat.splice(this.queryCat.indexOf(val), 1);
       }
+
       this.emitter.emit("changeCat", this.queryCat);
+      this.pushToRouter();
     },
     changeBrand(val) {
       if (!this.queryBrand.includes(val)) {
@@ -134,12 +267,7 @@ export default {
         this.queryBrand.splice(this.queryBrand.indexOf(val), 1);
       }
       this.emitter.emit("changeBrand", this.queryBrand);
-    },
-    priceT(min, max) {
-      this.emitter.emit("changePrice", [min, max]);
-    },
-    stockT(min, max) {
-      this.emitter.emit("changeStock", [min, max]);
+      this.pushToRouter();
     },
   },
 };
