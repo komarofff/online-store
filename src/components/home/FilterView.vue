@@ -109,11 +109,19 @@ export default {
     this.emitter.on("searchText", (val) => {
       this.search = val;
     });
-    if (this.query) {
-      this.queryCat = this.$route.query.category.join("↕");
-      this.queryBrand = this.$route.query.brand.join("↕");
-      this.queryPrice = this.$route.query.price.join("↕");
-      this.queryStock = this.$route.query.stock.join("↕");
+    if (this.$route.query) {
+      this.queryCat = this.$route.query.category
+        ? this.$route.query.category.split("↕")
+        : [];
+      this.queryBrand = this.$route.query.brand
+        ? this.$route.query.brand.split("↕")
+        : [];
+      this.queryPrice = this.$route.query.price
+        ? this.$route.query.price.split("↕")
+        : [];
+      this.queryStock = this.$route.query.stock
+        ? this.$route.query.stock.split("↕")
+        : [];
     }
   },
   watch: {
@@ -155,14 +163,18 @@ export default {
     ...mapActions("Categories", ["getAllCat"]),
     ...mapActions("Products", ["getAllProd"]),
     isActiveCat(val) {
-      return this.queryCat.find((el) => {
-        return el === val;
-      });
+      if (this.queryCat) {
+        return this.queryCat.find((el) => {
+          return el === val;
+        });
+      }
     },
     isActiveBrand(val) {
-      return this.queryBrand.find((el) => {
-        return el === val;
-      });
+      if (this.queryBrand) {
+        return this.queryBrand.find((el) => {
+          return el === val;
+        });
+      }
     },
     pushToRouter() {
       //?category=laptops&brand=apple&price=1249↕1749&stock=83↕92&search=sbsbdf&big=false

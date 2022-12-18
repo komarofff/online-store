@@ -68,19 +68,36 @@ export default {
 
     this.emitter.on("changePrice", (min, max) => {
       console.log("changePrice");
-
-      this.dataForPriceFilter[0] = min;
-      this.dataForPriceFilter[1] = max;
-      this.getFiltersData();
+      if (
+        min !== this.dataForPriceFilter[0][0] ||
+        max !== this.dataForPriceFilter[0][1]
+      ) {
+        this.isHaveChangesForPrice = true;
+        this.dataForPriceFilter[0] = min;
+        this.dataForPriceFilter[1] = max;
+        this.getFiltersData();
+      } else {
+        this.isHaveChangesForPrice = false;
+        this.getFiltersData();
+      }
       // this.data = this.fullData.filter(
       //   (el) => el.price >= min && el.price <= max
       // );
     });
     this.emitter.on("changeStock", (min, max) => {
       console.log("changeStock");
-      this.dataForStockFilter[0] = min;
-      this.dataForStockFilter[1] = max;
-      this.getFiltersData();
+      if (
+        min !== this.dataForStockFilter[0][0] ||
+        max !== this.dataForStockFilter[0][1]
+      ) {
+        this.isHaveChangesStock = true;
+        this.dataForStockFilter[0] = min;
+        this.dataForStockFilter[1] = max;
+        this.getFiltersData();
+      } else {
+        this.isHaveChangesStock = false;
+        this.getFiltersData();
+      }
       // this.data = this.fullData.filter(
       //   (el) => el.stock >= min && el.stock <= max
       // );
