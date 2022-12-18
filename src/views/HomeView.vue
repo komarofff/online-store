@@ -2,7 +2,7 @@
   <img v-if="isLoader" src="../assets/loader.gif" alt="loader" />
   <div class="home container">
     <FilterView :products="getAllProducts.products"></FilterView>
-    <CenterSection :products="getAllProducts.products"></CenterSection>
+    <CenterSection></CenterSection>
   </div>
 </template>
 

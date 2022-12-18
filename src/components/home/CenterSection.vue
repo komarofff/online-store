@@ -3,34 +3,52 @@
     <h1>Products list</h1>
     <input type="text" v-model="searchText" />
     <div class="center-section">
-      {{ products }}
+      {{ data }}
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
+
 export default {
-  props: ["products"],
   data() {
     return {
       loading: false,
-      data: [],
       searchText: null,
+      data: [],
     };
   },
-  mounted() {
-    this.emitter.on("categories", (val) => {
-      this.data = this.products.filter((el) => el.category === val);
+  async mounted() {
+    this.isLoader = true;
+    await this.getAllProd();
+    this.isLoader = false;
+
+    this.data = this.getAllProducts.products;
+    //console.log("this.data", this.data);
+    this.emitter.on("changeData", (data) => {
+      let item = data[0];
+      let val = data[1];
+      console.log("val", val.l);
+      if (val.length) {
+        this.data = this.getAllProducts.products.filter((el) => {
+          for (let i = 0; i < val.length; i++) {
+            if (el[item] === val[i]) {
+              return el;
+            }
+          }
+        });
+      } else {
+        this.data = this.getAllProducts.products;
+      }
     });
-    this.emitter.on("brand", (val) => {
-      this.data = this.products.filter((el) => el.brand === val);
-    });
-    this.emitter.on("price", (min, max) => {
+
+    this.emitter.on("changePrice", (min, max) => {
       this.data = this.products.filter(
         (el) => el.price >= min && el.price <= max
       );
     });
-    this.emitter.on("stock", (min, max) => {
+    this.emitter.on("changeStock", (min, max) => {
       this.data = this.products.filter(
         (el) => el.stock >= min && el.stock <= max
       );
@@ -41,8 +59,11 @@ export default {
       this.emitSearch();
     },
   },
-  computed: {},
+  computed: {
+    ...mapGetters("Products", ["getAllProducts"]),
+  },
   methods: {
+    ...mapActions("Products", ["getAllProd"]),
     emitSearch() {
       this.emitter.emit("searchText", this.searchText);
     },

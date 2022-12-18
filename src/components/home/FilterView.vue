@@ -3,15 +3,36 @@
     <div>
       <h1>I`m a filter section</h1>
       search text - {{ search }}
+
       <hr />
+      queryCat- {{ queryCat }}
       <div>
         <h2>Categories</h2>
-        categories - {{ categories }}
+        <!--        categories - {{ categories }}-->
+        <template v-for="cat in categories" :key="cat">
+          <p>
+            <label
+              ><input type="checkbox" @change="changeCat(cat)" />{{
+                cat
+              }}</label
+            >
+          </p>
+        </template>
       </div>
       <hr />
       <div>
         <h2>Brands</h2>
-        {{ brands }}
+        <!--        {{ brands }}-->
+        queryBrand - {{ queryBrand }}
+        <template v-for="brand in brands" :key="brand">
+          <p>
+            <label
+              ><input type="checkbox" @change="changeBrand(brand)" />{{
+                brand
+              }}</label
+            >
+          </p>
+        </template>
       </div>
       <hr />
       <div>
@@ -37,6 +58,8 @@ export default {
     return {
       data: this.products,
       search: "",
+      queryCat: [],
+      queryBrand: [],
     };
   },
   async beforeMount() {
@@ -46,10 +69,23 @@ export default {
     this.emitter.on("searchText", (val) => {
       this.search = val;
     });
+    if (this.query) {
+      this.queryCat = this.$route.query.category.join("|");
+      this.queryBrand = this.$route.query.brand.join("|");
+    }
   },
   watch: {
-    // data() {
-    //   return this.products.length;
+    // $route() {
+    //   if (this.$route.query.category) {
+    //     console.log("this.$route.query.category", this.$route.query.category);
+    //     if (this.$route.query.category.length > 1) {
+    //       this.queryCat = this.$route.query.category;
+    //     }
+    //   }
+    //   if (this.$route.query.brand) {
+    //     console.log("this.$route.query.brand", this.$route.query.brand);
+    //     this.queryBrand = this.$route.query.brand;
+    //   }
     // },
   },
   computed: {
@@ -108,17 +144,27 @@ export default {
   },
   methods: {
     ...mapActions("Categories", ["getAllCat"]),
-    categoriesT(val) {
-      this.emitter.emit("categories", val);
+    changeCat(val) {
+      if (!this.queryCat.includes(val)) {
+        this.queryCat.push(val);
+      } else {
+        this.queryCat.splice(this.queryCat.indexOf(val), 1);
+      }
+      this.emitter.emit("changeData", ["category", this.queryCat]);
     },
-    brandT(val) {
-      this.emitter.emit("brand", val);
+    changeBrand(val) {
+      if (!this.queryBrand.includes(val)) {
+        this.queryBrand.push(val);
+      } else {
+        this.queryBrand.splice(this.queryBrand.indexOf(val), 1);
+      }
+      this.emitter.emit("changeData", ["brand", this.queryBrand]);
     },
     priceT(min, max) {
-      this.emitter.emit("price", [min, max]);
+      this.emitter.emit("changePrice", [min, max]);
     },
     stockT(min, max) {
-      this.emitter.emit("stock", [min, max]);
+      this.emitter.emit("changeStock", [min, max]);
     },
   },
 };
