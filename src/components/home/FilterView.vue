@@ -19,9 +19,11 @@
         <template v-for="cat in categories" :key="cat">
           <p>
             <label
-              ><input type="checkbox" @change="changeCat(cat)" />{{
-                cat
-              }}</label
+              ><input
+                type="checkbox"
+                @change="changeCat(cat)"
+                :checked="isActiveCat(cat)"
+              />{{ cat }}</label
             >
           </p>
         </template>
@@ -34,9 +36,11 @@
         <template v-for="brand in brands" :key="brand">
           <p>
             <label
-              ><input type="checkbox" @change="changeBrand(brand)" />{{
-                brand
-              }}</label
+              ><input
+                type="checkbox"
+                @change="changeBrand(brand)"
+                :checked="isActiveBrand(brand)"
+              />{{ brand }}</label
             >
           </p>
         </template>
@@ -150,6 +154,16 @@ export default {
   methods: {
     ...mapActions("Categories", ["getAllCat"]),
     ...mapActions("Products", ["getAllProd"]),
+    isActiveCat(val) {
+      return this.queryCat.find((el) => {
+        return el === val;
+      });
+    },
+    isActiveBrand(val) {
+      return this.queryBrand.find((el) => {
+        return el === val;
+      });
+    },
     pushToRouter() {
       //?category=laptops&brand=apple&price=1249↕1749&stock=83↕92&search=sbsbdf&big=false
       //sort=discount-ASC sort=discount-DESC
