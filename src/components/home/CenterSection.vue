@@ -1,67 +1,60 @@
 <template>
-  <h1></h1>
-  <!--  <div class="center-section">-->
-  <!--    &lt;!&ndash;      <img alt="Vue logo" src="../assets/logo.png" />&ndash;&gt;-->
-  <!--    <h1>Here is a list of products according of filter rules</h1>-->
-  <!--    <p>-->
-  <!--      Select number of products - -->
-  <!--      <input-->
-  <!--        type="number"-->
-  <!--        min="0"-->
-  <!--        max="100"-->
-  <!--        @change="getData()"-->
-  <!--        v-model="limit"-->
-  <!--      />-->
-  <!--    </p>-->
-  <!--    {{ productsList }}-->
-  <!--  </div>-->
+  <div class="center">
+    <h1>Products list</h1>
+    <input type="text" v-model="searchText" />
+    <div class="center-section">
+      {{ products }}
+    </div>
+  </div>
 </template>
 
 <script>
-import axios from "axios";
-import { mapActions, mapGetters, mapState } from "vuex";
 export default {
+  props: ["products"],
   data() {
     return {
       loading: false,
-      productsList: [],
-      limit: 0,
-      url: `https://dummyjson.com/products?limit=`,
+      data: [],
+      searchText: null,
     };
   },
-  // watch: {
-  //   limit() {
-  //     if (this.limit > 100) this.limit = 100;
-  //   },
-  // },
-  // async mounted() {
-  //   this.loading = true;
-  //   await this.getAllCat();
-  //   this.loading = false;
-  // },
-  // computed: {
-  //   // mapState mapGetters
-  //   ...mapState("Categories", ["categories", "text"]),
-  //   ...mapGetters("Categories", ["getAllCategories"]),
-  //   text5() {
-  //     return this.$store.getters["Categories/getAllCategories"];
-  //   },
-  // },
-  // methods: {
-  //   // mutations && actions
-  //   ...mapActions("Categories", ["getAllCat"]),
-  //   getData() {
-  //     axios.get(this.url + this.limit).then((response) => {
-  //       this.productsList = response.data;
-  //     });
-  //   },
-  // },
-  // components: {},
+  mounted() {
+    this.emitter.on("categories", (val) => {
+      this.data = this.products.filter((el) => el.category === val);
+    });
+    this.emitter.on("brand", (val) => {
+      this.data = this.products.filter((el) => el.brand === val);
+    });
+    this.emitter.on("price", (min, max) => {
+      this.data = this.products.filter(
+        (el) => el.price >= min && el.price <= max
+      );
+    });
+    this.emitter.on("stock", (min, max) => {
+      this.data = this.products.filter(
+        (el) => el.stock >= min && el.stock <= max
+      );
+    });
+  },
+  watch: {
+    searchText() {
+      this.emitSearch();
+    },
+  },
+  computed: {},
+  methods: {
+    emitSearch() {
+      this.emitter.emit("searchText", this.searchText);
+    },
+  },
+  components: {},
 };
 </script>
 
 <style scoped lang="scss">
 .center-section {
   flex-basis: 80%;
+  display: flex;
+  flex-direction: column;
 }
 </style>

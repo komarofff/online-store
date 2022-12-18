@@ -1,5 +1,5 @@
 <template>
-  <strong>Items in card - {{ cartAmount }}</strong>
+  <strong>Items in cart - {{ cartAmount }}</strong>
 </template>
 
 <script>
