@@ -23,10 +23,12 @@ export interface ProdArr {
 
 const state = {
   products: [] as ProdArr[],
+  filterData: [] as ProdArr[],
   categories: [] as CatArr[],
   brands: [] as BrandArr[],
   price: [] as Price[],
   stock: [] as Stock[],
+  searchText: [] as ProdArr[],
 };
 
 export const getters: GetterTree<State, RootState> = {
@@ -45,11 +47,20 @@ export const getters: GetterTree<State, RootState> = {
   getStock(state: State) {
     return state.stock;
   },
+  getSearchText(state: State) {
+    return state.searchText;
+  },
+  getFilterData(state: State) {
+    return state.filterData;
+  },
 };
 
 export const mutations: MutationTree<State> = {
   setAllProducts(state: State, val: ProdArr[]) {
     state.products = val;
+  },
+  setSearchText(state: State, val: ProdArr[]) {
+    state.searchText = val;
   },
   setAllCategories(state: State, val: CatArr[]) {
     state.categories = val;
@@ -62,6 +73,9 @@ export const mutations: MutationTree<State> = {
   },
   setStock(state: State, val: Stock[]) {
     state.stock = val;
+  },
+  setFilter(state: State, val: ProdArr[]) {
+    state.filterData = val;
   },
 };
 
@@ -82,6 +96,24 @@ const actions: ActionTree<RootState, RootState> = {
         .then((response) => {
           commit("setAllCategories", response.data as CatArr[]);
         });
+    }
+  },
+  async getQueryText({ commit }, payload: string | number) {
+    if (state.products.length) {
+      const arr = [] as ProdArr[];
+      state.products.forEach((el) => {
+        if (
+          el.brand.includes(payload as string) ||
+          el.category.includes(payload as string) ||
+          el.title.includes(payload as string) ||
+          el.description.includes(payload as string) ||
+          el.price === Number(payload as number) ||
+          el.stock === Number(payload as number)
+        ) {
+          arr.push(el);
+        }
+      });
+      commit("setSearchText", arr);
     }
   },
   async getAllBrands({ commit }) {
@@ -109,6 +141,13 @@ const actions: ActionTree<RootState, RootState> = {
       const max: number = Math.max(...payload.map((item) => item.stock));
       const arr: Stock = [min, max];
       commit("setStock", arr);
+    }
+  },
+  async getFilterParameters({ commit }, payload) {
+    if (state.products.length) {
+      console.log("payload", payload);
+      const arr: ProdArr[] = state.products.filter((el) => el);
+      commit("setFilter", arr);
     }
   },
 };

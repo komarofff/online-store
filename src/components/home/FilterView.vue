@@ -6,6 +6,7 @@
       <!--      {{ getBrands }}-->
       {{ getPrice }}
       {{ getStock }}
+      {{ getSearchText }}
       <p>
         <button v-if="successCopyLink">Link was copied successfully</button>
         <button v-else @click="copyLink()">Copy link</button>
@@ -37,7 +38,7 @@
         <h2>Brands</h2>
         <!--        {{ brands }}-->
         queryBrand - {{ queryBrand }}
-        <template v-for="brand in brands" :key="brand">
+        <template v-for="brand in getBrands" :key="brand">
           <p>
             <label
               ><input
@@ -98,6 +99,12 @@ export default {
     await this.getAllProd();
     await this.getPriceDiff(this.getAllProducts.products);
     await this.getStockDiff(this.getAllProducts.products);
+    await this.getFilterParameters([
+      ["smartphones", "laptops"],
+      ["Apple", "Samsung"],
+      [2, 123],
+      [200, 1976],
+    ]);
     this.data = this.getAllProducts.products;
     this.priceMax = Math.max(...this.data.map((item) => item.price));
     this.priceMin = Math.min(...this.data.map((item) => item.price));
@@ -112,7 +119,8 @@ export default {
       this.stockMin = val[0];
       this.stockMax = val[1];
     });
-    this.emitter.on("searchText", (val) => {
+    this.emitter.on("searchText", async (val) => {
+      await this.getQueryText(val);
       this.search = val;
     });
     if (this.$route.query) {
@@ -150,6 +158,7 @@ export default {
       "getBrands",
       "getPrice",
       "getStock",
+      "getSearchText",
     ]),
     categories() {
       if (this.data) {
@@ -175,7 +184,12 @@ export default {
   methods: {
     ...mapActions("Categories", ["getAllCat"]),
     ...mapActions("Products", ["getAllProd"]),
-    ...mapActions("Filter", ["getPriceDiff", "getStockDiff"]),
+    ...mapActions("Filter", [
+      "getPriceDiff",
+      "getStockDiff",
+      "getFilterParameters",
+      "getQueryText",
+    ]),
     isActiveCat(val) {
       if (this.queryCat) {
         return this.queryCat.find((el) => {
