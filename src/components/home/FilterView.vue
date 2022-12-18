@@ -99,11 +99,19 @@ export default {
     await this.getAllProd();
     await this.getPriceDiff(this.getAllProducts.products);
     await this.getStockDiff(this.getAllProducts.products);
+    //?category=laptops&brand=apple&price=1249↕1749&stock=83↕92&search=sbsbdf&big=false
+    //sort=discount-ASC sort=discount-DESC
+    //sort=price-ASC sort=price-DESC
+    //sort=rating-ASC sort=rating-DESC
     await this.getFilterParameters([
-      ["smartphones", "laptops"],
-      ["Apple", "Samsung"],
-      [2, 123],
-      [200, 1976],
+      {
+        categories: ["smartphones", "laptops"],
+        brands: ["Apple", "Samsung"],
+        price: [2, 123],
+        stock: [200, 1976],
+        search: "",
+        sort: 'price-ASC'
+      },
     ]);
     this.data = this.getAllProducts.products;
     this.priceMax = Math.max(...this.data.map((item) => item.price));
