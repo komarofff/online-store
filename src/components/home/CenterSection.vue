@@ -26,14 +26,24 @@ export default {
 
     this.data = this.getAllProducts.products;
     //console.log("this.data", this.data);
-    this.emitter.on("changeData", (data) => {
-      let item = data[0];
-      let val = data[1];
-      console.log("val", val.l);
+    this.emitter.on("changeCat", (val) => {
       if (val.length) {
         this.data = this.getAllProducts.products.filter((el) => {
           for (let i = 0; i < val.length; i++) {
-            if (el[item] === val[i]) {
+            if (el.category === val[i]) {
+              return el;
+            }
+          }
+        });
+      } else {
+        this.data = this.getAllProducts.products;
+      }
+    });
+    this.emitter.on("changeBrand", (val) => {
+      if (val.length) {
+        this.data = this.getAllProducts.products.filter((el) => {
+          for (let i = 0; i < val.length; i++) {
+            if (el.brand === val[i]) {
               return el;
             }
           }
@@ -44,12 +54,12 @@ export default {
     });
 
     this.emitter.on("changePrice", (min, max) => {
-      this.data = this.products.filter(
+      this.data = this.getAllProducts.products.filter(
         (el) => el.price >= min && el.price <= max
       );
     });
     this.emitter.on("changeStock", (min, max) => {
-      this.data = this.products.filter(
+      this.data = this.getAllProducts.products.filter(
         (el) => el.stock >= min && el.stock <= max
       );
     });

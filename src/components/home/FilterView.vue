@@ -150,7 +150,7 @@ export default {
       } else {
         this.queryCat.splice(this.queryCat.indexOf(val), 1);
       }
-      this.emitter.emit("changeData", ["category", this.queryCat]);
+      this.emitter.emit("changeCat", this.queryCat);
     },
     changeBrand(val) {
       if (!this.queryBrand.includes(val)) {
@@ -158,7 +158,7 @@ export default {
       } else {
         this.queryBrand.splice(this.queryBrand.indexOf(val), 1);
       }
-      this.emitter.emit("changeData", ["brand", this.queryBrand]);
+      this.emitter.emit("changeBrand", this.queryBrand);
     },
     priceT(min, max) {
       this.emitter.emit("changePrice", [min, max]);
