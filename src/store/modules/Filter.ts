@@ -109,9 +109,9 @@ const actions: ActionTree<RootState, RootState> = {
   },
 
   async getAllBrands({ commit }) {
-    if (state.filterData.length) {
+    if (state.products.length) {
       const brand = [] as BrandArr;
-      state.filterData.forEach((el) => {
+      state.products.forEach((el) => {
         if (!brand.includes(el.brand)) {
           brand.push(el.brand);
         }
@@ -119,6 +119,7 @@ const actions: ActionTree<RootState, RootState> = {
       commit("setAllBrands", brand);
     }
   },
+
   async getPriceDiff({ commit }, payload: ProdArr[]) {
     if (payload.length) {
       const min: number = Math.min(...payload.map((item) => item.price));
@@ -137,123 +138,75 @@ const actions: ActionTree<RootState, RootState> = {
   },
   async getFilterParameters({ commit }, payload: FilterQuery) {
     if (state.products.length) {
-      console.log("payload", payload);
-      let arr: ProdArr[] = [];
-      if (payload && Object.entries(payload).length) {
-        state.products.forEach((el) => {
-          if (
-            payload.categories &&
-            !payload.brands &&
-            !payload.price &&
-            !payload.stock &&
-            !payload.search &&
-            !payload.sort
-          ) {
-            for (let i = 0; i < payload.categories.length; i++) {
-              if (el.category === payload.categories[i]) {
-                arr.push(el);
-              }
-            }
-          }
-          if (
-            payload.brands &&
-            !payload.categories &&
-            !payload.price &&
-            !payload.stock &&
-            !payload.search &&
-            !payload.sort
-          ) {
-            for (let i = 0; i < payload.brands.length; i++) {
-              if (el.brand === payload.brands[i]) {
-                if (!arr.includes(el)) {
-                  arr.push(el);
-                }
-              }
-            }
-          }
-          if (
-            payload.price &&
-            !payload.brands &&
-            !payload.categories &&
-            !payload.stock &&
-            !payload.search &&
-            !payload.sort
-          ) {
-            if (el.price >= payload.price[0] && el.price <= payload.price[1]) {
-              if (!arr.includes(el)) {
-                arr.push(el);
-              }
-            }
-          }
-          if (
-            payload.stock &&
-            !payload.price &&
-            !payload.brands &&
-            !payload.categories &&
-            !payload.search &&
-            !payload.sort
-          ) {
-            if (el.stock >= payload.stock[0] && el.stock <= payload.stock[1]) {
-              if (!arr.includes(el)) {
-                arr.push(el);
-              }
-            }
-          }
-          if (
-            payload.search &&
-            !payload.price &&
-            !payload.brands &&
-            !payload.categories &&
-            !payload.stock &&
-            !payload.sort
-          ) {
-            if (
-              el.brand.includes(payload.search as string) ||
-              el.category.includes(payload.search as string) ||
-              el.title.includes(payload.search as string) ||
-              el.description.includes(payload.search as string) ||
-              el.price.toString().indexOf(payload.search as string) > -1 ||
-              el.stock === Number(payload.search as number)
-            ) {
-              if (!arr.includes(el)) {
-                arr.push(el);
-              }
-            }
-          }
-          if (
-            payload.sort &&
-            !payload.search &&
-            !payload.price &&
-            !payload.brands &&
-            !payload.categories &&
-            !payload.stock &&
-            !payload.sort
-          ) {
-            const items: string[] = payload.sort.split("-");
-            //sort=price-ASC sort=price-DESC
-            if (items[0] === "price" && items[1] === "ASC") {
-              arr.sort((a, b) => a.price - b.price);
-            } else if (items[0] === "price" && items[1] === "DESC") {
-              arr.sort((a, b) => b.price - a.price);
-            }
-            //sort=discount-ASC sort=discount-DESC
-            if (items[0] === "discount" && items[1] === "ASC") {
-              arr.sort((a, b) => a.discountPercentage - b.discountPercentage);
-            } else if (items[0] === "discount" && items[1] === "DESC") {
-              arr.sort((a, b) => b.discountPercentage - a.discountPercentage);
-            }
+      //console.log("payload", payload);
+      let arr: ProdArr[] = state.products;
 
-            //sort=rating-ASC sort=rating-DESC
-            if (items[0] === "rating" && items[1] === "ASC") {
-              arr.sort((a, b) => a.rating - b.rating);
-            } else if (items[0] === "rating" && items[1] === "DESC") {
-              arr.sort((a, b) => b.rating - a.rating);
-            }
+      if (payload.categories.length) {
+        arr = arr.filter((el) => {
+          if (payload.categories.includes(el.category)) {
+            return el;
           }
         });
-      } else {
-        arr = state.products.filter((el) => el);
       }
+      if (payload.brands.length) {
+        arr = arr.filter((el) => {
+          if (payload.brands.includes(el.brand)) {
+            return el;
+          }
+        });
+      }
+      if (payload.price.length) {
+        arr = arr.filter((el) => {
+          if (el.price >= payload.price[0] && el.price <= payload.price[1]) {
+            return el;
+          }
+        });
+      }
+
+      if (payload.stock.length) {
+        arr = arr.filter((el) => {
+          if (el.stock >= payload.stock[0] && el.stock <= payload.stock[1]) {
+            return el;
+          }
+        });
+      }
+      if (payload.search) {
+        arr = arr.filter((el) => {
+          if (
+            el.brand.includes(payload.search as string) ||
+            el.category.includes(payload.search as string) ||
+            el.title.includes(payload.search as string) ||
+            el.description.includes(payload.search as string) ||
+            el.price.toString().indexOf(payload.search as string) > -1 ||
+            el.stock.toString().indexOf(payload.search as string) > -1
+          ) {
+            return el;
+          }
+        });
+      }
+      if (payload.sort.length) {
+        const items: string[] = payload.sort.split("-");
+        //sort=price-ASC sort=price-DESC
+        if (items[0] === "price" && items[1] === "ASC") {
+          arr.sort((a, b) => a.price - b.price);
+        } else if (items[0] === "price" && items[1] === "DESC") {
+          arr.sort((a, b) => b.price - a.price);
+        }
+        //sort=discount-ASC sort=discount-DESC
+        if (items[0] === "discount" && items[1] === "ASC") {
+          arr.sort((a, b) => a.discountPercentage - b.discountPercentage);
+        } else if (items[0] === "discount" && items[1] === "DESC") {
+          arr.sort((a, b) => b.discountPercentage - a.discountPercentage);
+        }
+
+        //sort=rating-ASC sort=rating-DESC
+        if (items[0] === "rating" && items[1] === "ASC") {
+          arr.sort((a, b) => a.rating - b.rating);
+        } else if (items[0] === "rating" && items[1] === "DESC") {
+          arr.sort((a, b) => b.rating - a.rating);
+        }
+      }
+
       commit("setFilter", arr);
     }
   },

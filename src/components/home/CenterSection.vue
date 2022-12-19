@@ -50,6 +50,14 @@ export default {
       data: [],
       isLoader: false,
       searchText: null,
+      firstQuery: {
+        categories: [],
+        brands: [],
+        price: [],
+        stock: [],
+        search: "",
+        sort: "",
+      },
     };
   },
   async mounted() {
@@ -57,7 +65,8 @@ export default {
     this.isLoader = true;
     // делаем запрос без параметров и получаем все продукты
     await this.getAllProd();
-    await this.getFilterParameters();
+    await this.getQuery(this.firstQuery);
+    await this.getFilterParameters(this.firstQuery);
     // если надо отправляем указанный параметр в фильтр изначально. например формируем фильтр из адресной строки
     //  и потом вывываем данные из фильтра НО уже с ПАРАМЕТРАМИ
     //await this.getQuery(this.getQueryForFilters);

@@ -73,6 +73,14 @@ export default {
   //props: ["products"],
   data() {
     return {
+      firstQuery: {
+        categories: [],
+        brands: [],
+        price: [],
+        stock: [],
+        search: "",
+        sort: "",
+      },
       url: window.location.href,
       successCopyLink: false,
       big: true,
@@ -86,7 +94,11 @@ export default {
     this.isLoader = true;
     // делаем запрос без параметров и получаем все продукты
     await this.getAllProd();
-    await this.getFilterParameters();
+    await this.getAllBrands();
+    await this.getAllCat();
+    // await this.getQuery(this.firstQuery);
+    await this.getQuery(this.firstQuery);
+    await this.getFilterParameters(this.firstQuery);
     // если надо отправляем указанный параметр в фильтр изначально. например формируем фильтр из адресной строки
     //  и потом вывываем данные из фильтра НО уже с ПАРАМЕТРАМИ
     //await this.getQuery(this.getQueryForFilters);
@@ -133,6 +145,8 @@ export default {
   },
   methods: {
     ...mapActions("Filter", [
+      "getAllBrands",
+      "getAllCat",
       "getAllProd",
       "getQuery",
       "getPriceDiff",
@@ -220,9 +234,9 @@ export default {
           );
         }
       }
-      if (!this.getQueryForFilters.categories.length) {
-        delete this.getQueryForFilters.categories;
-      }
+      // if (!this.getQueryForFilters.categories.length) {
+      //   delete this.getQueryForFilters.categories;
+      // }
 
       await this.getQuery(this.getQueryForFilters);
       await this.getFilterParameters(this.getQueryForFilters);
@@ -240,9 +254,9 @@ export default {
           );
         }
       }
-      if (!this.getQueryForFilters.brands.length) {
-        delete this.getQueryForFilters.brands;
-      }
+      // if (!this.getQueryForFilters.brands.length) {
+      //   delete this.getQueryForFilters.brands;
+      // }
       await this.getQuery(this.getQueryForFilters);
       await this.getFilterParameters(this.getQueryForFilters);
     },
