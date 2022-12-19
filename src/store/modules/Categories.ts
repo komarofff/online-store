@@ -53,8 +53,6 @@ const actions: ActionTree<RootState, RootState> = {
         .then((response) => {
           commit("setAllCat", response.data as CatArr[]);
         });
-    } else {
-      console.log("data is here");
     }
   },
   async getSingleCat({ commit }, payload: string) {

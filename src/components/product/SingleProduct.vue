@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters, mapState } from "vuex";
 
 export default {
   props: ["id"],
@@ -62,7 +62,8 @@ export default {
   },
   watch: {},
   computed: {
-    ...mapGetters("Products", ["getSingleProduct"]),
+    ...mapState("Products", ["products"]),
+    ...mapGetters("Products", ["getSingleProduct", "getProdThroughId"]),
   },
   methods: {
     ...mapActions("Products", ["getSingleProd"]),

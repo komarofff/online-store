@@ -6,10 +6,17 @@
 </template>
 
 <script>
-import FilterView from "@/components/FilterView";
+import FilterView from "@/components/home/FilterView";
 import CenterSection from "@/components/home/CenterSection";
 
 export default {
+  data() {
+    return {
+      isLoader: false,
+    };
+  },
+  computed: {},
+  methods: {},
   components: { FilterView, CenterSection },
 };
 </script>

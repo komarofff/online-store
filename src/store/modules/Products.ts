@@ -1,6 +1,7 @@
 import { RootState } from "@/store";
-import { ActionTree, MutationTree, GetterTree } from "vuex";
+import { ActionTree, GetterTree, MutationTree } from "vuex";
 import axios from "axios";
+
 export interface ProdArr {
   id: number;
   title: string;
@@ -17,7 +18,7 @@ export interface ProdArr {
 
 const state = {
   products: [] as ProdArr[],
-  singleProduct: {} as ProdArr[],
+  singleProduct: {} as ProdArr,
 };
 
 export const getters: GetterTree<State, RootState> = {
@@ -27,31 +28,44 @@ export const getters: GetterTree<State, RootState> = {
   getSingleProduct(state: State) {
     return state.singleProduct;
   },
+  getProdThroughId(state: State, id: number) {
+    return state.products[id];
+  },
 };
 
 export const mutations: MutationTree<State> = {
   getAll(state: State, val: ProdArr[]) {
     state.products = val;
   },
-  getSingle(state: State, val: ProdArr[]) {
+  getSingle(state: State, val: ProdArr) {
     state.singleProduct = val;
+  },
+  getSingleId(state: State, val: number) {
+    state.singleProduct = state.products[val];
+    console.log("getSingleId", state.singleProduct);
   },
 };
 
 const actions: ActionTree<RootState, RootState> = {
   async getAllProd({ commit }) {
-    return await axios
-      .get("https://dummyjson.com/products?limit=100")
-      .then((response) => {
-        commit("getAll", response.data as ProdArr[]);
-      });
+    if (!state.products.length) {
+      return await axios
+        .get("https://dummyjson.com/products?limit=100")
+        .then((response) => {
+          commit("getAll", response.data as ProdArr[]);
+        });
+    }
   },
   async getSingleProd({ commit }, payload: number) {
-    return await axios
-      .get(`https://dummyjson.com/products/${payload}`)
-      .then((response) => {
-        commit("getSingle", response.data as ProdArr[]);
-      });
+    if (!state.products.length) {
+      return await axios
+        .get(`https://dummyjson.com/products/${payload}`)
+        .then((response) => {
+          commit("getSingle", response.data as ProdArr[]);
+        });
+    } else {
+      commit("getSingleId", payload);
+    }
   },
 };
 
