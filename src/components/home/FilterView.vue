@@ -89,8 +89,8 @@ export default {
     await this.getFilterParameters();
     // если надо отправляем указанный параметр в фильтр изначально. например формируем фильтр из адресной строки
     //  и потом вывываем данные из фильтра НО уже с ПАРАМЕТРАМИ
-    //await this.getQuery(this.queryForFilter);
-    //await this.getFilterParameters();
+    //await this.getQuery(this.getQueryForFilters);
+    //await this.getFilterParameters(this.getQueryForFilters);
 
     // price and stock
     await this.getPriceDiff(this.getFilterData);
@@ -207,27 +207,48 @@ export default {
     // changePriceMin() {},
     // changeStockMax() {},
     // changeStockMin() {},
-    changeCat(val) {
-      if (!this.getQueryForFilters.categories.includes(val)) {
-        this.getQueryForFilters.categories.push(val);
+    async changeCat(val) {
+      if (!this.getQueryForFilters.categories) {
+        this.getQueryForFilters.categories = [val];
       } else {
-        this.getQueryForFilters.categories.splice(
-          this.getQueryForFilters.categories.indexOf(val),
-          1
-        );
+        if (!this.getQueryForFilters.categories.includes(val)) {
+          this.getQueryForFilters.categories.push(val);
+        } else {
+          this.getQueryForFilters.categories.splice(
+            this.getQueryForFilters.categories.indexOf(val),
+            1
+          );
+        }
       }
-      this.getFilterParameters(this.getQueryForFilters);
+      if (!this.getQueryForFilters.categories.length) {
+        delete this.getQueryForFilters.categories;
+      }
+
+      await this.getQuery(this.getQueryForFilters);
+      await this.getFilterParameters(this.getQueryForFilters);
     },
-    changeBrand(val) {
-      if (!this.getQueryForFilters.brands.includes(val)) {
-        this.getQueryForFilters.brands.push(val);
+    async changeBrand(val) {
+      if (!this.getQueryForFilters.brands) {
+        this.getQueryForFilters.brands = [val];
       } else {
-        this.getQueryForFilters.brands.splice(
-          this.getQueryForFilters.brands.indexOf(val),
-          1
-        );
+        if (!this.getQueryForFilters.brands.includes(val)) {
+          this.getQueryForFilters.brands.push(val);
+        } else {
+          this.getQueryForFilters.brands.splice(
+            this.getQueryForFilters.brands.indexOf(val),
+            1
+          );
+        }
       }
-      this.getFilterParameters(this.getQueryForFilters);
+      if (!this.getQueryForFilters.brands.length) {
+        delete this.getQueryForFilters.brands;
+      }
+      await this.getQuery(this.getQueryForFilters);
+      await this.getFilterParameters(this.getQueryForFilters);
+    },
+    async changePriceMin() {
+      await this.getQuery(this.getQueryForFilters);
+      await this.getFilterParameters(this.getQueryForFilters);
     },
   },
 };

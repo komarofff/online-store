@@ -17,6 +17,8 @@
           <hr />
           <p>price- {{ product.price }}</p>
           <hr />
+          <p>discountPercentage- {{ product.discountPercentage }}</p>
+          <hr />
           <p>rating- {{ product.rating }}</p>
           <hr />
           <p>stock- {{ product.stock }}</p>
@@ -58,7 +60,7 @@ export default {
     await this.getFilterParameters();
     // если надо отправляем указанный параметр в фильтр изначально. например формируем фильтр из адресной строки
     //  и потом вывываем данные из фильтра НО уже с ПАРАМЕТРАМИ
-    //await this.getQuery(this.queryForFilter);
+    //await this.getQuery(this.getQueryForFilters);
     //await this.getFilterParameters();
     this.data = this.getFilterData;
     this.isLoader = false;
