@@ -164,6 +164,7 @@ const actions: ActionTree<RootState, RootState> = {
       }
 
       if (payload.stock.length) {
+        console.log("payload.stock", payload.stock);
         arr = arr.filter((el) => {
           if (el.stock >= payload.stock[0] && el.stock <= payload.stock[1]) {
             return el;
