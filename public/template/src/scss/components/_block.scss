@@ -1,0 +1,11 @@
+.vertical-scroll::-webkit-scrollbar {
+   width: 5px;
+   background: $color-blue-light;
+   border-radius: 5px;
+}
+
+.vertical-scroll::-webkit-scrollbar-thumb {
+   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.2);
+   background: $color-blue;
+   border-radius: 5px;
+}
