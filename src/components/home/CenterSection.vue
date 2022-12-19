@@ -3,8 +3,38 @@
     <h1>Products list</h1>
     <img v-if="isLoader" src="../../assets/loader.gif" alt="loader" />
     <input type="text" v-model="searchText" />
+    {{ getQueryForFilters }}
     <div class="center-section">
-      {{ data }}
+      <!--      {{ getFilterData }}-->
+
+      <template v-for="product in data" :key="product.id">
+        <div class="product__card">
+          <p>id- {{ product.id }}</p>
+          <hr />
+          <p>title- {{ product.title }}</p>
+          <hr />
+          <p>description- {{ product.description }}</p>
+          <hr />
+          <p>price- {{ product.price }}</p>
+          <hr />
+          <p>rating- {{ product.rating }}</p>
+          <hr />
+          <p>stock- {{ product.stock }}</p>
+          <hr />
+          <p>brand- {{ product.brand }}</p>
+          <hr />
+          <p>category- {{ product.category }}</p>
+          <hr />
+          <p>
+            thumbnail -
+            <img
+              class="thumbnail"
+              :src="product.thumbnail"
+              :alt="product.title"
+            />
+          </p>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -15,203 +45,48 @@ import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
+      data: [],
       isLoader: false,
       searchText: null,
-      fullData: [],
-      data: [],
-      isHaveChangesForCategories: false,
-      dataForCategoriesFilter: null,
-      isHaveChangesForBrands: false,
-      dataForBrandsFilter: null,
-      isHaveChangesForPrice: false,
-      dataForPriceFilter: [],
-      isHaveChangesStock: false,
-      dataForStockFilter: [],
     };
   },
   async mounted() {
+    // all products
     this.isLoader = true;
+    // делаем запрос без параметров и получаем все продукты
     await this.getAllProd();
+    await this.getFilterParameters();
+    // если надо отправляем указанный параметр в фильтр изначально. например формируем фильтр из адресной строки
+    //  и потом вывываем данные из фильтра НО уже с ПАРАМЕТРАМИ
+    //await this.getQuery(this.queryForFilter);
+    //await this.getFilterParameters();
+    this.data = this.getFilterData;
     this.isLoader = false;
-
-    this.fullData = this.getAllProducts.products;
-    this.data = this.fullData;
-    this.dataForPriceFilter[0] = this.getMinPrice(this.data);
-    this.dataForPriceFilter[1] = this.getMaxPrice(this.data);
-    this.dataForStockFilter[0] = this.getMinStock(this.data);
-    this.dataForStockFilter[1] = this.getMaxStock(this.data);
-
-    this.emitter.on("changeCat", (val) => {
-      console.log("change category");
-      if (val.length) {
-        this.isHaveChangesForCategories = true;
-        this.dataForCategoriesFilter = val;
-        this.getFiltersData();
-      } else {
-        this.isHaveChangesForCategories = false;
-        this.getFiltersData();
-        //this.data = this.fullData;
-      }
-    });
-    this.emitter.on("changeBrand", (val) => {
-      console.log("change brand");
-      if (val.length) {
-        this.isHaveChangesForBrands = true;
-        this.dataForBrandsFilter = val;
-        this.getFiltersData();
-      } else {
-        this.isHaveChangesForBrands = false;
-        //this.data = this.fullData;
-        this.getFiltersData();
-      }
-    });
-
-    this.emitter.on("changePrice", (min, max) => {
-      console.log("changePrice");
-      if (
-        min !== this.dataForPriceFilter[0][0] ||
-        max !== this.dataForPriceFilter[0][1]
-      ) {
-        this.isHaveChangesForPrice = true;
-        this.dataForPriceFilter[0] = min;
-        this.dataForPriceFilter[1] = max;
-        this.getFiltersData();
-      } else {
-        this.isHaveChangesForPrice = false;
-        this.getFiltersData();
-      }
-      // this.data = this.fullData.filter(
-      //   (el) => el.price >= min && el.price <= max
-      // );
-    });
-    this.emitter.on("changeStock", (min, max) => {
-      console.log("changeStock");
-      if (
-        min !== this.dataForStockFilter[0][0] ||
-        max !== this.dataForStockFilter[0][1]
-      ) {
-        this.isHaveChangesStock = true;
-        this.dataForStockFilter[0] = min;
-        this.dataForStockFilter[1] = max;
-        this.getFiltersData();
-      } else {
-        this.isHaveChangesStock = false;
-        this.getFiltersData();
-      }
-      // this.data = this.fullData.filter(
-      //   (el) => el.stock >= min && el.stock <= max
-      // );
-    });
   },
   watch: {
     searchText() {
-      this.emitSearch();
+      //getQueryForFilters параметры фильтра сохраненные в сторе
+      this.changesToFilter();
+    },
+    getFilterData() {
+      this.data = this.getFilterData;
     },
   },
   computed: {
-    ...mapGetters("Products", ["getAllProducts"]),
+    ...mapGetters("Filter", ["getFilterData", "getQueryForFilters"]),
   },
   methods: {
-    ...mapActions("Products", ["getAllProd"]),
-    emitSearch() {
-      this.emitter.emit("searchText", this.searchText);
-    },
-    startEmitPriceStock(arr) {
-      let maxPrice = this.getMaxPrice(arr);
-      let minPrice = this.getMinPrice(arr);
-      let maxStock = this.getMaxStock(arr);
-      let minStock = this.getMinStock(arr);
-      this.dataForPriceFilter[0] = minPrice;
-      this.dataForPriceFilter[1] = maxPrice;
-      this.dataForStockFilter[0] = minStock;
-      this.dataForStockFilter[1] = maxStock;
-      this.emitter.emit("newMinMaxPrice", [minPrice, maxPrice]);
-      this.emitter.emit("newMinMaxStock", [minStock, maxStock]);
-    },
-    getMaxPrice(data) {
-      if (data.length) {
-        return Math.max(...data.map((item) => item.price));
+    ...mapActions("Filter", ["getAllProd", "getQuery", "getFilterParameters"]),
+    async changesToFilter() {
+      if (this.searchText.length > 0) {
+        this.getQueryForFilters.search = this.searchText;
       } else {
-        return 0;
+        delete this.getQueryForFilters.search;
       }
-    },
-    getMinPrice(data) {
-      if (data.length) {
-        return Math.min(...data.map((item) => item.price));
-      } else {
-        return 0;
-      }
-    },
-    getMaxStock(data) {
-      if (data.length) {
-        return Math.max(...data.map((item) => item.stock));
-      } else {
-        return 0;
-      }
-    },
-    getMinStock(data) {
-      if (data.length) {
-        return Math.min(...data.map((item) => item.stock));
-      } else {
-        return 0;
-      }
-    },
-    getFiltersData() {
-      //здесь объединяем все фильтры в зависимости от того что какой фильтр включён
-      if (!this.isHaveChangesForBrands && !this.isHaveChangesForCategories) {
-        console.log("1-", this.dataForPriceFilter[0]);
-        console.log("2-", this.dataForStockFilter[0]);
-        // this.data = this.fullData.filter(
-        //   (el) =>
-        //     el.price >= this.dataForPriceFilter[0][0] &&
-        //     el.price <= this.dataForPriceFilter[0][1]
-        // );
-        this.data = this.fullData;
-      }
-      if (!this.isHaveChangesForBrands && this.isHaveChangesForCategories) {
-        this.data = this.fullData.filter((el) => {
-          for (let i = 0; i < this.dataForCategoriesFilter.length; i++) {
-            if (
-              el.category.toUpperCase() ===
-              this.dataForCategoriesFilter[i].toUpperCase()
-            ) {
-              return el;
-            }
-          }
-        });
-        this.startEmitPriceStock(this.data);
-      }
-      if (this.isHaveChangesForBrands && !this.isHaveChangesForCategories) {
-        this.data = this.fullData.filter((el) => {
-          for (let i = 0; i < this.dataForBrandsFilter.length; i++) {
-            if (
-              el.brand.toUpperCase() ===
-              this.dataForBrandsFilter[i].toUpperCase()
-            ) {
-              return el;
-            }
-          }
-        });
-        this.startEmitPriceStock(this.data);
-      }
-
-      if (this.isHaveChangesForBrands && this.isHaveChangesForCategories) {
-        this.data = this.fullData.filter((el) => {
-          for (let i = 0; i < this.dataForCategoriesFilter.length; i++) {
-            for (let q = 0; q < this.dataForBrandsFilter.length; q++) {
-              if (
-                el.category.toUpperCase() ===
-                  this.dataForCategoriesFilter[i].toUpperCase() &&
-                el.brand.toUpperCase() ===
-                  this.dataForBrandsFilter[q].toUpperCase()
-              ) {
-                return el;
-              }
-            }
-          }
-        });
-        this.startEmitPriceStock(this.data);
-      }
+      // изменения отправляем в стор для других компонентов
+      await this.getQuery(this.getQueryForFilters);
+      await this.getFilterParameters(this.getQueryForFilters);
+      this.data = this.getFilterData;
     },
   },
   components: {},
@@ -222,6 +97,16 @@ export default {
 .center-section {
   flex-basis: 80%;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+}
+.product__card {
+  max-width: 200px;
+  border: 1px solid red;
+  margin: 10px;
+}
+.thumbnail {
+  max-width: 200px;
 }
 </style>

@@ -6,7 +6,6 @@
       <!--      {{ getBrands }}-->
       {{ getPrice }}
       {{ getStock }}
-      {{ getSearchText }}
       <p>
         <button v-if="successCopyLink">Link was copied successfully</button>
         <button v-else @click="copyLink()">Copy link</button>
@@ -14,14 +13,12 @@
       <p>
         <button @click="clearFilters()">Clear filters</button>
       </p>
-      search text - {{ search }}
 
       <hr />
-      queryCat- {{ queryCat }}
       <div>
         <h2>Categories</h2>
         <!--        categories - {{ categories }}-->
-        <template v-for="cat in categories" :key="cat">
+        <template v-for="cat in getCategories" :key="cat">
           <p>
             <label
               ><input
@@ -36,8 +33,6 @@
       <hr />
       <div>
         <h2>Brands</h2>
-        <!--        {{ brands }}-->
-        queryBrand - {{ queryBrand }}
         <template v-for="brand in getBrands" :key="brand">
           <p>
             <label
@@ -78,13 +73,6 @@ export default {
   //props: ["products"],
   data() {
     return {
-      data: [],
-      search: "",
-      queryCat: [],
-      queryBrand: [],
-      queryPrice: [],
-      queryStock: [],
-      querySearch: this.search,
       url: window.location.href,
       successCopyLink: false,
       big: true,
@@ -95,119 +83,72 @@ export default {
     };
   },
   async mounted() {
-    await this.getAllCat();
+    this.isLoader = true;
+    // делаем запрос без параметров и получаем все продукты
     await this.getAllProd();
-    await this.getPriceDiff(this.getAllProducts.products);
-    await this.getStockDiff(this.getAllProducts.products);
+    await this.getFilterParameters();
+    // если надо отправляем указанный параметр в фильтр изначально. например формируем фильтр из адресной строки
+    //  и потом вывываем данные из фильтра НО уже с ПАРАМЕТРАМИ
+    //await this.getQuery(this.queryForFilter);
+    //await this.getFilterParameters();
+
+    // price and stock
+    await this.getPriceDiff(this.getFilterData);
+    await this.getStockDiff(this.getFilterData);
+    this.priceMax = this.getPrice[1];
+    this.priceMin = this.getPrice[0];
+    this.stockMin = this.getStock[0];
+    this.stockMax = this.getStock[1];
+    // search query
+    // filter query with parameters
     //?category=laptops&brand=apple&price=1249↕1749&stock=83↕92&search=sbsbdf&big=false
     //sort=discount-ASC sort=discount-DESC
     //sort=price-ASC sort=price-DESC
     //sort=rating-ASC sort=rating-DESC
-    await this.getFilterParameters([
-      {
-        categories: ["smartphones", "laptops"],
-        brands: ["Apple", "Samsung"],
-        price: [2, 123],
-        stock: [200, 1976],
-        search: "",
-        sort: "price-ASC",
-      },
-    ]);
-    this.data = this.getAllProducts.products;
-    this.priceMax = Math.max(...this.data.map((item) => item.price));
-    this.priceMin = Math.min(...this.data.map((item) => item.price));
-    this.stockMin = Math.min(...this.data.map((item) => item.stock));
-    this.stockMax = Math.min(...this.data.map((item) => item.stock));
-
-    this.emitter.on("newMinMaxPrice", (val) => {
-      this.priceMin = val[0];
-      this.priceMax = val[1];
-    });
-    this.emitter.on("newMinMaxStock", (val) => {
-      this.stockMin = val[0];
-      this.stockMax = val[1];
-    });
-    this.emitter.on("searchText", async (val) => {
-      await this.getQueryText(val);
-      this.search = val;
-    });
-    if (this.$route.query) {
-      this.queryCat = this.$route.query.category
-        ? this.$route.query.category.split("↕")
-        : [];
-      this.queryBrand = this.$route.query.brand
-        ? this.$route.query.brand.split("↕")
-        : [];
-      this.queryPrice = this.$route.query.price
-        ? this.$route.query.price.split("↕")
-        : [];
-      this.queryStock = this.$route.query.stock
-        ? this.$route.query.stock.split("↕")
-        : [];
-    }
+    // await this.getFilterParameters([
+    //   {
+    //     categories: ["smartphones", "laptops"],
+    //     brands: ["Apple", "Samsung"],
+    //     price: [2, 123],
+    //     stock: [200, 1976],
+    //     search: "",
+    //     sort: "price-ASC",
+    //   },
+    // ]);
   },
   watch: {
     $route() {
       //  console.log("route", this.$route);
     },
-    url() {
-      return window.location.href;
-    },
-    search() {
-      this.pushToRouter();
-    },
   },
   computed: {
-    ...mapGetters("Categories", ["getAllCategories"]),
-    ...mapGetters("Products", ["getAllProducts"]),
     ...mapGetters("Filter", [
-      "getProducts",
       "getCategories",
       "getBrands",
       "getPrice",
       "getStock",
-      "getSearchText",
+      "getFilterData",
+      "getQueryForFilters",
     ]),
-    categories() {
-      if (this.data) {
-        return this.getAllCategories;
-      } else {
-        return "";
-      }
-    },
-    brands() {
-      if (this.data) {
-        let brand = [];
-        this.data.forEach((el) => {
-          if (!brand.includes(el.brand)) {
-            brand.push(el.brand);
-          }
-        });
-        return brand;
-      } else {
-        return "";
-      }
-    },
   },
   methods: {
-    ...mapActions("Categories", ["getAllCat"]),
-    ...mapActions("Products", ["getAllProd"]),
     ...mapActions("Filter", [
+      "getAllProd",
+      "getQuery",
       "getPriceDiff",
       "getStockDiff",
       "getFilterParameters",
-      "getQueryText",
     ]),
     isActiveCat(val) {
-      if (this.queryCat) {
-        return this.queryCat.find((el) => {
+      if (this.getQueryForFilters.categories) {
+        return this.getQueryForFilters.categories.find((el) => {
           return el === val;
         });
       }
     },
     isActiveBrand(val) {
-      if (this.queryBrand) {
-        return this.queryBrand.find((el) => {
+      if (this.getQueryForFilters.brands) {
+        return this.getQueryForFilters.brands.find((el) => {
           return el === val;
         });
       }
@@ -217,21 +158,18 @@ export default {
       //sort=discount-ASC sort=discount-DESC
       //sort=price-ASC sort=price-DESC
       //sort=rating-ASC sort=rating-DESC
-      this.$router.push({
-        query: {
-          category: this.queryCat.join("↕"),
-          brand: this.queryBrand.join("↕"),
-          price: this.queryPrice.join("↕"),
-          stock: this.queryStock.join("↕"),
-          search: this.search,
-          big: false,
-        },
-      });
+      // this.$router.push({
+      //   query: {
+      //     category: this.queryCat.join("↕"),
+      //     brand: this.queryBrand.join("↕"),
+      //     price: this.queryPrice.join("↕"),
+      //     stock: this.queryStock.join("↕"),
+      //     search: this.search,
+      //     big: false,
+      //   },
+      // });
     },
     copyLink() {
-      //copy router
-      //console.log(linkToBuffer.href)
-      //add link to buffer
       navigator.clipboard.writeText(window.location.href).then(() => {
         //success
         this.successCopyLink = true;
@@ -242,94 +180,54 @@ export default {
     },
     clearFilters() {
       // clear all filters
-      this.data = this.getAllProducts.products;
-      this.priceMax = Math.max(...this.data.map((item) => item.price));
-      this.priceMin = Math.min(...this.data.map((item) => item.price));
-      this.stockMin = Math.min(...this.data.map((item) => item.stock));
-      this.stockMax = Math.min(...this.data.map((item) => item.stock));
-      this.search = "";
-      this.queryCat = [];
-      this.queryBrand = [];
-      this.queryPrice = [];
-      this.queryStock = [];
-      this.querySearch = this.search;
-      this.emitter.emit("changeCat", this.queryCat);
-      this.emitter.emit("changeBrand", this.queryBrand);
-      this.emitter.emit("changePrice", [this.priceMin, this.priceMax]);
-      this.emitter.emit("changeStock", [this.stockMin, this.stockMax]);
-      this.emitter.emit("changeCat", this.queryCat);
-      this.emitter.emit("changeBrand", this.queryBrand);
-      this.$router.push({
-        query: {},
-      });
+      // this.data = this.getAllProducts.products;
+      // this.priceMax = Math.max(...this.data.map((item) => item.price));
+      // this.priceMin = Math.min(...this.data.map((item) => item.price));
+      // this.stockMin = Math.min(...this.data.map((item) => item.stock));
+      // this.stockMax = Math.min(...this.data.map((item) => item.stock));
+      // this.search = "";
+      // this.queryCat = [];
+      // this.queryBrand = [];
+      // this.queryPrice = [];
+      // this.queryStock = [];
+      // this.querySearch = this.search;
+      // this.emitter.emit("changeCat", this.queryCat);
+      // this.emitter.emit("changeBrand", this.queryBrand);
+      // this.emitter.emit("changePrice", [this.priceMin, this.priceMax]);
+      // this.emitter.emit("changeStock", [this.stockMin, this.stockMax]);
+      // this.emitter.emit("changeCat", this.queryCat);
+      // this.emitter.emit("changeBrand", this.queryBrand);
+      // this.$router.push({
+      //   query: {},
+      // });
       console.log("clear all filters");
     },
-    changeCards() {
-      //big false or true change size of cards
-      this.pushToRouter();
-    },
-    sortPriceAsc() {
-      // code
-      this.pushToRouter();
-    },
-    sortPriceDESC() {
-      // code
-      this.pushToRouter();
-    },
-    sortRatingAsc() {
-      // code
-      this.pushToRouter();
-    },
-    sortRatingDESC() {
-      // code
-      this.pushToRouter();
-    },
-    sortDiscountAsc() {
-      // code
-      this.pushToRouter();
-    },
-    sortDiscountDESC() {
-      // code
-      this.pushToRouter();
-    },
-    changePriceMax() {
-      this.queryPrice = [this.priceMin, this.priceMax];
-      this.emitter.emit("changePrice", [this.priceMin, this.priceMax]);
-      this.pushToRouter();
-    },
-    changePriceMin() {
-      this.queryPrice = [this.priceMin, this.priceMax];
-      this.emitter.emit("changePrice", [this.priceMin, this.priceMax]);
-      this.pushToRouter();
-    },
-    changeStockMax() {
-      this.queryStock = [this.stockMin, this.stockMax];
-      this.emitter.emit("changeStock", [this.stockMin, this.stockMax]);
-      this.pushToRouter();
-    },
-    changeStockMin() {
-      this.queryStock = [this.stockMin, this.stockMax];
-      this.emitter.emit("changeStock", [this.stockMin, this.stockMax]);
-      this.pushToRouter();
-    },
+    //
+    // changePriceMax() {},
+    // changePriceMin() {},
+    // changeStockMax() {},
+    // changeStockMin() {},
     changeCat(val) {
-      if (!this.queryCat.includes(val)) {
-        this.queryCat.push(val);
+      if (!this.getQueryForFilters.categories.includes(val)) {
+        this.getQueryForFilters.categories.push(val);
       } else {
-        this.queryCat.splice(this.queryCat.indexOf(val), 1);
+        this.getQueryForFilters.categories.splice(
+          this.getQueryForFilters.categories.indexOf(val),
+          1
+        );
       }
-
-      this.emitter.emit("changeCat", this.queryCat);
-      this.pushToRouter();
+      this.getFilterParameters(this.getQueryForFilters);
     },
     changeBrand(val) {
-      if (!this.queryBrand.includes(val)) {
-        this.queryBrand.push(val);
+      if (!this.getQueryForFilters.brands.includes(val)) {
+        this.getQueryForFilters.brands.push(val);
       } else {
-        this.queryBrand.splice(this.queryBrand.indexOf(val), 1);
+        this.getQueryForFilters.brands.splice(
+          this.getQueryForFilters.brands.indexOf(val),
+          1
+        );
       }
-      this.emitter.emit("changeBrand", this.queryBrand);
-      this.pushToRouter();
+      this.getFilterParameters(this.getQueryForFilters);
     },
   },
 };

@@ -2,6 +2,11 @@
   <aside class="filter">
     <div>
       <h1>I`m a filter section</h1>
+      <!--      {{ getCategories }}-->
+      <!--      {{ getBrands }}-->
+      {{ getPrice }}
+      {{ getStock }}
+      {{ getSearchText }}
       <p>
         <button v-if="successCopyLink">Link was copied successfully</button>
         <button v-else @click="copyLink()">Copy link</button>
@@ -33,7 +38,7 @@
         <h2>Brands</h2>
         <!--        {{ brands }}-->
         queryBrand - {{ queryBrand }}
-        <template v-for="brand in brands" :key="brand">
+        <template v-for="brand in getBrands" :key="brand">
           <p>
             <label
               ><input
@@ -92,6 +97,22 @@ export default {
   async mounted() {
     await this.getAllCat();
     await this.getAllProd();
+    await this.getPriceDiff(this.getAllProducts.products);
+    await this.getStockDiff(this.getAllProducts.products);
+    //?category=laptops&brand=apple&price=1249↕1749&stock=83↕92&search=sbsbdf&big=false
+    //sort=discount-ASC sort=discount-DESC
+    //sort=price-ASC sort=price-DESC
+    //sort=rating-ASC sort=rating-DESC
+    await this.getFilterParameters([
+      {
+        categories: ["smartphones", "laptops"],
+        brands: ["Apple", "Samsung"],
+        price: [2, 123],
+        stock: [200, 1976],
+        search: "",
+        sort: "price-ASC",
+      },
+    ]);
     this.data = this.getAllProducts.products;
     this.priceMax = Math.max(...this.data.map((item) => item.price));
     this.priceMin = Math.min(...this.data.map((item) => item.price));
@@ -106,7 +127,8 @@ export default {
       this.stockMin = val[0];
       this.stockMax = val[1];
     });
-    this.emitter.on("searchText", (val) => {
+    this.emitter.on("searchText", async (val) => {
+      await this.getQueryText(val);
       this.search = val;
     });
     if (this.$route.query) {
@@ -138,6 +160,14 @@ export default {
   computed: {
     ...mapGetters("Categories", ["getAllCategories"]),
     ...mapGetters("Products", ["getAllProducts"]),
+    ...mapGetters("Filter", [
+      "getProducts",
+      "getCategories",
+      "getBrands",
+      "getPrice",
+      "getStock",
+      "getSearchText",
+    ]),
     categories() {
       if (this.data) {
         return this.getAllCategories;
@@ -162,6 +192,12 @@ export default {
   methods: {
     ...mapActions("Categories", ["getAllCat"]),
     ...mapActions("Products", ["getAllProd"]),
+    ...mapActions("Filter", [
+      "getPriceDiff",
+      "getStockDiff",
+      "getFilterParameters",
+      "getQueryText",
+    ]),
     isActiveCat(val) {
       if (this.queryCat) {
         return this.queryCat.find((el) => {

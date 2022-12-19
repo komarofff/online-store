@@ -20,7 +20,6 @@ export interface ProdArr {
   thumbnail: string;
   images: Array<string>;
 }
-
 export interface FilterQuery {
   categories: string[];
   brands: string[];
@@ -29,7 +28,6 @@ export interface FilterQuery {
   search: string | number;
   sort: string;
 }
-
 const state = {
   products: [] as ProdArr[],
   filterData: [] as ProdArr[],
@@ -37,12 +35,12 @@ const state = {
   brands: [] as BrandArr[],
   price: [] as Price[],
   stock: [] as Stock[],
-  queryForFilter: {} as FilterQuery,
+  searchText: [] as ProdArr[],
 };
 
 export const getters: GetterTree<State, RootState> = {
-  getQueryForFilters(state: State) {
-    return state.queryForFilter;
+  getProducts(state: State) {
+    return state.products;
   },
   getBrands(state: State) {
     return state.brands;
@@ -56,17 +54,20 @@ export const getters: GetterTree<State, RootState> = {
   getStock(state: State) {
     return state.stock;
   },
+  getSearchText(state: State) {
+    return state.searchText;
+  },
   getFilterData(state: State) {
     return state.filterData;
   },
 };
 
 export const mutations: MutationTree<State> = {
-  setQueryForFilters(state: State, val: FilterQuery) {
-    state.queryForFilter = val;
-  },
   setAllProducts(state: State, val: ProdArr[]) {
     state.products = val;
+  },
+  setSearchText(state: State, val: ProdArr[]) {
+    state.searchText = val;
   },
   setAllCategories(state: State, val: CatArr[]) {
     state.categories = val;
@@ -86,9 +87,6 @@ export const mutations: MutationTree<State> = {
 };
 
 const actions: ActionTree<RootState, RootState> = {
-  async getQuery({ commit }, payload: FilterQuery) {
-    commit("setQueryForFilters", payload);
-  },
   async getAllProd({ commit }) {
     if (!state.products.length) {
       return await axios
@@ -107,11 +105,28 @@ const actions: ActionTree<RootState, RootState> = {
         });
     }
   },
-
+  async getQueryText({ commit }, payload: string | number) {
+    if (state.products.length) {
+      const arr = [] as ProdArr[];
+      state.products.forEach((el) => {
+        if (
+          el.brand.includes(payload as string) ||
+          el.category.includes(payload as string) ||
+          el.title.includes(payload as string) ||
+          el.description.includes(payload as string) ||
+          el.price === Number(payload as number) ||
+          el.stock === Number(payload as number)
+        ) {
+          arr.push(el);
+        }
+      });
+      commit("setSearchText", arr);
+    }
+  },
   async getAllBrands({ commit }) {
-    if (state.filterData.length) {
+    if (state.products.length) {
       const brand = [] as BrandArr;
-      state.filterData.forEach((el) => {
+      state.products.forEach((el) => {
         if (!brand.includes(el.brand)) {
           brand.push(el.brand);
         }
@@ -139,49 +154,25 @@ const actions: ActionTree<RootState, RootState> = {
     if (state.products.length) {
       console.log("payload", payload);
       let arr: ProdArr[] = [];
-      if (payload && Object.entries(payload).length) {
-        arr = state.products.filter((el) => {
-          if (payload.categories) {
-            for (let i = 0; i < payload.categories.length; i++) {
-              if (el.category === payload.categories[i]) {
-                return el;
-              }
-            }
-          }
-          if (payload.brands) {
-            for (let i = 0; i < payload.brands.length; i++) {
-              if (el.brand === payload.brands[i]) {
-                return el;
-              }
-            }
-          }
-          if (payload.price) {
-            if (el.price >= payload.price[0] && el.price <= payload.price[1]) {
-              return el;
-            }
-          }
-          if (payload.stock) {
-            if (el.stock >= payload.stock[0] && el.stock <= payload.stock[1]) {
-              return el;
-            }
-          }
-          if (payload.search) {
-            if (
-              el.brand.includes(payload.search as string) ||
-              el.category.includes(payload.search as string) ||
-              el.title.includes(payload.search as string) ||
-              el.description.includes(payload.search as string) ||
-              el.price.toString().indexOf(payload.search as string) > -1 ||
-              el.stock === Number(payload.search as number)
-            ) {
-              return el;
-            }
+      if (payload && payload.search) {
+        state.products.forEach((el) => {
+          if (
+            el.brand.includes(payload.search as string) ||
+            el.category.includes(payload.search as string) ||
+            el.title.includes(payload.search as string) ||
+            el.description.includes(payload.search as string) ||
+            el.price === Number(payload.search as number) ||
+            el.stock === Number(payload.search as number)
+          ) {
+            arr.push(el);
           }
         });
       } else {
         arr = state.products.filter((el) => el);
       }
       commit("setFilter", arr);
+    } else {
+      console.log("no products");
     }
   },
 };
@@ -195,17 +186,3 @@ const store = {
 };
 export type State = typeof state;
 export default store;
-// if (payload && payload.search) {
-//   state.products.forEach((el) => {
-//     if (
-//         el.brand.includes(payload.search as string) ||
-//         el.category.includes(payload.search as string) ||
-//         el.title.includes(payload.search as string) ||
-//         el.description.includes(payload.search as string) ||
-//         el.price.toString().indexOf(payload.search as string) > -1 ||
-//         el.stock === Number(payload.search as number)
-//     ) {
-//       arr.push(el);
-//     }
-//   });
-// }

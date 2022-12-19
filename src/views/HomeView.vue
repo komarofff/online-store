@@ -17,13 +17,17 @@ export default {
     };
   },
   async beforeMount() {
-    await this.getAllProd();
+    await this.getFilterParameters();
     await this.getAllCat();
     await this.getAllBrands();
   },
   computed: {},
   methods: {
-    ...mapActions("Filter", ["getAllProd", "getAllCat", "getAllBrands"]),
+    ...mapActions("Filter", [
+      "getFilterParameters",
+      "getAllCat",
+      "getAllBrands",
+    ]),
   },
   components: { FilterView, CenterSection },
 };
