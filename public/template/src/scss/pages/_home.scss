@@ -6,7 +6,6 @@
 
 .main__home-filter{
    flex-basis: 25%;
-   background-color: $background-gray-light;
    border-radius: 10px;
    padding: 10px;
    
@@ -166,12 +165,77 @@ ul.checkbox-categories li input[type="checkbox"]:focus + label {
    padding-bottom: 15px;
 }
 
+.main__home-content{
+   width: 100%;
+   background-color: $color-blue-light;
+   border-radius: 10px;
+   padding: 15px;
+}
 
+.home-menu{
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   background-color: $background;
+   padding: 5px 15px;
+   border-radius: 10px;
+   select{
+      outline: none;
+      border: 1px solid $color-blue;
+      border-radius: 5px;
+      color: $color-text-main;
+      padding: 3px 20px;
+      line-height: 2;
+      cursor: pointer;     
+   }
+}
 
+.home-menu-found{
+   margin: 0;
+}
 
+.home-menu-img{
+   button{
+      border: 1px solid $color-blue;
+      background: $background;
+      border-radius: 4px; 
+      padding: 2px;
+      width: 26px;
+      height: 26px;
+      cursor: pointer;
+   }
+   img{
+      width: 20px;
+      height: 20px; 
+        
+   }
+}
 
-
-
+.home-menu-search{
+   position: relative;
+   input{
+      outline: none;
+      background-color: $background-gray-light;
+      border: 1px solid #EDE7F6;
+      border-radius: 5px;
+      height: 25px;
+      padding-left: 25px;
+      color: $color-text-main;
+      font-size: 16px;
+      font-family: 'Lato', sans-serif;
+   }
+   &::after{
+      content: '';
+      display: block;
+      top:50%;
+      transform: translateY(-50%);
+      left: 5px;
+      width: 13px;
+      height: 13px;
+      position: absolute;
+      background: url(../../../dist/assets/icon/search.svg) no-repeat;
+   }
+}
 
 
 
