@@ -47,6 +47,7 @@
       <hr />
       <div>
         <h2>Price</h2>
+        <p>{{ startPrice }}</p>
         min-
         <input type="number" v-model="priceMin" @input="changePriceMin()" />|
         max-
@@ -55,6 +56,7 @@
       <hr />
       <div>
         <h2>Stock</h2>
+        <p>{{ startStock }}</p>
         min-
         <input type="number" v-model="stockMin" @input="changeStockMin()" />|
         max-
@@ -80,6 +82,8 @@ export default {
         search: "",
         sort: "",
       },
+      startPrice: [],
+      startStock: [],
       url: window.location.href,
       successCopyLink: false,
       big: true,
@@ -106,6 +110,8 @@ export default {
     // price and stock
     await this.getPriceDiff(this.getFilterData);
     await this.getStockDiff(this.getFilterData);
+    this.startPrice = this.getPrice;
+    this.startStock = this.getStock;
 
     this.priceMax = this.getPrice[1];
     this.priceMin = this.getPrice[0];
@@ -179,8 +185,28 @@ export default {
     },
     async clearFilters() {
       //clear all filters
-      await this.getQuery(this.firstQuery);
-      await this.getFilterParameters(this.firstQuery);
+      await this.getQuery({
+        categories: [],
+        brands: [],
+        price: [],
+        stock: [],
+        search: "",
+        sort: "",
+      });
+      await this.getFilterParameters({
+        categories: [],
+        brands: [],
+        price: [],
+        stock: [],
+        search: "",
+        sort: "",
+      });
+      await this.getPriceDiff(this.getFilterData);
+      await this.getStockDiff(this.getFilterData);
+      this.priceMax = this.getPrice[1];
+      this.priceMin = this.getPrice[0];
+      this.stockMin = this.getStock[0];
+      this.stockMax = this.getStock[1];
       this.$router.push({
         query: {},
       });

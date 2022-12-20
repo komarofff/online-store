@@ -35,6 +35,27 @@
               :alt="product.title"
             />
           </p>
+          <hr />
+          <p>
+            <button
+              v-if="!isActiveButton(product.id)"
+              @click="addToCart(product)"
+            >
+              Add to cart
+            </button>
+
+            <button
+              class="delete__button"
+              v-if="isActiveButton(product.id)"
+              @click="delCart(product.id)"
+              :ref="`id-${product.id}`"
+            >
+              Delete from cart
+            </button>
+          </p>
+          <p>
+            <router-link :to="`/product/${product.id}`">Details</router-link>
+          </p>
         </div>
       </template>
     </div>
@@ -50,6 +71,7 @@ export default {
       data: [],
       isLoader: false,
       searchText: null,
+      cart: [],
       firstQuery: {
         categories: [],
         brands: [],
@@ -72,6 +94,7 @@ export default {
     //await this.getQuery(this.getQueryForFilters);
     //await this.getFilterParameters();
     this.data = this.getFilterData;
+    this.cart = this.getCartArray;
     this.isLoader = false;
   },
   watch: {
@@ -85,9 +108,11 @@ export default {
   },
   computed: {
     ...mapGetters("Filter", ["getFilterData", "getQueryForFilters"]),
+    ...mapGetters("Cart", ["getCartArray"]),
   },
   methods: {
     ...mapActions("Filter", ["getAllProd", "getQuery", "getFilterParameters"]),
+    ...mapActions("Cart", ["pushToCart", "delFromCart"]),
     async changesToFilter() {
       if (this.searchText.length > 0) {
         this.getQueryForFilters.search = this.searchText;
@@ -98,6 +123,22 @@ export default {
       await this.getQuery(this.getQueryForFilters);
       await this.getFilterParameters(this.getQueryForFilters);
       this.data = this.getFilterData;
+    },
+    async addToCart(val) {
+      val.quantity = 1;
+      await this.pushToCart(val);
+      this.cart = this.getCartArray;
+      this.emitter.emit("addToCart");
+    },
+    async delCart(val) {
+      await this.delFromCart(val);
+      this.cart = this.getCartArray;
+      this.emitter.emit("delFromCart");
+    },
+    isActiveButton(val) {
+      return this.getCartArray.find((product) => {
+        return product.id === val;
+      });
     },
   },
   components: {},
