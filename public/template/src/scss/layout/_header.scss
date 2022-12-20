@@ -10,6 +10,7 @@
    left: 0;
    box-shadow: 0px 0px 10px 0px $shadow;
    z-index: 50;
+   background: $background;
 }
 
 // .header:before{
@@ -118,6 +119,7 @@
    border-bottom: 1px solid $shadow;
    width: 100%;
    display: block;
+   transition: all 0.3s ease;
    &:hover{
       color: $color-blue;
    }

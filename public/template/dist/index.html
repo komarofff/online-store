@@ -7,6 +7,7 @@
    <link rel="preconnect" href="https://fonts.googleapis.com">
    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+   <link rel="shortcut icon" href="assets/icon/favicon.ico" />
    <title>K&K</title>
    <link rel="stylesheet" href="styles/main.min.css" />
 </head>
@@ -20,13 +21,13 @@
             </div>
 
             <div class="header__modal">
-               <div class="header__menu">
+               <nav class="header__menu">
                   <ul class="header__list">
                      <li>
                         <a class="header__link" href="../dist/index.html">Home</a>
                      </li>
                      <li>
-                        <a class="header__link" href="">Categories</a>
+                        <a class="header__link" href="#">Categories</a>
                         <span class="header__link-arrow link-arrow"></span>
                         <ul class="sub-header__list">
                            <li>
@@ -48,22 +49,19 @@
                         <input id="header__search" type="text" placeholder="Search">
                      </div>
                   </ul>
-               </div>
-            </div>
-
-            
+               </nav>
+            </div>            
 
             <div class="header__cart">
                <span class="header__cart-count-sum">0</span><span>$</span>
                <div class="header__cart-count-item"><p>4</p></div>
-               <!-- <img src="assets/icon/cart2.svg" alt="cart"> -->
-               <svg class="header__cart-svg" width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M170 422C153.458 422 140 435.458 140 452C140 468.542 153.458 482 170 482C186.542 482 200 468.542 200 452C200 435.458 186.542 422 170 422Z" />
-                  <path d="M396 422C379.458 422 366 435.458 366 452C366 468.542 379.458 482 396 482C412.542 482 426 468.542 426 452C426 435.458 412.542 422 396 422Z" />
-                  <path d="M140 332V362H414.147L512 117.895V90H110V30H0V60H80V347C80 388.355 113.645 422 155 422H170H396H456V392H155C130.187 392 110 371.813 110 347V120H478.835L393.852 332H140Z" />
-                  </svg>
-                  
-               
+               <a href="cart.html">
+                  <svg class="header__cart-svg" width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+                     <path d="M170 422C153.458 422 140 435.458 140 452C140 468.542 153.458 482 170 482C186.542 482 200 468.542 200 452C200 435.458 186.542 422 170 422Z" />
+                     <path d="M396 422C379.458 422 366 435.458 366 452C366 468.542 379.458 482 396 482C412.542 482 426 468.542 426 452C426 435.458 412.542 422 396 422Z" />
+                     <path d="M140 332V362H414.147L512 117.895V90H110V30H0V60H80V347C80 388.355 113.645 422 155 422H170H396H456V392H155C130.187 392 110 371.813 110 347V120H478.835L393.852 332H140Z" />
+                     </svg>
+               </a>
             </div>
 
             <div class="header__burger">
@@ -75,10 +73,125 @@
 
    <main class="main">
       <div class="container">
-         <aside></aside>
-         <section></section>
+         <div class="main__home">
+            <aside class="main__home-filter">
+               <div class="filter-button">
+                  <button class="filter-btn-resset">Reset Filters</button>
+                  <button class="filter-btn-copy">Copy Link</button>
+               </div>
+               <h3>Categories</h3>
+               <ul class="checkbox-categories vertical-scroll">
+                  <li>
+                     <input type="checkbox" id="categor-1" value="">
+                     <label for="categor-1">Category 1</label>
+                  </li>
+                  <li>
+                     <input type="checkbox" id="categor-2" value="">
+                     <label for="categor-2">Category 2</label>
+                  </li>
+                  <li>
+                     <input type="checkbox" id="categor-3" value="">
+                     <label for="categor-3">Category 3</label>
+                  </li>
+                  <li>
+                     <input type="checkbox" id="categor-4" value="">
+                     <label for="categor-4">Category 4</label>
+                  </li>
+                  <li>
+                     <input type="checkbox" id="categor-5" value="">
+                     <label for="categor-5">Category 5</label>
+                  </li>
+               </ul>
+
+               <h3>Brands</h3>
+               <ul class="checkbox-categories vertical-scroll">
+                  <li>
+                     <input type="checkbox" id="brand-1" value="">
+                     <label for="brand-1">Brand 1</label>
+                  </li>
+                  <li>
+                     <input type="checkbox" id="brand-2" value="">
+                     <label for="brand-2">Brand 2</label>
+                  </li>
+                  <li>
+                     <input type="checkbox" id="brand-3" value="">
+                     <label for="brand-3">Brand 3</label>
+                  </li>
+                  <li>
+                     <input type="checkbox" id="brand-4" value="">
+                     <label for="brand-4">Brand 4</label>
+                  </li>
+                  <li>
+                     <input type="checkbox" id="brand-5" value="">
+                     <label for="brand-5">Brand 5</label>
+                  </li>
+               </ul>
+
+               <h3>Price</h3>
+               <div class="range price">
+                  <p class="range-price-to">€10.00</p>
+                  <p class="range-price-from">€1749.00</p>
+               </div>
+               <div class="multi-range border-bottom">
+                  <input type="range" min="0" max="48" value="0">
+                  <input type="range" min="0" max="48" value="48">
+               </div>
+
+               <h3>Stock</h3>
+               <div class="range stock">
+                  <p class="range-stock-to">20</p>
+                  <p class="range-stock-from">50</p>
+               </div>
+               <div class="multi-range">
+                  <input type="range" min="0" max="48" value="0">
+                  <input type="range" min="0" max="48" value="48">
+               </div>
+            </aside>
+
+            <section class="main__home-content">
+               <div class="home-menu">
+                  <select name="" id="">
+                     <option value="">Sort options:</option>
+                     <option value="">Сортировка 2</option>
+                     <option value="">Сортировка 3</option>
+                     <option value="">Сортировка 4</option>
+                     <option value="">Сортировка 5</option>
+                  </select>
+
+                  <p class="home-menu-found">Found: <span id="found">0</span></p>
+
+                  <div class="home-menu-search">
+                     <input type="text" placeholder="Search product">
+                  </div>
+
+                  <div class="home-menu-img">
+                     <button><img src="assets/icon/block-9.svg" alt=""></button>
+                     <button><img src="assets/icon/block-16.svg" alt=""></button>
+                  </div>
+               </div>
+
+               <div class="home-cards">
+                  <div class="card-container">
+                     <div class="card-item card-hover">
+                        <img class="card-img" src="assets/img/1.png" alt="">
+                        <div class="card-info">
+                           <p class="card-category">Category: <span>smartphones</span></p>
+                           <p class="card-brand">Brand: <span>Apple</span></p>
+                           <p class="card-price">Price: <span>€899.00</span></p>
+                           <p class="card-discount">Discount: <span>17.94%</span></p>
+                           <p class="card-rating">Rating: <span>4.44</span></p>
+                           <p class="card-stock">Stock: <span>34</span></p>
+                        </div>
+
+                     </div>
+                  </div>
+               </div>
+
+            </section>
+         </div>
     </div>
    </main>
+   
    <footer class="footer">
       <div class="container">
             <div class="footer__social">
@@ -105,7 +218,7 @@
             </div>
       </div>
    </footer>
-   <!-- <a href="https://www.figma.com/file/8J8U2wVtBVpvLu08qPmidr/template11?node-id=0%3A1&t=Q7hhy5pDyucKATEd-0">Designed by an unknown artist</a> -->
+
    <script src="js/script.js"></script>
 </body>
 </html>
