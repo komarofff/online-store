@@ -54,7 +54,10 @@
             </button>
           </p>
           <p>
-            <router-link :to="`/product/${product.id}`">Details</router-link>
+            <router-link
+              :to="`/catalog/${product.category}/product/${product.id}`"
+              >Details</router-link
+            >
           </p>
         </div>
       </template>

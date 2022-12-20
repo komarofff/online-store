@@ -3,7 +3,7 @@
     <h1>Categories list</h1>
     <img v-if="isLoader" src="../../assets/loader.gif" alt="loader" />
     <template v-for="category in catData" :key="category">
-      <router-link :to="`/categories/${category}`">
+      <router-link :to="`/catalog/${category}`">
         <!--      <a :href="`/categories/${category}`">-->
         <button>
           {{ category.toUpperCase() }}
