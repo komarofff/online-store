@@ -1,5 +1,7 @@
 <template>
-  <h1>This is a search page - query is a {{ query }}</h1>
+  <section class="container">
+    <h1>This is a search page - query is a {{ query }}</h1>
+  </section>
 </template>
 
 <script>
