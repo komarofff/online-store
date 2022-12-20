@@ -7,7 +7,7 @@
 .footer__social{
    display: flex;
    justify-content: space-between;
-   align-items: flex-start;
+   align-items: center;
 }
 
 .footer__social-item{
@@ -15,6 +15,7 @@
    justify-content: end;
    align-items: center;
    gap: 5px;
+   margin: 0 0 5px 0;
    p{
       margin: 5px 0;
       color: $color-text-main;

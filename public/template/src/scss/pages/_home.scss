@@ -9,7 +9,8 @@
    flex-basis: 25%;
    border-radius: 10px;
    padding: 10px;
-   
+   border: 1px solid $background-violet-light;
+   border-radius: 10px;   
    h3{
       margin: 13px auto;
       text-align: center;
@@ -22,12 +23,13 @@
    display: flex;
    gap: 10px;
    padding-bottom: 10px;
-    border-bottom: 1px solid $shadow;
+    border-bottom: 1px solid $background-violet-light;
    button{
       @extend %btn;
       width: 50%;
       height: 25px;
       border: none;
+      cursor: pointer;
    }
 }
 
@@ -35,7 +37,7 @@
    display: flex;
    flex-direction: column;
    color: $color-text-main;
-   border-bottom: 1px solid $shadow;
+   border-bottom: 1px solid $background-violet-light;
    font-size: 13px;
    align-items: center;
    height: 20vh;
@@ -165,7 +167,7 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
 }
 
 .border-bottom{
-   border-bottom: 1px solid $shadow;
+   border-bottom: 1px solid $background-violet-light;
    padding-bottom: 15px;
 }
 
@@ -207,6 +209,11 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
       width: 26px;
       height: 26px;
       cursor: pointer;
+      transition: all 0.3s ease;
+      &:hover{
+         box-shadow: 0px 0px 3px 1px $color-blue-light;
+         transform: scale(1.05);
+      }
    }
    img{
       width: 20px;
@@ -229,7 +236,7 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
       font-family: 'Lato', sans-serif;
    }
    &::after{
-      content: '';
+      content: url(../../../dist/assets/icon/search.svg);
       display: block;
       top:50%;
       transform: translateY(-50%);
@@ -237,7 +244,7 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
       width: 13px;
       height: 13px;
       position: absolute;
-      background: url(../../../dist/assets/icon/search.svg) no-repeat;
+      // background: url(../../../dist/assets/icon/search.svg) no-repeat;
    }
 }
 
@@ -255,12 +262,13 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
 .card-item{
    background-color: $background-gray-light;
    border-radius: 10px;
-   max-width: 200px;
+   border: 1px solid $background-violet-light;
+   max-width: 250px;
    cursor: pointer;
    overflow: hidden;
    transition: all 0.3s ease;
    p{
-      margin: 1px 0;
+      margin: -2px 0;
       font-size: 12px;
       font-weight: 700;
    }
@@ -269,7 +277,19 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
    }
    &:hover .card-img{
       transform: scale(1.1);
-   }
+   } 
+}
+
+.card-photo{
+   max-width: 250px;
+   max-height: 250px;
+   overflow: hidden;
+}
+
+.flex{
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
 }
 
 .card-info{
