@@ -3,6 +3,7 @@
     <h1>Products list</h1>
     <img v-if="isLoader" src="../../assets/loader.gif" alt="loader" />
     <p>{{ getQueryForFilters }}</p>
+    <p>Found items: {{ dataItems }}</p>
     <input type="text" v-model="searchText" />
     <div class="center-section">
       <!--      {{ getFilterData }}-->
@@ -75,27 +76,12 @@ export default {
       isLoader: false,
       searchText: null,
       cart: [],
-      firstQuery: {
-        categories: [],
-        brands: [],
-        price: [],
-        stock: [],
-        search: "",
-        sort: "",
-      },
+      dataItems: 0,
     };
   },
   async mounted() {
     // all products
     this.isLoader = true;
-    // делаем запрос без параметров и получаем все продукты
-    // await this.getAllProd();
-    // await this.getQuery(this.firstQuery);
-    // await this.getFilterParameters(this.firstQuery);
-    // // если надо отправляем указанный параметр в фильтр изначально. например формируем фильтр из адресной строки
-    // //  и потом вывываем данные из фильтра НО уже с ПАРАМЕТРАМИ
-    // //await this.getQuery(this.getQueryForFilters);
-    // //await this.getFilterParameters();
     this.data = this.getFilterData;
     this.cart = this.getCartArray;
     this.isLoader = false;
@@ -104,13 +90,14 @@ export default {
     searchText() {
       //getQueryForFilters параметры фильтра сохраненные в сторе
       this.changesToFilter();
-      this.emitter.emit("changePriceData");
+      this.emitter.emit("changePriceData", this.data.length);
     },
     getFilterData() {
       this.data = this.getFilterData;
       this.emitter.on("clearSearch", () => {
         this.searchText = "";
       });
+      this.dataItems = this.getFilterData.length;
     },
   },
   computed: {
@@ -118,7 +105,7 @@ export default {
     ...mapGetters("Cart", ["getCartArray"]),
   },
   methods: {
-    ...mapActions("Filter", ["getAllProd", "getQuery", "getFilterParameters"]),
+    ...mapActions("Filter", ["getQuery", "getFilterParameters"]),
     ...mapActions("Cart", ["pushToCart", "delFromCart"]),
     async changesToFilter() {
       if (this.searchText.length > 0) {

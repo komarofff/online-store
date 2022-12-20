@@ -26,7 +26,7 @@ export interface FilterQuery {
   brands: string[];
   price: number[];
   stock: number[];
-  search: string | number;
+  search: string;
   sort: string;
 }
 
@@ -171,13 +171,21 @@ const actions: ActionTree<RootState, RootState> = {
           }
         });
       }
-      if (payload.search) {
+      if (payload.search as string) {
         arr = arr.filter((el) => {
           if (
-            el.brand.includes(payload.search as string) ||
-            el.category.includes(payload.search as string) ||
-            el.title.includes(payload.search as string) ||
-            el.description.includes(payload.search as string) ||
+            el.brand
+              .toUpperCase()
+              .includes(payload.search.toUpperCase() as string) ||
+            el.category
+              .toUpperCase()
+              .includes(payload.search.toUpperCase() as string) ||
+            el.title
+              .toUpperCase()
+              .includes(payload.search.toUpperCase() as string) ||
+            el.description
+              .toUpperCase()
+              .includes(payload.search.toUpperCase() as string) ||
             el.price.toString().indexOf(payload.search as string) > -1 ||
             el.stock.toString().indexOf(payload.search as string) > -1
           ) {
