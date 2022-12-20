@@ -1,6 +1,8 @@
 <template>
-  <h1>This is a cart page</h1>
-  <ItemsInCart></ItemsInCart>
+  <section class="container">
+    <h1>This is a cart page</h1>
+    <ItemsInCart></ItemsInCart>
+  </section>
 </template>
 
 <script>

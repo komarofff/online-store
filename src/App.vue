@@ -1,6 +1,6 @@
 <template>
   <HeaderView></HeaderView>
-  <main>
+  <main class="main">
     <router-view />
   </main>
   <FooterView></FooterView>
@@ -21,6 +21,31 @@ export default {
   async beforeMount() {
     await this.getFromStorage();
   },
+  mounted() {
+    const menuButton = document.querySelector(".header__burger");
+    const menuButton1 = document.querySelector(".header__menu");
+    const menuModal = document.querySelector(".header__modal");
+    const contentBody = document.querySelector("body");
+
+    menuButton.onclick = function () {
+      menuButton.classList.toggle("active");
+      menuButton1.classList.toggle("active");
+      menuModal.classList.toggle("active");
+      contentBody.classList.toggle("lock");
+    };
+    menuButton1.onclick = function () {
+      menuButton.classList.remove("active");
+      menuButton1.classList.remove("active");
+      menuModal.classList.remove("active");
+      contentBody.classList.remove("lock");
+    };
+    menuModal.onclick = function () {
+      menuButton.classList.remove("active");
+      menuButton1.classList.remove("active");
+      menuModal.classList.remove("active");
+      contentBody.classList.remove("lock");
+    };
+  },
   methods: {
     ...mapActions("Cart", ["getFromStorage"]),
   },
@@ -33,55 +58,4 @@ export default {
 </script>
 <style lang="scss">
 @import "./styles/style";
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  outline: none;
-  margin: 0;
-  padding: 0;
-}
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-button {
-  margin: 5px;
-}
-
-.container {
-  max-width: 1560px;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-@media (max-width: 1580px) {
-  .container {
-    max-width: 1290px;
-  }
-}
-
-@media (max-width: 1280px) {
-  .container {
-    max-width: 940px;
-  }
-}
-
-@media (max-width: 992px) {
-  .container {
-    max-width: 710px;
-  }
-}
-
-@media (max-width: 768px) {
-  .container {
-    max-width: 100%;
-  }
-}
 </style>
