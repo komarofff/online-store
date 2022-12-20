@@ -51,7 +51,10 @@
           </button>
         </p>
         <p>
-          <router-link :to="`/product/${product.id}`">Details</router-link>
+          <router-link
+            :to="`/catalog/${product.category}/product/${product.id}`"
+            >Details</router-link
+          >
         </p>
       </div>
     </template>
@@ -65,7 +68,6 @@ export default {
   props: ["id"],
   data() {
     return {
-      cart: [],
       isLoader: false,
       catProducts: [],
     };
@@ -84,7 +86,6 @@ export default {
       this.catProducts = [];
     }
     this.isLoader = false;
-    this.cart = this.getCartArray;
   },
   computed: {
     ...mapGetters("Categories", ["getSingleCategory"]),
@@ -108,13 +109,9 @@ export default {
     async addToCart(val) {
       val.quantity = 1;
       await this.pushToCart(val);
-      this.cart = this.getCartArray;
-      this.emitter.emit("addToCart");
     },
     async delCart(val) {
       await this.delFromCart(val);
-      this.cart = this.getCartArray;
-      this.emitter.emit("delFromCart");
     },
   },
 };

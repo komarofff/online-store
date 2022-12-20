@@ -27,6 +27,12 @@ export const getters: GetterTree<State, RootState> = {
   getCartLength(state: State) {
     return state.cartArray.length;
   },
+  getCartSum(state: State) {
+    return state.cartArray.reduce(
+      (accumulator, el) => accumulator + el.price,
+      0
+    );
+  },
 };
 
 export const mutations: MutationTree<State> = {

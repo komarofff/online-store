@@ -26,13 +26,13 @@ const routes: Array<RouteRecordRaw> = [
     props: true,
   },
   {
-    path: "/categories/:id?",
+    path: "/catalog/:id?",
     name: "categories",
     component: CategoriesPage,
     props: true,
   },
   {
-    path: "/product/:id",
+    path: "/catalog/:cat/product/:id",
     component: ProductPage,
     props: true,
   },

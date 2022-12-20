@@ -2,8 +2,8 @@
   <div class="center">
     <h1>Products list</h1>
     <img v-if="isLoader" src="../../assets/loader.gif" alt="loader" />
+    <p>{{ getQueryForFilters }}</p>
     <input type="text" v-model="searchText" />
-    {{ getQueryForFilters }}
     <div class="center-section">
       <!--      {{ getFilterData }}-->
 
@@ -35,6 +35,30 @@
               :alt="product.title"
             />
           </p>
+          <hr />
+          <p>
+            <button
+              v-if="!isActiveButton(product.id)"
+              @click="addToCart(product)"
+            >
+              Add to cart
+            </button>
+
+            <button
+              class="delete__button"
+              v-if="isActiveButton(product.id)"
+              @click="delCart(product.id)"
+              :ref="`id-${product.id}`"
+            >
+              Delete from cart
+            </button>
+          </p>
+          <p>
+            <router-link
+              :to="`/catalog/${product.category}/product/${product.id}`"
+              >Details</router-link
+            >
+          </p>
         </div>
       </template>
     </div>
@@ -50,6 +74,7 @@ export default {
       data: [],
       isLoader: false,
       searchText: null,
+      cart: [],
       firstQuery: {
         categories: [],
         brands: [],
@@ -64,30 +89,37 @@ export default {
     // all products
     this.isLoader = true;
     // делаем запрос без параметров и получаем все продукты
-    await this.getAllProd();
-    await this.getQuery(this.firstQuery);
-    await this.getFilterParameters(this.firstQuery);
-    // если надо отправляем указанный параметр в фильтр изначально. например формируем фильтр из адресной строки
-    //  и потом вывываем данные из фильтра НО уже с ПАРАМЕТРАМИ
-    //await this.getQuery(this.getQueryForFilters);
-    //await this.getFilterParameters();
+    // await this.getAllProd();
+    // await this.getQuery(this.firstQuery);
+    // await this.getFilterParameters(this.firstQuery);
+    // // если надо отправляем указанный параметр в фильтр изначально. например формируем фильтр из адресной строки
+    // //  и потом вывываем данные из фильтра НО уже с ПАРАМЕТРАМИ
+    // //await this.getQuery(this.getQueryForFilters);
+    // //await this.getFilterParameters();
     this.data = this.getFilterData;
+    this.cart = this.getCartArray;
     this.isLoader = false;
   },
   watch: {
     searchText() {
       //getQueryForFilters параметры фильтра сохраненные в сторе
       this.changesToFilter();
+      this.emitter.emit("changePriceData");
     },
     getFilterData() {
       this.data = this.getFilterData;
+      this.emitter.on("clearSearch", () => {
+        this.searchText = "";
+      });
     },
   },
   computed: {
     ...mapGetters("Filter", ["getFilterData", "getQueryForFilters"]),
+    ...mapGetters("Cart", ["getCartArray"]),
   },
   methods: {
     ...mapActions("Filter", ["getAllProd", "getQuery", "getFilterParameters"]),
+    ...mapActions("Cart", ["pushToCart", "delFromCart"]),
     async changesToFilter() {
       if (this.searchText.length > 0) {
         this.getQueryForFilters.search = this.searchText;
@@ -98,6 +130,19 @@ export default {
       await this.getQuery(this.getQueryForFilters);
       await this.getFilterParameters(this.getQueryForFilters);
       this.data = this.getFilterData;
+      this.emitter.emit("changeSearch");
+    },
+    async addToCart(val) {
+      val.quantity = 1;
+      await this.pushToCart(val);
+    },
+    async delCart(val) {
+      await this.delFromCart(val);
+    },
+    isActiveButton(val) {
+      return this.getCartArray.find((product) => {
+        return product.id === val;
+      });
     },
   },
   components: {},
