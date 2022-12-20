@@ -1,0 +1,47 @@
+:root{
+   scroll-behavior: smooth;
+}
+
+body{
+   font-family: 'Lato', sans-serif;
+   font-weight: 400;
+   background-color: $background;
+   margin: 0;
+   padding: 0;
+}
+
+.container {
+   max-width: 1560px;
+   margin-left: auto;
+   margin-right: auto;
+   padding-left: 10px;
+   padding-right: 10px;
+ }
+
+ .container-full{
+   max-width: 100%;
+ }
+ 
+ @media (max-width: 1580px) {
+   .container {
+     max-width: 1290px;
+   }
+ }
+ 
+ @media (max-width: 1280px) {
+   .container {
+     max-width: 940px;
+   }
+ }
+ 
+ @media (max-width: 992px) {
+   .container {
+     max-width: 710px;
+   }
+ }
+ 
+ @media (max-width: 768px) {
+   .container {
+     max-width: 100%;
+   }
+ }

@@ -1,9 +1,16 @@
 <template>
+  <div class="header__base"></div>
   <header class="header">
-    <div class="container header__nav">
-      <NavLinks></NavLinks>
-      <SearchBlock></SearchBlock>
-      <CartPlaceView></CartPlaceView>
+    <div class="container">
+      <div class="header__body">
+        <LogoSection></LogoSection>
+        <NavLinks></NavLinks>
+        <CartPlaceView></CartPlaceView>
+
+        <div class="header__burger">
+          <span></span>
+        </div>
+      </div>
     </div>
   </header>
 </template>
@@ -11,28 +18,16 @@
 <script>
 import CartPlaceView from "@/components/cart/CartPlaceView";
 import NavLinks from "@/components/header/NavLinks";
-import SearchBlock from "@/components/header/SearchBlock";
+import LogoSection from "@/components/header/LogoSection";
 
 export default {
   name: "HeaderView",
   components: {
     CartPlaceView,
     NavLinks,
-    SearchBlock,
+    LogoSection,
   },
 };
 </script>
 
-<style scoped lang="scss">
-.header {
-  background-color: rgba(0, 0, 0, 0.1);
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
-.header__nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-</style>
+<style scoped lang="scss"></style>

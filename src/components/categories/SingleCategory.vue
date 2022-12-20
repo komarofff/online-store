@@ -87,6 +87,12 @@ export default {
     }
     this.isLoader = false;
   },
+  watch: {
+    id() {
+      console.log("id changed");
+      this.newData();
+    },
+  },
   computed: {
     ...mapGetters("Categories", ["getSingleCategory"]),
     ...mapGetters("Cart", ["getCartArray"]),
@@ -112,6 +118,12 @@ export default {
     },
     async delCart(val) {
       await this.delFromCart(val);
+    },
+    async newData() {
+      this.isLoader = true;
+      await this.getSingleCat(this.id);
+      this.catProducts = this.getSingleCategory;
+      this.isLoader = false;
     },
   },
 };

@@ -1,3 +1,19 @@
-::placeholder{
-  color: red;
-}
+// abstracts
+@import "./abstracts/variables";
+
+// components
+@import "./components/button";
+@import "./components/block";
+@import "./components/main";
+
+// layout
+@import "./layout/header";
+@import "./layout/footer";
+
+// pages
+@import "./pages/home";
+@import "./pages/categories";
+@import "./pages/cart";
+@import "./pages/checkout";
+@import "./pages/product";
+@import "./pages/error";
