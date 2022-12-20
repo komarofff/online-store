@@ -309,11 +309,16 @@
    .header__list{
       // display: block;
       flex-direction: column;
+      align-items: flex-start;
       gap: 3px;
       padding: 40px;
       a{
          padding: 10px 0;
       }
+      
+   }
+   .link-arrow {
+      top: -15px;
    }
    .header__list>li{
       padding: 10px 0;
