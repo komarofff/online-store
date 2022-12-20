@@ -127,13 +127,9 @@ export default {
     async addToCart(val) {
       val.quantity = 1;
       await this.pushToCart(val);
-      this.cart = this.getCartArray;
-      this.emitter.emit("addToCart");
     },
     async delCart(val) {
       await this.delFromCart(val);
-      this.cart = this.getCartArray;
-      this.emitter.emit("delFromCart");
     },
     isActiveButton(val) {
       return this.getCartArray.find((product) => {
