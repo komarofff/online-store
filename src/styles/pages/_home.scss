@@ -44,13 +44,17 @@
    overflow-y: scroll;
 }
 
+.checkbox-flex{
+   display: flex;
+   width: 100%;
+   justify-content: space-between;
+   align-items: center;
+}
+
 ul.checkbox-categories {
    list-style: none;
    padding: 0 20px 10px;
    margin: 0 auto;
-}
-ul.checkbox-categories li{
- display: inline;
 }
 ul.checkbox-categories li label{
    display: inline-block;
@@ -71,6 +75,7 @@ ul.checkbox-categories li label{
 
 ul.checkbox-categories li label {
    padding: 0px 7px;
+   width: 100%;
    cursor: pointer;
 }
 
@@ -110,7 +115,13 @@ ul.checkbox-categories li input[type="checkbox"]:focus + label {
 }
 ul.checkbox-categories li input[type="checkbox"]:hover + label {
    border: 2px solid $color-blue;
-  }
+}
+
+.checkbox-count{
+   font-size: 16px;
+   font-weight: 500;
+   color: $color-text-main;
+}
 
 .range{
    display: flex;
@@ -236,7 +247,7 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
       font-family: 'Lato', sans-serif;
    }
    &::after{
-      content: url(~@/assets/icon/search.svg);
+      content: url('~@/assets/icon/search.svg');
       display: block;
       top:50%;
       transform: translateY(-50%);
@@ -284,12 +295,6 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
    max-width: 250px;
    max-height: 250px;
    overflow: hidden;
-}
-
-.flex{
-   display: flex;
-   justify-content: space-between;
-   align-items: center;
 }
 
 .card-info{

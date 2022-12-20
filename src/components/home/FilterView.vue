@@ -2,6 +2,7 @@
   <aside class="filter">
     <div>
       <h1>I`m a filter section</h1>
+      <p>Found items: {{ dataItems }}</p>
       <!--      {{ getCategories }}-->
       <!--      {{ getBrands }}-->
 
@@ -48,19 +49,26 @@
       <div>
         <h2>Price</h2>
         <p>{{ startPrice }}</p>
-        min-
-        <input type="number" v-model="priceMin" @input="changePriceMin()" />|
-        max-
-        <input type="number" v-model="priceMax" @input="changePriceMax()" />
+
+        <div v-if="isFound">
+          min-
+          <input type="number" v-model="priceMin" @input="changePriceMin()" />|
+          max-
+          <input type="number" v-model="priceMax" @input="changePriceMax()" />
+        </div>
+        <div v-else>No found items</div>
       </div>
       <hr />
       <div>
         <h2>Stock</h2>
         <p>{{ startStock }}</p>
-        min-
-        <input type="number" v-model="stockMin" @input="changeStockMin()" />|
-        max-
-        <input type="number" v-model="stockMax" @input="changeStockMax()" />
+        <div v-if="isFound">
+          min-
+          <input type="number" v-model="stockMin" @input="changeStockMin()" />|
+          max-
+          <input type="number" v-model="stockMax" @input="changeStockMax()" />
+        </div>
+        <div v-else>No found items</div>
       </div>
     </div>
   </aside>
@@ -84,6 +92,14 @@ export default {
       },
       startPrice: [],
       startStock: [],
+      startQuery: {
+        categories: [],
+        brands: [],
+        price: [],
+        stock: [],
+        search: "",
+        sort: "",
+      },
       url: window.location.href,
       successCopyLink: false,
       big: true,
@@ -91,17 +107,21 @@ export default {
       priceMin: 0,
       stockMin: 0,
       stockMax: 0,
+      dataItems: 0,
+      isFound: true,
     };
   },
   async mounted() {
     this.isLoader = true;
     // делаем запрос без параметров и получаем все продукты
-    await this.getAllProd();
-    await this.getAllBrands();
-    await this.getAllCat();
+
+    // await this.getAllProd();
+    // await this.getAllBrands();
+    // await this.getAllCat();
+
     // await this.getQuery(this.firstQuery);
-    await this.getQuery(this.firstQuery);
-    await this.getFilterParameters(this.firstQuery);
+    // await this.getQuery(this.firstQuery);
+    // await this.getFilterParameters(this.firstQuery);
     // если надо отправляем указанный параметр в фильтр изначально. например формируем фильтр из адресной строки
     //  и потом вывываем данные из фильтра НО уже с ПАРАМЕТРАМИ
     //await this.getQuery(this.getQueryForFilters);
@@ -124,12 +144,28 @@ export default {
   watch: {
     $route() {
       //  console.log("route", this.$route);
-      // console.log("getQueryForFilters", this.getQueryForFilters);
     },
     getFilterData() {
-      console.log("data was changed");
+      this.getPriceDiff(this.getFilterData);
+      this.getStockDiff(this.getFilterData);
+      this.startPrice = this.getPrice;
+      this.startStock = this.getStock;
+      this.startPrice = this.getPrice;
+      this.startStock = this.getStock;
+      //console.log("data was changed");
       this.changeForPriceAndStock();
-      //this.emitter.on("changePriceData");
+      this.emitter.on("changePriceData", () => {
+        this.changeForPriceAndStock();
+      });
+      this.dataItems = this.getFilterData.length;
+      //console.log("in data items=", this.getFilterData.length);
+    },
+    dataItems() {
+      if (this.dataItems === 0) {
+        this.isFound = false;
+      } else {
+        this.isFound = true;
+      }
     },
   },
   computed: {
@@ -144,9 +180,6 @@ export default {
   },
   methods: {
     ...mapActions("Filter", [
-      "getAllBrands",
-      "getAllCat",
-      "getAllProd",
       "getQuery",
       "getPriceDiff",
       "getStockDiff",
@@ -217,6 +250,8 @@ export default {
       this.$router.push({
         query: {},
       });
+
+      this.$router.push(this.$route.path);
     },
     async changeCat(val) {
       if (!this.getQueryForFilters.categories) {
@@ -250,33 +285,28 @@ export default {
           );
         }
       }
-      await this.getQuery(this.getQueryForFilters);
-      await this.getFilterParameters(this.getQueryForFilters);
+      this.changeQuery();
       this.changeForPriceAndStock();
       this.pushToRouter();
     },
     async changePriceMin() {
       this.getQueryForFilters.price = [this.priceMin, this.priceMax];
-      await this.getQuery(this.getQueryForFilters);
-      await this.getFilterParameters(this.getQueryForFilters);
+      this.changeQuery();
       this.pushToRouter();
     },
     async changePriceMax() {
       this.getQueryForFilters.price = [this.priceMin, this.priceMax];
-      await this.getQuery(this.getQueryForFilters);
-      await this.getFilterParameters(this.getQueryForFilters);
+      this.changeQuery();
       this.pushToRouter();
     },
     async changeStockMin() {
       this.getQueryForFilters.stock = [this.stockMin, this.stockMax];
-      await this.getQuery(this.getQueryForFilters);
-      await this.getFilterParameters(this.getQueryForFilters);
+      this.changeQuery();
       this.pushToRouter();
     },
     async changeStockMax() {
       this.getQueryForFilters.stock = [this.stockMin, this.stockMax];
-      await this.getQuery(this.getQueryForFilters);
-      await this.getFilterParameters(this.getQueryForFilters);
+      this.changeQuery();
       this.pushToRouter();
     },
     async changeForPriceAndStock() {
@@ -286,6 +316,11 @@ export default {
       this.priceMin = this.getPrice[0];
       this.stockMin = this.getStock[0];
       this.stockMax = this.getStock[1];
+    },
+    async changeQuery() {
+      await this.getQuery(this.getQueryForFilters);
+      await this.getFilterParameters(this.getQueryForFilters);
+      this.pushToRouter();
     },
   },
 };
