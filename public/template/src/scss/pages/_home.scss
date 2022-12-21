@@ -189,6 +189,48 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
    padding: 15px;
 }
 
+.home-menu-crumbs{
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   background-color: $background;
+   padding: 5px 15px;
+   border-radius: 10px;
+}
+
+.crumbs-start{
+   font-size: 16px;
+   color: $color-text-main;
+   font-weight: 500;
+   margin: 0;
+}
+
+.crumbs-address{
+   display: flex;
+   justify-content: flex-end;
+   gap: 15px;
+   a{
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 12px;
+      color: $color-text-main;
+      transition: all 0.3s ease;
+      &:hover{
+         color: $color-blue;
+      }
+   }
+}
+
+.img-address{
+   width: 13px;
+   height: 13px;
+}
+
+.img-arrow{
+   width: 7.4px;
+   height: 12px;
+}
+
 .home-menu{
    display: flex;
    justify-content: space-between;
@@ -196,6 +238,7 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
    background-color: $background;
    padding: 5px 15px;
    border-radius: 10px;
+   margin-top: 8px;
    select{
       outline: none;
       border: 1px solid $color-blue;
@@ -255,7 +298,6 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
       width: 13px;
       height: 13px;
       position: absolute;
-      // background: url(../../../dist/assets/icon/search.svg) no-repeat;
    }
 }
 
@@ -263,7 +305,7 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
    background-color: $background;
    border-radius: 10px;
    padding: 15px;
-   margin-top: 15px;
+   margin-top: 8px;
 }
 
 .card-container{
@@ -288,8 +330,7 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
    overflow: hidden;
 }
 
-.card-img{
-   border-radius: 10px;
+.card-img{   
    width: 100%;
    height: 100%;
    -o-object-fit: cover;
@@ -300,29 +341,17 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
 }
 
 .card-info{
-   padding: 10px;
-   // p{
-   //    margin: -2px 0;
-   //    font-size: 12px;
-   //    font-weight: 700;
-   // }
-   // span{
-   //    font-weight: 400;
-   // }   
+   padding: 6px; 
 }
-// .card-brand{
-//    margin: 0px 0 4px;
-//    p{
-//       font-size: 14px;
-//    }
-// }
 
-.card-brand{
+.card-name{
    margin: 0;
-   font-size: 14px;
+   text-align: center;
+   font-size: 16px;
    font-weight: 700;
 }
 
+.card-brand,
 .card-category,
 .card-rating,
 .card-stock{
@@ -332,21 +361,30 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
 
 .price-container{
    margin-top: 20px;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+}
+
+.price-price{
+   display: flex;
+   align-items: center;
 }
 
 .card-price{
    font-size: 16px;
    font-weight: 700;
-   margin-right: 20px;
+   margin-right: 5px;
 }
 
 .card-discount{
-   font-size: 14px;
+   font-size: 12px;
+   font-weight: 700;
+   color: #9E9E9E;
 }
 
 .card-btn-container{
    display: flex;
-   justify-content: space-between;
    margin-top: 15px;
 }
 
