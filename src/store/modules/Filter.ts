@@ -138,24 +138,23 @@ const actions: ActionTree<RootState, RootState> = {
   },
   async getFilterParameters({ commit }, payload: FilterQuery) {
     if (state.products.length) {
-      //console.log("payload", payload);
       let arr: ProdArr[] = state.products;
 
-      if (payload.categories.length) {
+      if (payload.categories && payload.categories.length) {
         arr = arr.filter((el) => {
           if (payload.categories.includes(el.category)) {
             return el;
           }
         });
       }
-      if (payload.brands.length) {
+      if (payload.brands && payload.brands.length) {
         arr = arr.filter((el) => {
           if (payload.brands.includes(el.brand)) {
             return el;
           }
         });
       }
-      if (payload.price.length) {
+      if (payload.price && payload.price.length) {
         arr = arr.filter((el) => {
           if (el.price >= payload.price[0] && el.price <= payload.price[1]) {
             return el;
@@ -163,15 +162,14 @@ const actions: ActionTree<RootState, RootState> = {
         });
       }
 
-      if (payload.stock.length) {
-        console.log("payload.stock", payload.stock);
+      if (payload.stock && payload.stock.length) {
         arr = arr.filter((el) => {
           if (el.stock >= payload.stock[0] && el.stock <= payload.stock[1]) {
             return el;
           }
         });
       }
-      if (payload.search as string) {
+      if ((payload.search as string) && payload.search.length) {
         arr = arr.filter((el) => {
           if (
             el.brand
@@ -193,7 +191,7 @@ const actions: ActionTree<RootState, RootState> = {
           }
         });
       }
-      if (payload.sort.length) {
+      if (payload.sort && payload.sort.length) {
         const items: string[] = payload.sort.split("-");
         //sort=price-ASC sort=price-DESC
         if (items[0] === "price" && items[1] === "ASC") {

@@ -92,7 +92,14 @@ export default {
       },
       startPrice: [],
       startStock: [],
-      startQuery: {},
+      startQuery: {
+        categories: [],
+        brands: [],
+        price: [],
+        stock: [],
+        search: "",
+        sort: "",
+      },
       startQueryData: null,
       url: window.location.href,
       successCopyLink: false,
@@ -107,57 +114,75 @@ export default {
   },
   async mounted() {
     this.isLoader = true;
-    // делаем запрос без параметров и получаем все продукты
+    await this.getAllProd();
+
     // await this.getPriceDiff(this.getFilterData);
     // await this.getStockDiff(this.getFilterData);
     // this.startPrice = this.getPrice;
     // this.startStock = this.getStock;
-
-    // this.priceMax = this.getPrice[1];
-    // this.priceMin = this.getPrice[0];
-    // this.stockMin = this.getStock[0];
-    // this.stockMax = this.getStock[1];
-    // await this.getAllProd();
-    // await this.getAllBrands();
-    // await this.getAllCat();
-    //  делаем startQuery в зависимости от адресной строки
+    // this.changeForPriceAndStock();
     ////////////////////////////
+    // price and stock
+    this.changeForPriceAndStock();
+    //  делаем startQuery в зависимости от адресной строки
     this.startQueryData = Object.entries(this.$route.query);
     if (this.startQueryData.length > 0) {
+      console.log("start with query parameters");
       this.startQueryData.forEach((el) => {
-        if (el.includes("categories") && el[1].length > 0) {
-          this.startQuery.categories =
-            el[1].length > 1 ? el[1].split("||") : el[1];
-        }
-        if (el.includes("brands") && el[1].length > 0) {
-          this.startQuery.brands = el[1].length > 1 ? el[1].split("||") : el[1];
-        }
-        if (el.includes("price") && el[1].length > 0) {
-          this.startQuery.price = el[1].length > 1 ? el[1].split("||") : el[1];
-        }
-        if (el.includes("stock") && el[1].length > 0) {
-          this.startQuery.stock = el[1].length > 1 ? el[1].split("||") : el[1];
-        }
-        if (el.includes("search") && el[1].length > 0) {
-          this.startQuery.search = el[1];
-        }
-        if (el.includes("sort") && el[1].length > 0) {
-          this.startQuery.sort = el[1];
+        if (el[1] && !el[1].includes("||")) {
+          this.startQuery[el[0]] = el[1];
+          if (!this.getQueryForFilters[el[0]]) {
+            this.getQueryForFilters[el[0]] = [el[1]];
+          } else {
+            if (!this.getQueryForFilters[el[0]].includes(el[1])) {
+              this.getQueryForFilters[el[0]].push(el[1]);
+            } else if (typeof this.getQueryForFilters[el[0]] !== "string") {
+              this.getQueryForFilters[el[0]].splice(
+                this.getQueryForFilters[el[0]].indexOf(el[1]),
+                1
+              );
+            } else {
+              this.getQueryForFilters[el[0]] = "";
+            }
+          }
+        } else if (el[1] && el[1].includes("||")) {
+          this.startQuery[el[0]] = el[1].split("||");
+          if (!this.getQueryForFilters[el[0]]) {
+            this.getQueryForFilters[el[0]] = [el[1].split("||")];
+          } else {
+            if (!this.getQueryForFilters[el[0]].includes(el[1].split("||"))) {
+              this.getQueryForFilters[el[0]].push(el[1].split("||"));
+            } else {
+              this.getQueryForFilters[el[0]].splice(
+                this.getQueryForFilters[el[0]].indexOf(el[1].split("||")),
+                1
+              );
+            }
+          }
         }
       });
-
-      console.log("this.startQuery from mounted()", this.startQuery);
       await this.getQuery(this.startQuery);
-      console.log(
-        "this.getQueryForFilters from mounted()",
-        this.getQueryForFilters
-      );
-      await this.getFilterParameters(this.getQueryForFilters);
+      await this.getFilterParameters(this.startQuery);
       // price and stock
       this.changeForPriceAndStock();
     } else {
-      // price and stock
-      this.changeForPriceAndStock();
+      await this.getQuery({
+        categories: [],
+        brands: [],
+        price: [],
+        stock: [],
+        search: "",
+        sort: "",
+      });
+      await this.getFilterParameters({
+        categories: [],
+        brands: [],
+        price: [],
+        stock: [],
+        search: "",
+        sort: "",
+      });
+      await this.changeForPriceAndStock();
     }
 
     this.emitter.on("changeSearch", (data) => {
@@ -202,12 +227,14 @@ export default {
   },
   methods: {
     ...mapActions("Filter", [
+      "getAllProd",
       "getQuery",
       "getPriceDiff",
       "getStockDiff",
       "getFilterParameters",
     ]),
     isActiveCat(val) {
+      //console.log("this.getQueryForFilters", this.getQueryForFilters);
       if (this.getQueryForFilters.categories) {
         return this.getQueryForFilters.categories.find((el) => {
           return el === val;
@@ -228,17 +255,6 @@ export default {
       //sort=price-ASC sort=price-DESC
       //sort=rating-ASC sort=rating-DESC
       //query.categories
-
-      if (key && value.length) {
-        let queries = JSON.parse(JSON.stringify(this.$route.query));
-        if (value.length === 0 || typeof value === "string") {
-          queries[key] = value;
-        } else {
-          queries[key] = value.join("||");
-        }
-        this.$router.replace({ query: queries });
-      }
-
       // this.$router.push({
       //   query: {
       //     categories: this.getQueryForFilters.categories.join("||"),
@@ -250,6 +266,19 @@ export default {
       //     big: false,
       //   },
       // });
+      let queries = JSON.parse(JSON.stringify(this.$route.query));
+      if (value.length) {
+        if (value && typeof value === "string") {
+          queries[key] = value;
+          this.$router.replace({ query: queries });
+        } else if (value.length !== 0 && typeof value !== "string") {
+          queries[key] = value.join("||");
+          this.$router.replace({ query: queries });
+        }
+      } else {
+        delete queries[key];
+        this.$router.replace({ query: queries });
+      }
     },
     copyLink() {
       navigator.clipboard.writeText(window.location.href).then(() => {
@@ -295,8 +324,7 @@ export default {
         }
       }
 
-      await this.getQuery(this.getQueryForFilters);
-      await this.getFilterParameters(this.getQueryForFilters);
+      this.changeQuery();
       this.changeForPriceAndStock();
       this.pushToRouter("categories", this.getQueryForFilters.categories);
     },
@@ -336,6 +364,14 @@ export default {
       this.getQueryForFilters.stock = [this.stockMin, this.stockMax];
       this.changeQuery();
       this.pushToRouter("stock", this.getQueryForFilters.stock);
+    },
+    async changeSort() {
+      //this.getQueryForFilters.sort = sortVariable;
+      //this.changeQuery();
+      //this.pushToRouter("sort", value);
+    },
+    async changeSizeOfCards() {
+      //this.pushToRouter("big", value);
     },
     async changeForPriceAndStock() {
       await this.getPriceDiff(this.getFilterData);
