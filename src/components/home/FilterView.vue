@@ -92,14 +92,8 @@ export default {
       },
       startPrice: [],
       startStock: [],
-      startQuery: {
-        categories: [],
-        brands: [],
-        price: [],
-        stock: [],
-        search: "",
-        sort: "",
-      },
+      startQuery: {},
+      startQueryData: null,
       url: window.location.href,
       successCopyLink: false,
       big: true,
@@ -114,32 +108,60 @@ export default {
   async mounted() {
     this.isLoader = true;
     // делаем запрос без параметров и получаем все продукты
+    // await this.getPriceDiff(this.getFilterData);
+    // await this.getStockDiff(this.getFilterData);
+    // this.startPrice = this.getPrice;
+    // this.startStock = this.getStock;
 
+    // this.priceMax = this.getPrice[1];
+    // this.priceMin = this.getPrice[0];
+    // this.stockMin = this.getStock[0];
+    // this.stockMax = this.getStock[1];
     // await this.getAllProd();
     // await this.getAllBrands();
     // await this.getAllCat();
     //  делаем startQuery в зависимости от адресной строки
-    console.log("this.$route.query", this.$route.query);
-    // await this.getQuery(this.firstQuery);
-    // await this.getQuery(this.firstQuery);
-    // await this.getFilterParameters(this.firstQuery);
-    // если надо отправляем указанный параметр в фильтр изначально. например формируем фильтр из адресной строки
-    //  и потом вывываем данные из фильтра НО уже с ПАРАМЕТРАМИ
-    //await this.getQuery(this.getQueryForFilters);
-    //await this.getFilterParameters(this.getQueryForFilters);
+    ////////////////////////////
+    this.startQueryData = Object.entries(this.$route.query);
+    if (this.startQueryData.length > 0) {
+      this.startQueryData.forEach((el) => {
+        if (el.includes("categories") && el[1].length > 0) {
+          this.startQuery.categories =
+            el[1].length > 1 ? el[1].split("||") : el[1];
+        }
+        if (el.includes("brands") && el[1].length > 0) {
+          this.startQuery.brands = el[1].length > 1 ? el[1].split("||") : el[1];
+        }
+        if (el.includes("price") && el[1].length > 0) {
+          this.startQuery.price = el[1].length > 1 ? el[1].split("||") : el[1];
+        }
+        if (el.includes("stock") && el[1].length > 0) {
+          this.startQuery.stock = el[1].length > 1 ? el[1].split("||") : el[1];
+        }
+        if (el.includes("search") && el[1].length > 0) {
+          this.startQuery.search = el[1];
+        }
+        if (el.includes("sort") && el[1].length > 0) {
+          this.startQuery.sort = el[1];
+        }
+      });
 
-    // price and stock
-    await this.getPriceDiff(this.getFilterData);
-    await this.getStockDiff(this.getFilterData);
-    this.startPrice = this.getPrice;
-    this.startStock = this.getStock;
+      console.log("this.startQuery from mounted()", this.startQuery);
+      await this.getQuery(this.startQuery);
+      console.log(
+        "this.getQueryForFilters from mounted()",
+        this.getQueryForFilters
+      );
+      await this.getFilterParameters(this.getQueryForFilters);
+      // price and stock
+      this.changeForPriceAndStock();
+    } else {
+      // price and stock
+      this.changeForPriceAndStock();
+    }
 
-    this.priceMax = this.getPrice[1];
-    this.priceMin = this.getPrice[0];
-    this.stockMin = this.getStock[0];
-    this.stockMax = this.getStock[1];
-    this.emitter.on("changeSearch", () => {
-      this.pushToRouter();
+    this.emitter.on("changeSearch", (data) => {
+      this.pushToRouter("search", data);
     });
     this.emitter.on("changePriceData", () => {
       this.changeForPriceAndStock();
@@ -147,20 +169,18 @@ export default {
   },
   watch: {
     $route() {
-      //  console.log("route", this.$route);
+      // console.log("route", this.$route, to, from);
+      //this.clearFilters();
     },
     getFilterData() {
-      this.getPriceDiff(this.getFilterData);
-      this.getStockDiff(this.getFilterData);
-      this.startPrice = this.getPrice;
-      this.startStock = this.getStock;
-      this.startPrice = this.getPrice;
-      this.startStock = this.getStock;
-      //console.log("data was changed");
-      this.changeForPriceAndStock();
-
+      if (this.startPrice.length === 0 && this.startStock.length === 0) {
+        this.getPriceDiff(this.getFilterData);
+        this.getStockDiff(this.getFilterData);
+        this.startPrice = this.getPrice;
+        this.startStock = this.getStock;
+        this.changeForPriceAndStock();
+      }
       this.dataItems = this.getFilterData.length;
-      //console.log("in data items=", this.getFilterData.length);
     },
     dataItems() {
       if (this.dataItems === 0) {
@@ -202,22 +222,34 @@ export default {
       }
     },
 
-    pushToRouter() {
-      //?category=laptops&brand=apple&price=1249↕1749&stock=83↕92&search=sbsbdf&big=false
+    pushToRouter(key, value) {
+      //?category=laptops&brand=apple&price=1249||1749&stock=83||92&search=sbsbdf&big=false
       //sort=discount-ASC sort=discount-DESC
       //sort=price-ASC sort=price-DESC
       //sort=rating-ASC sort=rating-DESC
-      this.$router.push({
-        query: {
-          categories: this.getQueryForFilters.categories.join("↕"),
-          brand: this.getQueryForFilters.brands.join("↕"),
-          price: this.getQueryForFilters.price.join("↕"),
-          stock: this.getQueryForFilters.stock.join("↕"),
-          search: this.getQueryForFilters.search,
-          sort: this.getQueryForFilters.sort,
-          big: false,
-        },
-      });
+      //query.categories
+
+      if (key && value.length) {
+        let queries = JSON.parse(JSON.stringify(this.$route.query));
+        if (value.length === 0 || typeof value === "string") {
+          queries[key] = value;
+        } else {
+          queries[key] = value.join("||");
+        }
+        this.$router.replace({ query: queries });
+      }
+
+      // this.$router.push({
+      //   query: {
+      //     categories: this.getQueryForFilters.categories.join("||"),
+      //     brands: this.getQueryForFilters.brands.join("||"),
+      //     price: this.getQueryForFilters.price.join("||"),
+      //     stock: this.getQueryForFilters.stock.join("||"),
+      //     search: this.getQueryForFilters.search,
+      //     sort: this.getQueryForFilters.sort,
+      //     big: false,
+      //   },
+      // });
     },
     copyLink() {
       navigator.clipboard.writeText(window.location.href).then(() => {
@@ -230,8 +262,15 @@ export default {
     },
     async clearFilters() {
       //clear all filters
-      await this.getQuery(this.firstQuery);
-      await this.getFilterParameters(this.firstQuery);
+      await this.getQuery({
+        categories: [],
+        brands: [],
+        price: [],
+        stock: [],
+        search: "",
+        sort: "",
+      });
+      await this.getFilterParameters(this.getQueryForFilters);
       this.changeForPriceAndStock();
       this.emitter.emit("clearSearch");
       console.log("clear all filters");
@@ -259,7 +298,7 @@ export default {
       await this.getQuery(this.getQueryForFilters);
       await this.getFilterParameters(this.getQueryForFilters);
       this.changeForPriceAndStock();
-      this.pushToRouter();
+      this.pushToRouter("categories", this.getQueryForFilters.categories);
     },
     async changeBrand(val) {
       if (!this.getQueryForFilters.brands) {
@@ -276,27 +315,27 @@ export default {
       }
       this.changeQuery();
       this.changeForPriceAndStock();
-      this.pushToRouter();
+      this.pushToRouter("brands", this.getQueryForFilters.brands);
     },
     async changePriceMin() {
       this.getQueryForFilters.price = [this.priceMin, this.priceMax];
       this.changeQuery();
-      this.pushToRouter();
+      this.pushToRouter("price", this.getQueryForFilters.price);
     },
     async changePriceMax() {
       this.getQueryForFilters.price = [this.priceMin, this.priceMax];
       this.changeQuery();
-      this.pushToRouter();
+      this.pushToRouter("price", this.getQueryForFilters.price);
     },
     async changeStockMin() {
       this.getQueryForFilters.stock = [this.stockMin, this.stockMax];
       this.changeQuery();
-      this.pushToRouter();
+      this.pushToRouter("stock", this.getQueryForFilters.stock);
     },
     async changeStockMax() {
       this.getQueryForFilters.stock = [this.stockMin, this.stockMax];
       this.changeQuery();
-      this.pushToRouter();
+      this.pushToRouter("stock", this.getQueryForFilters.stock);
     },
     async changeForPriceAndStock() {
       await this.getPriceDiff(this.getFilterData);
@@ -309,7 +348,7 @@ export default {
     async changeQuery() {
       await this.getQuery(this.getQueryForFilters);
       await this.getFilterParameters(this.getQueryForFilters);
-      this.pushToRouter();
+      //this.pushToRouter();
     },
   },
 };

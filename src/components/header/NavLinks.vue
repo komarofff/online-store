@@ -14,6 +14,9 @@
             >Home</router-link
           >
         </li>
+        <!--        <li>-->
+        <!--          <a class="header__link" href="/">Home</a>-->
+        <!--        </li>-->
         <li>
           <router-link class="header__link" :to="{ name: 'categories' }"
             >Catalog</router-link

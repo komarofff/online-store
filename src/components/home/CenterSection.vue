@@ -91,6 +91,7 @@ export default {
         this.$router.push({
           query: {},
         });
+        //this.$router.go(this.$router.currentRoute);
       }, 50);
     });
     if (this.$route.query.search) {
@@ -128,7 +129,7 @@ export default {
       await this.getQuery(this.getQueryForFilters);
       await this.getFilterParameters(this.getQueryForFilters);
       this.data = this.getFilterData;
-      this.emitter.emit("changeSearch");
+      this.emitter.emit("changeSearch", this.searchText);
     },
     async addToCart(val) {
       val.quantity = 1;
