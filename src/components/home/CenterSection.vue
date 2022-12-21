@@ -93,6 +93,9 @@ export default {
         });
       }, 50);
     });
+    if (this.$route.query.search) {
+      this.searchText = this.$route.query.search;
+    }
   },
   watch: {
     searchText() {

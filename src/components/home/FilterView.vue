@@ -118,7 +118,8 @@ export default {
     // await this.getAllProd();
     // await this.getAllBrands();
     // await this.getAllCat();
-
+    //  делаем startQuery в зависимости от адресной строки
+    console.log("this.$route.query", this.$route.query);
     // await this.getQuery(this.firstQuery);
     // await this.getQuery(this.firstQuery);
     // await this.getFilterParameters(this.firstQuery);
@@ -208,7 +209,7 @@ export default {
       //sort=rating-ASC sort=rating-DESC
       this.$router.push({
         query: {
-          category: this.getQueryForFilters.categories.join("↕"),
+          categories: this.getQueryForFilters.categories.join("↕"),
           brand: this.getQueryForFilters.brands.join("↕"),
           price: this.getQueryForFilters.price.join("↕"),
           stock: this.getQueryForFilters.stock.join("↕"),
