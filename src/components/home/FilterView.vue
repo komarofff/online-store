@@ -140,6 +140,9 @@ export default {
     this.emitter.on("changeSearch", () => {
       this.pushToRouter();
     });
+    this.emitter.on("changePriceData", () => {
+      this.changeForPriceAndStock();
+    });
   },
   watch: {
     $route() {
@@ -154,9 +157,7 @@ export default {
       this.startStock = this.getStock;
       //console.log("data was changed");
       this.changeForPriceAndStock();
-      this.emitter.on("changePriceData", () => {
-        this.changeForPriceAndStock();
-      });
+
       this.dataItems = this.getFilterData.length;
       //console.log("in data items=", this.getFilterData.length);
     },
@@ -228,28 +229,15 @@ export default {
     },
     async clearFilters() {
       //clear all filters
-      await this.getQuery({
-        categories: [],
-        brands: [],
-        price: [],
-        stock: [],
-        search: "",
-        sort: "",
-      });
-      await this.getFilterParameters({
-        categories: [],
-        brands: [],
-        price: [],
-        stock: [],
-        search: "",
-        sort: "",
-      });
+      await this.getQuery(this.firstQuery);
+      await this.getFilterParameters(this.firstQuery);
       this.changeForPriceAndStock();
       this.emitter.emit("clearSearch");
       console.log("clear all filters");
       this.$router.push({
         query: {},
       });
+      this.emitter.emit("clearUrls");
 
       this.$router.push(this.$route.path);
     },

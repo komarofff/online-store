@@ -85,6 +85,14 @@ export default {
     this.data = this.getFilterData;
     this.cart = this.getCartArray;
     this.isLoader = false;
+    this.emitter.on("clearUrls", () => {
+      console.log("clear from center");
+      setTimeout(() => {
+        this.$router.push({
+          query: {},
+        });
+      }, 50);
+    });
   },
   watch: {
     searchText() {

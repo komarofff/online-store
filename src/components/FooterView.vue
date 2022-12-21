@@ -27,6 +27,7 @@
         <div>
           <a
             class="link-figma"
+            target="_blank"
             href="https://www.figma.com/file/8J8U2wVtBVpvLu08qPmidr/template11?node-id=0%3A1&t=Q7hhy5pDyucKATEd-0"
             >Designed by an unknown artist</a
           >
