@@ -85,6 +85,18 @@ export default {
     this.data = this.getFilterData;
     this.cart = this.getCartArray;
     this.isLoader = false;
+    this.emitter.on("clearUrls", () => {
+      console.log("clear from center");
+      setTimeout(() => {
+        this.$router.push({
+          query: {},
+        });
+        //this.$router.go(this.$router.currentRoute);
+      }, 50);
+    });
+    if (this.$route.query.search) {
+      this.searchText = this.$route.query.search;
+    }
   },
   watch: {
     searchText() {
@@ -117,7 +129,7 @@ export default {
       await this.getQuery(this.getQueryForFilters);
       await this.getFilterParameters(this.getQueryForFilters);
       this.data = this.getFilterData;
-      this.emitter.emit("changeSearch");
+      this.emitter.emit("changeSearch", this.searchText);
     },
     async addToCart(val) {
       val.quantity = 1;

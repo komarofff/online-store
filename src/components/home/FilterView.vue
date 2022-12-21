@@ -100,6 +100,7 @@ export default {
         search: "",
         sort: "",
       },
+      startQueryData: null,
       url: window.location.href,
       successCopyLink: false,
       big: true,
@@ -113,52 +114,98 @@ export default {
   },
   async mounted() {
     this.isLoader = true;
-    // делаем запрос без параметров и получаем все продукты
+    await this.getAllProd();
 
-    // await this.getAllProd();
-    // await this.getAllBrands();
-    // await this.getAllCat();
-
-    // await this.getQuery(this.firstQuery);
-    // await this.getQuery(this.firstQuery);
-    // await this.getFilterParameters(this.firstQuery);
-    // если надо отправляем указанный параметр в фильтр изначально. например формируем фильтр из адресной строки
-    //  и потом вывываем данные из фильтра НО уже с ПАРАМЕТРАМИ
-    //await this.getQuery(this.getQueryForFilters);
-    //await this.getFilterParameters(this.getQueryForFilters);
-
+    // await this.getPriceDiff(this.getFilterData);
+    // await this.getStockDiff(this.getFilterData);
+    // this.startPrice = this.getPrice;
+    // this.startStock = this.getStock;
+    // this.changeForPriceAndStock();
+    ////////////////////////////
     // price and stock
-    await this.getPriceDiff(this.getFilterData);
-    await this.getStockDiff(this.getFilterData);
-    this.startPrice = this.getPrice;
-    this.startStock = this.getStock;
+    this.changeForPriceAndStock();
+    //  делаем startQuery в зависимости от адресной строки
+    this.startQueryData = Object.entries(this.$route.query);
+    if (this.startQueryData.length > 0) {
+      console.log("start with query parameters");
+      this.startQueryData.forEach((el) => {
+        if (el[1] && !el[1].includes("||")) {
+          this.startQuery[el[0]] = el[1];
+          if (!this.getQueryForFilters[el[0]]) {
+            this.getQueryForFilters[el[0]] = [el[1]];
+          } else {
+            if (!this.getQueryForFilters[el[0]].includes(el[1])) {
+              this.getQueryForFilters[el[0]].push(el[1]);
+            } else if (typeof this.getQueryForFilters[el[0]] !== "string") {
+              this.getQueryForFilters[el[0]].splice(
+                this.getQueryForFilters[el[0]].indexOf(el[1]),
+                1
+              );
+            } else {
+              this.getQueryForFilters[el[0]] = "";
+            }
+          }
+        } else if (el[1] && el[1].includes("||")) {
+          this.startQuery[el[0]] = el[1].split("||");
+          if (!this.getQueryForFilters[el[0]]) {
+            this.getQueryForFilters[el[0]] = [el[1].split("||")];
+          } else {
+            if (!this.getQueryForFilters[el[0]].includes(el[1].split("||"))) {
+              this.getQueryForFilters[el[0]].push(el[1].split("||"));
+            } else {
+              this.getQueryForFilters[el[0]].splice(
+                this.getQueryForFilters[el[0]].indexOf(el[1].split("||")),
+                1
+              );
+            }
+          }
+        }
+      });
+      await this.getQuery(this.startQuery);
+      await this.getFilterParameters(this.startQuery);
+      // price and stock
+      this.changeForPriceAndStock();
+    } else {
+      await this.getQuery({
+        categories: [],
+        brands: [],
+        price: [],
+        stock: [],
+        search: "",
+        sort: "",
+      });
+      await this.getFilterParameters({
+        categories: [],
+        brands: [],
+        price: [],
+        stock: [],
+        search: "",
+        sort: "",
+      });
+      await this.changeForPriceAndStock();
+    }
 
-    this.priceMax = this.getPrice[1];
-    this.priceMin = this.getPrice[0];
-    this.stockMin = this.getStock[0];
-    this.stockMax = this.getStock[1];
-    this.emitter.on("changeSearch", () => {
-      this.pushToRouter();
+    this.emitter.on("changeSearch", (data) => {
+      this.pushToRouter("search", data);
+    });
+    this.emitter.on("changePriceData", () => {
+      this.changeForPriceAndStock();
     });
   },
   watch: {
     $route() {
-      //  console.log("route", this.$route);
+      // console.log("route", this.$route, to, from);
+      //this.clearFilters();
     },
     getFilterData() {
-      this.getPriceDiff(this.getFilterData);
-      this.getStockDiff(this.getFilterData);
-      this.startPrice = this.getPrice;
-      this.startStock = this.getStock;
-      this.startPrice = this.getPrice;
-      this.startStock = this.getStock;
-      //console.log("data was changed");
-      this.changeForPriceAndStock();
-      this.emitter.on("changePriceData", () => {
+      if (this.startPrice.length === 0 && this.startStock.length === 0) {
+        this.getPriceDiff(this.getFilterData);
+        this.getStockDiff(this.getFilterData);
+        this.startPrice = this.getPrice;
+        this.startStock = this.getStock;
         this.changeForPriceAndStock();
-      });
+      }
       this.dataItems = this.getFilterData.length;
-      //console.log("in data items=", this.getFilterData.length);
     },
     dataItems() {
       if (this.dataItems === 0) {
@@ -180,12 +227,14 @@ export default {
   },
   methods: {
     ...mapActions("Filter", [
+      "getAllProd",
       "getQuery",
       "getPriceDiff",
       "getStockDiff",
       "getFilterParameters",
     ]),
     isActiveCat(val) {
+      //console.log("this.getQueryForFilters", this.getQueryForFilters);
       if (this.getQueryForFilters.categories) {
         return this.getQueryForFilters.categories.find((el) => {
           return el === val;
@@ -200,22 +249,36 @@ export default {
       }
     },
 
-    pushToRouter() {
-      //?category=laptops&brand=apple&price=1249↕1749&stock=83↕92&search=sbsbdf&big=false
+    pushToRouter(key, value) {
+      //?category=laptops&brand=apple&price=1249||1749&stock=83||92&search=sbsbdf&big=false
       //sort=discount-ASC sort=discount-DESC
       //sort=price-ASC sort=price-DESC
       //sort=rating-ASC sort=rating-DESC
-      this.$router.push({
-        query: {
-          category: this.getQueryForFilters.categories.join("↕"),
-          brand: this.getQueryForFilters.brands.join("↕"),
-          price: this.getQueryForFilters.price.join("↕"),
-          stock: this.getQueryForFilters.stock.join("↕"),
-          search: this.getQueryForFilters.search,
-          sort: this.getQueryForFilters.sort,
-          big: false,
-        },
-      });
+      //query.categories
+      // this.$router.push({
+      //   query: {
+      //     categories: this.getQueryForFilters.categories.join("||"),
+      //     brands: this.getQueryForFilters.brands.join("||"),
+      //     price: this.getQueryForFilters.price.join("||"),
+      //     stock: this.getQueryForFilters.stock.join("||"),
+      //     search: this.getQueryForFilters.search,
+      //     sort: this.getQueryForFilters.sort,
+      //     big: false,
+      //   },
+      // });
+      let queries = JSON.parse(JSON.stringify(this.$route.query));
+      if (value.length) {
+        if (value && typeof value === "string") {
+          queries[key] = value;
+          this.$router.replace({ query: queries });
+        } else if (value.length !== 0 && typeof value !== "string") {
+          queries[key] = value.join("||");
+          this.$router.replace({ query: queries });
+        }
+      } else {
+        delete queries[key];
+        this.$router.replace({ query: queries });
+      }
     },
     copyLink() {
       navigator.clipboard.writeText(window.location.href).then(() => {
@@ -236,20 +299,14 @@ export default {
         search: "",
         sort: "",
       });
-      await this.getFilterParameters({
-        categories: [],
-        brands: [],
-        price: [],
-        stock: [],
-        search: "",
-        sort: "",
-      });
+      await this.getFilterParameters(this.getQueryForFilters);
       this.changeForPriceAndStock();
       this.emitter.emit("clearSearch");
       console.log("clear all filters");
       this.$router.push({
         query: {},
       });
+      this.emitter.emit("clearUrls");
 
       this.$router.push(this.$route.path);
     },
@@ -267,10 +324,9 @@ export default {
         }
       }
 
-      await this.getQuery(this.getQueryForFilters);
-      await this.getFilterParameters(this.getQueryForFilters);
+      this.changeQuery();
       this.changeForPriceAndStock();
-      this.pushToRouter();
+      this.pushToRouter("categories", this.getQueryForFilters.categories);
     },
     async changeBrand(val) {
       if (!this.getQueryForFilters.brands) {
@@ -287,27 +343,35 @@ export default {
       }
       this.changeQuery();
       this.changeForPriceAndStock();
-      this.pushToRouter();
+      this.pushToRouter("brands", this.getQueryForFilters.brands);
     },
     async changePriceMin() {
       this.getQueryForFilters.price = [this.priceMin, this.priceMax];
       this.changeQuery();
-      this.pushToRouter();
+      this.pushToRouter("price", this.getQueryForFilters.price);
     },
     async changePriceMax() {
       this.getQueryForFilters.price = [this.priceMin, this.priceMax];
       this.changeQuery();
-      this.pushToRouter();
+      this.pushToRouter("price", this.getQueryForFilters.price);
     },
     async changeStockMin() {
       this.getQueryForFilters.stock = [this.stockMin, this.stockMax];
       this.changeQuery();
-      this.pushToRouter();
+      this.pushToRouter("stock", this.getQueryForFilters.stock);
     },
     async changeStockMax() {
       this.getQueryForFilters.stock = [this.stockMin, this.stockMax];
       this.changeQuery();
-      this.pushToRouter();
+      this.pushToRouter("stock", this.getQueryForFilters.stock);
+    },
+    async changeSort() {
+      //this.getQueryForFilters.sort = sortVariable;
+      //this.changeQuery();
+      //this.pushToRouter("sort", value);
+    },
+    async changeSizeOfCards() {
+      //this.pushToRouter("big", value);
     },
     async changeForPriceAndStock() {
       await this.getPriceDiff(this.getFilterData);
@@ -320,7 +384,7 @@ export default {
     async changeQuery() {
       await this.getQuery(this.getQueryForFilters);
       await this.getFilterParameters(this.getQueryForFilters);
-      this.pushToRouter();
+      //this.pushToRouter();
     },
   },
 };
