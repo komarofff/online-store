@@ -360,10 +360,10 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
 }
 
 .price-container{
-   margin-top: 20px;
+   margin-top: 10px;
    display: flex;
    justify-content: space-between;
-   align-items: center;
+   align-items: flex-end;
 }
 
 .price-price{
@@ -385,6 +385,7 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
 
 .card-btn-container{
    display: flex;
+   justify-content: center;
    margin-top: 15px;
 }
 
@@ -395,7 +396,7 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
    a{
       text-decoration: none;
       @extend %btn;
-      padding: 3px 8px;      
+      padding: 3px 25px;      
       display: block;
    }
 }

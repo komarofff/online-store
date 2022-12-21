@@ -68,15 +68,33 @@
    background-color: $background-gray-light;
    border-radius: 10px;
    border: 1px solid $background-violet-light;
+   color: #9E9E9E;
+   font-size: 14px;
 }
-
-
-
-
-
-
-
 
 .product__info{
    flex-basis: 50%;
 }
+
+.product__name{
+   font-weight: 700;
+   font-size: 20px;
+   color: $color-text-main;
+}
+
+.product__description{
+   font-weight: 400;
+   font-size: 12px;
+   color: #757575;
+}
+
+
+
+
+
+
+
+
+
+
+
