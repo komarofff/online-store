@@ -184,6 +184,7 @@
    width: 73px;
    height: 64px;
    fill: black;
+   cursor: pointer;
    transition: all 0.3s ease;
    &:hover{
       fill: $color-blue;
