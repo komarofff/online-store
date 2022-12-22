@@ -247,16 +247,24 @@ export default {
     isActiveCat(val) {
       //console.log("this.getQueryForFilters", this.getQueryForFilters);
       if (this.getQueryForFilters.categories) {
-        return this.getQueryForFilters.categories.find((el) => {
-          return el === val;
-        });
+        if (typeof this.getQueryForFilters.categories === "string") {
+          return this.getQueryForFilters.categories === val;
+        } else {
+          return this.getQueryForFilters.categories.find((el) => {
+            return el === val;
+          });
+        }
       }
     },
     isActiveBrand(val) {
       if (this.getQueryForFilters.brands) {
-        return this.getQueryForFilters.brands.find((el) => {
-          return el === val;
-        });
+        if (typeof this.getQueryForFilters.brands === "string") {
+          return this.getQueryForFilters.brands === val;
+        } else {
+          return this.getQueryForFilters.brands.find((el) => {
+            return el === val;
+          });
+        }
       }
     },
 
