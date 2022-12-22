@@ -203,8 +203,8 @@ export default {
     },
     getFilterData() {
       if (this.startPrice.length === 0 && this.startStock.length === 0) {
-        this.getPriceDiff(this.getFilterData);
-        this.getStockDiff(this.getFilterData);
+        this.getPriceDiff(this.getAllProducts);
+        this.getStockDiff(this.getAllProducts);
         this.startPrice = this.getPrice;
         this.startStock = this.getStock;
         this.changeForPriceAndStock();
