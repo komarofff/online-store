@@ -1,5 +1,5 @@
 <template>
-  <section class="main__home-content">
+  <div class="center">
     <h1>Products list</h1>
     <img v-if="isLoader" src="../../assets/loader.gif" alt="loader" />
     <p>{{ getQueryForFilters }}</p>
@@ -63,7 +63,7 @@
         </div>
       </template>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>

@@ -9,6 +9,9 @@ body{
    margin: 0;
    padding: 0;
 }
+h1, h2, h3, h4, h5, h6, p, span{
+   color: $color-text-main;
+}
 
 .container {
    max-width: 1560px;
@@ -36,7 +39,7 @@ body{
  
  @media (max-width: 992px) {
    .container {
-     max-width: 710px;
+      max-width: 100%;
    }
  }
  

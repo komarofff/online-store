@@ -1,115 +1,79 @@
 <template>
-  <aside class="main__home-filter">
-    <div class="filter-button">
-      <button class="filter-btn-resset" @click="clearFilters()">
-        Reset Filters
-      </button>
+  <aside class="filter">
+    <div>
+      <h1>I`m a filter section</h1>
+      <p>Found items: {{ dataItems }}</p>
+      <!--      {{ getCategories }}-->
+      <!--      {{ getBrands }}-->
 
-      <button class="filter-btn-copy" v-if="successCopyLink">
-        Link was copied
-      </button>
-      <button class="filter-btn-copy" v-else @click="copyLink()">
-        Copy Link
-      </button>
-    </div>
-    <h3>Categories</h3>
-    <ul class="checkbox-categories vertical-scroll">
-      <template v-for="cat in getCategories" :key="cat">
-        <li class="checkbox-flex">
-          <div>
-            <input
-              type="checkbox"
-              :id="cat"
-              @change="changeCat(cat)"
-              :checked="isActiveCat(cat)"
-            />
+      <p>
+        <button v-if="successCopyLink">Link was copied successfully</button>
+        <button v-else @click="copyLink()">Copy link</button>
+      </p>
+      <p>
+        <button @click="clearFilters()">Clear filters</button>
+      </p>
+
+      <hr />
+      <div>
+        <h2>Categories</h2>
+        <!--        categories - {{ categories }}-->
+        <template v-for="cat in getCategories" :key="cat">
+          <p>
             <label
-              :for="cat"
-              :class="{ 'gray-border': !showAllInFilter('category', cat) }"
-              >{{ cat }}</label
+              ><input
+                type="checkbox"
+                @change="changeCat(cat)"
+                :checked="isActiveCat(cat)"
+              />{{ cat }}</label
             >
-          </div>
-          <div
-            class="checkbox-count"
-            :class="{ 'gray-color': !showAllInFilter('category', cat) }"
-          >
-            ({{ showAllInFilter("category", cat) }} /
-            {{ showAllInItem("category", cat) }})
-          </div>
-        </li>
-      </template>
-    </ul>
-
-    <h3>Brands</h3>
-    <ul class="checkbox-categories vertical-scroll">
-      <template v-for="brand in getBrands" :key="brand">
-        <li class="checkbox-flex">
-          <div>
-            <input
-              type="checkbox"
-              :id="brand"
-              @change="changeBrand(brand)"
-              :checked="isActiveBrand(brand)"
-            />
+            {{ showAllInFilter("category", cat) }} /
+            {{ showAllInItem("category", cat) }}
+          </p>
+        </template>
+      </div>
+      <hr />
+      <div>
+        <h2>Brands</h2>
+        <template v-for="brand in getBrands" :key="brand">
+          <p>
             <label
-              :for="brand"
-              :class="{ 'gray-border': !showAllInFilter('brand', brand) }"
-              >{{ brand }}</label
+              ><input
+                type="checkbox"
+                @change="changeBrand(brand)"
+                :checked="isActiveBrand(brand)"
+              />{{ brand }}</label
             >
-          </div>
-          <div
-            class="checkbox-count"
-            :class="{ 'gray-color': !showAllInFilter('brand', brand) }"
-          >
-            ({{ showAllInFilter("brand", brand) }} /
-            {{ showAllInItem("brand", brand) }})
-          </div>
-        </li>
-      </template>
-    </ul>
+            {{ showAllInFilter("brand", brand) }} /
+            {{ showAllInItem("brand", brand) }}
+          </p>
+        </template>
+      </div>
+      <hr />
+      <div>
+        <h2>Price</h2>
+        <p>{{ startPrice }}</p>
 
-    <h3>Price</h3>
-    <div class="range price">
-      <p class="range-price-to">€{{ priceMin }}</p>
-      <p class="range-price-from">€{{ priceMax }}</p>
-    </div>
-    <div class="multi-range border-bottom">
-      <input
-        type="range"
-        min="0"
-        :max="priceMax"
-        v-model="priceMin"
-        @input="changePriceMin()"
-      />
-      <input
-        type="range"
-        :min="priceMin"
-        :max="startPrice[1]"
-        v-model="priceMax"
-        @input="changePriceMax()"
-      />
-    </div>
-
-    <h3>Stock</h3>
-    <div class="range stock">
-      <p class="range-stock-to">{{ stockMin }}</p>
-      <p class="range-stock-from">{{ stockMax }}</p>
-    </div>
-    <div class="multi-range">
-      <input
-        type="range"
-        min="0"
-        :max="stockMax"
-        v-model="stockMin"
-        @input="changeStockMin()"
-      />
-      <input
-        type="range"
-        :min="stockMin"
-        :max="startStock[1]"
-        v-model="stockMax"
-        @input="changeStockMax()"
-      />
+        <div v-if="isFound">
+          min-
+          <input type="number" v-model="priceMin" @input="changePriceMin()" />|
+          max-
+          <input type="number" v-model="priceMax" @input="changePriceMax()" />
+        </div>
+        <div v-else>No found items</div>
+      </div>
+      <hr />
+      <div>
+        <h2>Stock</h2>
+        <p>{{ startStock }}</p>
+        <div v-if="isFound">
+          min-
+          <input type="number" v-model="stockMin" @input="changeStockMin()" />|
+          max-
+          <input type="number" v-model="stockMax" @input="changeStockMax()" />
+        </div>
+        <div v-else>No found items</div>
+      </div>
     </div>
   </aside>
 </template>
@@ -230,9 +194,6 @@ export default {
     });
     this.emitter.on("changePriceData", () => {
       this.changeForPriceAndStock();
-    });
-    this.emitter.on("resetFilters", () => {
-      this.clearFilters();
     });
   },
   watch: {
@@ -382,7 +343,7 @@ export default {
         }
       }
 
-      await this.changeQuery();
+      this.changeQuery();
       this.changeForPriceAndStock();
       this.pushToRouter("categories", this.getQueryForFilters.categories);
     },
@@ -399,32 +360,28 @@ export default {
           );
         }
       }
-      await this.changeQuery();
+      this.changeQuery();
       this.changeForPriceAndStock();
       this.pushToRouter("brands", this.getQueryForFilters.brands);
     },
     async changePriceMin() {
       this.getQueryForFilters.price = [this.priceMin, this.priceMax];
-      await this.changeQuery();
-      this.changeForPriceAndStock();
+      this.changeQuery();
       this.pushToRouter("price", this.getQueryForFilters.price);
     },
     async changePriceMax() {
       this.getQueryForFilters.price = [this.priceMin, this.priceMax];
-      await this.changeQuery();
-      this.changeForPriceAndStock();
+      this.changeQuery();
       this.pushToRouter("price", this.getQueryForFilters.price);
     },
     async changeStockMin() {
       this.getQueryForFilters.stock = [this.stockMin, this.stockMax];
-      await this.changeQuery();
-      this.changeForPriceAndStock();
+      this.changeQuery();
       this.pushToRouter("stock", this.getQueryForFilters.stock);
     },
     async changeStockMax() {
       this.getQueryForFilters.stock = [this.stockMin, this.stockMax];
-      await this.changeQuery();
-      this.changeForPriceAndStock();
+      this.changeQuery();
       this.pushToRouter("stock", this.getQueryForFilters.stock);
     },
     async changeSort() {
