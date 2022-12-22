@@ -64,11 +64,15 @@ export const mutations: MutationTree<State> = {
   },
   plusItemQuantity(state: State, id: number) {
     const idd = state.cartArray.findIndex((el) => el.id === id);
-    state.cartArray[idd].quantity++;
+    const counter: number = state.cartArray[idd].quantity + 1;
+    state.cartArray[idd].quantity = counter;
+    localStorage.setItem("cart", JSON.stringify(state.cartArray));
   },
   minusItemQuantity(state: State, id: number) {
     const idd = state.cartArray.findIndex((el) => el.id === id);
-    state.cartArray[idd].quantity--;
+    const counter: number = state.cartArray[idd].quantity - 1;
+    state.cartArray[idd].quantity = counter;
+    localStorage.setItem("cart", JSON.stringify(state.cartArray));
   },
 };
 

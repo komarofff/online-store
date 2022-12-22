@@ -89,10 +89,19 @@ export default {
     this.itemsInCart = this.getCartArray;
     this.maxPage = Math.ceil(this.itemsInCart.length / this.itemsPerPage);
     this.startQuery = this.$route.query.page;
-    if (this.startQuery && this.startQuery > 0) {
+    if (
+      this.startQuery &&
+      this.startQuery > 0 &&
+      this.startQuery <= this.maxPage
+    ) {
       console.log("start with query parameters", this.startQuery);
       this.page = Number(this.$route.query.page);
       this.showPaginatedItems(this.startQuery);
+    } else if (this.startQuery > this.maxPage) {
+      this.showPaginatedItems(1);
+      let queries = JSON.parse(JSON.stringify(this.$route.query));
+      queries.page = 1;
+      this.$router.replace({ query: queries });
     } else {
       this.showPaginatedItems(this.page);
     }
@@ -152,6 +161,11 @@ export default {
         await this.delFromCart(id);
         this.itemsInCart = this.getCartArray;
         this.maxPage = Math.ceil(this.itemsInCart.length / this.itemsPerPage);
+        if (this.itemsInCart.length % this.itemsPerPage === 0) {
+          this.page--;
+          this.changeQuery(this.page);
+        }
+        this.showPaginatedItems(this.page);
       }
     },
     async quantityPlus(id) {
