@@ -317,6 +317,13 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
    margin-top: 8px;
 }
 
+.card-container{
+   display: grid;
+   grid-template-columns: repeat(auto-fit,minmax(250px,250px));
+   grid-gap: 20px;
+   justify-content: space-around;
+}
+
 .card-item{
    background-color: $background-gray-light;
    border-radius: 10px;
