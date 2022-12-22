@@ -27,6 +27,8 @@
                 :checked="isActiveCat(cat)"
               />{{ cat }}</label
             >
+            {{ showAllInFilter("category", cat) }} /
+            {{ showAllInItem("category", cat) }}
           </p>
         </template>
       </div>
@@ -42,6 +44,8 @@
                 :checked="isActiveBrand(brand)"
               />{{ brand }}</label
             >
+            {{ showAllInFilter("brand", brand) }} /
+            {{ showAllInItem("brand", brand) }}
           </p>
         </template>
       </div>
@@ -199,8 +203,8 @@ export default {
     },
     getFilterData() {
       if (this.startPrice.length === 0 && this.startStock.length === 0) {
-        this.getPriceDiff(this.getFilterData);
-        this.getStockDiff(this.getFilterData);
+        this.getPriceDiff(this.getAllProducts);
+        this.getStockDiff(this.getAllProducts);
         this.startPrice = this.getPrice;
         this.startStock = this.getStock;
         this.changeForPriceAndStock();
@@ -217,6 +221,7 @@ export default {
   },
   computed: {
     ...mapGetters("Filter", [
+      "getAllProducts",
       "getCategories",
       "getBrands",
       "getPrice",
@@ -233,19 +238,33 @@ export default {
       "getStockDiff",
       "getFilterParameters",
     ]),
+    showAllInItem(item, val) {
+      return this.getAllProducts.filter((el) => el[item] === val).length;
+    },
+    showAllInFilter(item, val) {
+      return this.getFilterData.filter((el) => el[item] === val).length;
+    },
     isActiveCat(val) {
       //console.log("this.getQueryForFilters", this.getQueryForFilters);
       if (this.getQueryForFilters.categories) {
-        return this.getQueryForFilters.categories.find((el) => {
-          return el === val;
-        });
+        if (typeof this.getQueryForFilters.categories === "string") {
+          return this.getQueryForFilters.categories === val;
+        } else {
+          return this.getQueryForFilters.categories.find((el) => {
+            return el === val;
+          });
+        }
       }
     },
     isActiveBrand(val) {
       if (this.getQueryForFilters.brands) {
-        return this.getQueryForFilters.brands.find((el) => {
-          return el === val;
-        });
+        if (typeof this.getQueryForFilters.brands === "string") {
+          return this.getQueryForFilters.brands === val;
+        } else {
+          return this.getQueryForFilters.brands.find((el) => {
+            return el === val;
+          });
+        }
       }
     },
 

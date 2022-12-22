@@ -44,6 +44,9 @@ export const getters: GetterTree<State, RootState> = {
   getQueryForFilters(state: State) {
     return state.queryForFilter;
   },
+  getAllProducts(state: State) {
+    return state.products;
+  },
   getBrands(state: State) {
     return state.brands;
   },
