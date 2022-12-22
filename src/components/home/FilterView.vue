@@ -27,6 +27,8 @@
                 :checked="isActiveCat(cat)"
               />{{ cat }}</label
             >
+            {{ showAllInFilter("category", cat) }} /
+            {{ showAllInItem("category", cat) }}
           </p>
         </template>
       </div>
@@ -42,6 +44,8 @@
                 :checked="isActiveBrand(brand)"
               />{{ brand }}</label
             >
+            {{ showAllInFilter("brand", brand) }} /
+            {{ showAllInItem("brand", brand) }}
           </p>
         </template>
       </div>
@@ -217,6 +221,7 @@ export default {
   },
   computed: {
     ...mapGetters("Filter", [
+      "getAllProducts",
       "getCategories",
       "getBrands",
       "getPrice",
@@ -233,6 +238,12 @@ export default {
       "getStockDiff",
       "getFilterParameters",
     ]),
+    showAllInItem(item, val) {
+      return this.getAllProducts.filter((el) => el[item] === val).length;
+    },
+    showAllInFilter(item, val) {
+      return this.getFilterData.filter((el) => el[item] === val).length;
+    },
     isActiveCat(val) {
       //console.log("this.getQueryForFilters", this.getQueryForFilters);
       if (this.getQueryForFilters.categories) {
