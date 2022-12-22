@@ -117,6 +117,15 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
    border: 2px solid $color-blue;
 }
 
+.gray-color{
+   color: #ccc !important;
+}
+
+.gray-border{
+   color: #ccc !important;
+   border: 1px solid #ccc !important;
+}
+
 .checkbox-count{
    font-size: 16px;
    font-weight: 500;
@@ -352,7 +361,6 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
 }
 
 .price-container{
-   margin-top: 10px;
    display: flex;
    justify-content: space-between;
    align-items: flex-end;
