@@ -1,7 +1,9 @@
 <template>
-  <div class="home container">
-    <FilterView></FilterView>
-    <CenterSection></CenterSection>
+  <div class="container">
+    <div class="main__home">
+      <FilterView></FilterView>
+      <CenterSection></CenterSection>
+    </div>
   </div>
 </template>
 

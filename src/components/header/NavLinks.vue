@@ -10,7 +10,10 @@
     <nav class="header__menu">
       <ul class="header__list">
         <li>
-          <router-link class="header__link" :to="{ name: 'home' }"
+          <router-link
+            class="header__link"
+            :to="{ name: 'home' }"
+            @click="emitToResetFilters()"
             >Home</router-link
           >
         </li>
@@ -58,6 +61,9 @@ export default {
   },
   methods: {
     ...mapActions("Categories", ["getAllCat"]),
+    emitToResetFilters() {
+      this.emitter.emit("resetFilters");
+    },
   },
   components: {
     SearchBlock,
