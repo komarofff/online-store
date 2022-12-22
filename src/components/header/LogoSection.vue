@@ -1,8 +1,8 @@
 <template>
   <div class="header__logo">
-    <router-link :to="{ name: 'home' }" @click="emitToResetFilters()"
+    <a href="/" @click="emitToResetFilters()"
       ><img src="../../assets/icon/logo.svg" alt="logo"
-    /></router-link>
+    /></a>
   </div>
 </template>
 

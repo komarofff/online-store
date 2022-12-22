@@ -76,17 +76,17 @@
     <div class="multi-range border-bottom">
       <input
         type="range"
-        min="0"
-        :max="priceMax"
-        v-model="priceMin"
-        @input="changePriceMin()"
-      />
-      <input
-        type="range"
         :min="priceMin"
         :max="startPrice[1]"
         v-model="priceMax"
         @input="changePriceMax()"
+      />
+      <input
+        type="range"
+        min="0"
+        :max="priceMax"
+        v-model="priceMin"
+        @input="changePriceMin()"
       />
     </div>
 
@@ -98,17 +98,17 @@
     <div class="multi-range">
       <input
         type="range"
-        min="0"
-        :max="stockMax"
-        v-model="stockMin"
-        @input="changeStockMin()"
-      />
-      <input
-        type="range"
         :min="stockMin"
         :max="startStock[1]"
         v-model="stockMax"
         @input="changeStockMax()"
+      />
+      <input
+        type="range"
+        min="0"
+        :max="stockMax"
+        v-model="stockMin"
+        @input="changeStockMin()"
       />
     </div>
   </aside>
@@ -234,11 +234,17 @@ export default {
     this.emitter.on("resetFilters", () => {
       this.clearFilters();
     });
+    this.emitter.on("changeSort", (val) => {
+      this.changeSort(val);
+    });
   },
   watch: {
     $route() {
-      // console.log("route", this.$route, to, from);
+      //console.log("route", this.$route);
       //this.clearFilters();
+      // this.emitter.on("changeSort", (val) => {
+      //   this.changeSort(val);
+      // });
     },
     getFilterData() {
       if (this.startPrice.length === 0 && this.startStock.length === 0) {
@@ -406,34 +412,34 @@ export default {
     async changePriceMin() {
       this.getQueryForFilters.price = [this.priceMin, this.priceMax];
       await this.changeQuery();
-      this.changeForPriceAndStock();
+      // this.changeForPriceAndStock();
       this.pushToRouter("price", this.getQueryForFilters.price);
     },
     async changePriceMax() {
       this.getQueryForFilters.price = [this.priceMin, this.priceMax];
       await this.changeQuery();
-      this.changeForPriceAndStock();
+      //this.changeForPriceAndStock();
       this.pushToRouter("price", this.getQueryForFilters.price);
     },
     async changeStockMin() {
       this.getQueryForFilters.stock = [this.stockMin, this.stockMax];
       await this.changeQuery();
-      this.changeForPriceAndStock();
+      //this.changeForPriceAndStock();
       this.pushToRouter("stock", this.getQueryForFilters.stock);
     },
     async changeStockMax() {
       this.getQueryForFilters.stock = [this.stockMin, this.stockMax];
       await this.changeQuery();
-      this.changeForPriceAndStock();
+      //this.changeForPriceAndStock();
       this.pushToRouter("stock", this.getQueryForFilters.stock);
     },
-    async changeSort() {
-      //this.getQueryForFilters.sort = sortVariable;
-      //this.changeQuery();
-      //this.pushToRouter("sort", value);
+    async changeSort(sortVariable) {
+      this.getQueryForFilters.sort = sortVariable;
+      //await this.changeQuery();
+      this.pushToRouter("sort", sortVariable);
     },
     async changeSizeOfCards() {
-      //this.pushToRouter("big", value);
+      //this.pushToRouter("big", big);
     },
     async changeForPriceAndStock() {
       await this.getPriceDiff(this.getFilterData);
@@ -452,20 +458,4 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.filter {
-  align-self: stretch;
-  flex-basis: 20%;
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-}
-
-hr {
-  margin: 20px 0;
-}
-
-aside {
-  border: 1px solid red;
-}
-</style>
+<style scoped lang="scss"></style>
