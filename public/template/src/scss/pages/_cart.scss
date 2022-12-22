@@ -207,9 +207,20 @@
    outline: none;   
 }
 
+.card__pay-promo{
+   margin: 10px auto 0;
+   font-size: 14px;
+   color: #ccc;
+}
 
-
-
+.card__pay-btn{
+   @extend %btn;
+   width: 180px;
+   height: 40px;
+   border: none;
+   cursor: pointer;
+   margin: 40px auto 20px;
+}
 
 
 
