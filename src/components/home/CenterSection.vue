@@ -154,7 +154,6 @@ export default {
         this.$router.push({
           query: {},
         });
-        //this.$router.go(this.$router.currentRoute);
       }, 50);
     });
     if (this.$route.query.search) {
@@ -162,11 +161,6 @@ export default {
     }
   },
   watch: {
-    sort() {
-      // событие в фильтр
-      // console.log("sort was changed");
-      //this.changesToSort();
-    },
     searchText() {
       //getQueryForFilters параметры фильтра сохраненные в сторе
       this.changesToFilter();
@@ -187,17 +181,6 @@ export default {
   methods: {
     ...mapActions("Filter", ["getQuery", "getFilterParameters"]),
     ...mapActions("Cart", ["pushToCart", "delFromCart"]),
-    // async getImageData(imageId) {
-    //   let url = await axios.get(imageId).then((response) => {
-    //     return response.data;
-    //   });
-    //
-    //   this.getImage(JSON.stringify(url));
-    // },
-    // getImage(src) {
-    //   // console.log("src", src);
-    //   return src;
-    // },
     async changesToFilter() {
       if (this.searchText.length > 0) {
         this.getQueryForFilters.search = this.searchText;

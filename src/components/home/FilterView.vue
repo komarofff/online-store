@@ -156,11 +156,6 @@ export default {
     this.isLoader = true;
     await this.getAllProd();
 
-    // await this.getPriceDiff(this.getFilterData);
-    // await this.getStockDiff(this.getFilterData);
-    // this.startPrice = this.getPrice;
-    // this.startStock = this.getStock;
-    // this.changeForPriceAndStock();
     ////////////////////////////
     // price and stock
     this.changeForPriceAndStock();
@@ -203,25 +198,13 @@ export default {
       });
       await this.getQuery(this.startQuery);
       await this.getFilterParameters(this.startQuery);
+
       // price and stock
       this.changeForPriceAndStock();
     } else {
-      await this.getQuery({
-        categories: [],
-        brands: [],
-        price: [],
-        stock: [],
-        search: "",
-        sort: "",
-      });
-      await this.getFilterParameters({
-        categories: [],
-        brands: [],
-        price: [],
-        stock: [],
-        search: "",
-        sort: "",
-      });
+      await this.getQuery(this.firstQuery);
+      await this.getFilterParameters(this.firstQuery);
+
       await this.changeForPriceAndStock();
     }
 
@@ -314,22 +297,6 @@ export default {
     },
 
     pushToRouter(key, value) {
-      //?category=laptops&brand=apple&price=1249||1749&stock=83||92&search=sbsbdf&big=false
-      //sort=discount-ASC sort=discount-DESC
-      //sort=price-ASC sort=price-DESC
-      //sort=rating-ASC sort=rating-DESC
-      //query.categories
-      // this.$router.push({
-      //   query: {
-      //     categories: this.getQueryForFilters.categories.join("||"),
-      //     brands: this.getQueryForFilters.brands.join("||"),
-      //     price: this.getQueryForFilters.price.join("||"),
-      //     stock: this.getQueryForFilters.stock.join("||"),
-      //     search: this.getQueryForFilters.search,
-      //     sort: this.getQueryForFilters.sort,
-      //     big: false,
-      //   },
-      // });
       let queries = JSON.parse(JSON.stringify(this.$route.query));
       if (value.length) {
         if (value && typeof value === "string") {
@@ -364,6 +331,7 @@ export default {
         sort: "",
       });
       await this.getFilterParameters(this.getQueryForFilters);
+
       this.changeForPriceAndStock();
       this.emitter.emit("clearSearch");
       console.log("clear all filters");
@@ -452,6 +420,7 @@ export default {
     async changeQuery() {
       await this.getQuery(this.getQueryForFilters);
       await this.getFilterParameters(this.getQueryForFilters);
+
       //this.pushToRouter();
     },
   },

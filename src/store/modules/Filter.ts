@@ -215,8 +215,6 @@ const actions: ActionTree<RootState, RootState> = {
         } else if (items[0] === "rating" && items[1] === "DESC") {
           arr.sort((a, b) => b.rating - a.rating);
         }
-        console.log("arr.length", arr.length);
-        console.log("arr.length", arr.length);
       }
 
       commit("setFilter", arr);
