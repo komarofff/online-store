@@ -51,7 +51,10 @@
     <div class="home-cards">
       <div class="card-container">
         <template v-for="product in data" :key="product.id">
-          <div class="card-item card-hover">
+          <div
+            class="card-item card-hover"
+            :class="{ 'card-checked': isActiveButton(product.id) }"
+          >
             <div class="card-photo">
               <router-link
                 :to="`/catalog/${product.category}/product/${product.id}`"
