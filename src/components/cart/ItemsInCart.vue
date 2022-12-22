@@ -50,11 +50,17 @@
             Stock: <span>{{ prod.stock }}</span>
           </p>
           <div class="more-less">
-            <button class="btn-control btn-control-less">
+            <button
+              class="btn-control btn-control-less"
+              @click="quantityMinus(prod.id)"
+            >
               <img src="@/assets/icon/arrow-link-right.svg" alt="" />
             </button>
-            <p>1</p>
-            <button class="btn-control btn-control-more">
+            <p>{{ prod.quantity }}</p>
+            <button
+              class="btn-control btn-control-more"
+              @click="quantityPlus(prod.id)"
+            >
               <img src="@/assets/icon/arrow-link-right.svg" alt="" />
             </button>
           </div>
@@ -100,7 +106,7 @@ export default {
     ...mapGetters("Cart", ["getCartArray", "getCartLength"]),
   },
   methods: {
-    ...mapActions("Cart", ["plusQuantity", "minusQuantity"]),
+    ...mapActions("Cart", ["plusQuantity", "minusQuantity", "delFromCart"]),
     goToPage(val) {
       let queries = JSON.parse(JSON.stringify(this.$route.query));
       if (val) {
@@ -139,10 +145,20 @@ export default {
       this.itemsInCart = this.getCartArray.slice(start, end);
     },
     async quantityMinus(id) {
-      await this.minusQuantity(id);
+      let idx = this.getCartArray.findIndex((el) => el.id === id);
+      if (this.getCartArray[idx].quantity > 1) {
+        await this.minusQuantity(id);
+      } else {
+        await this.delFromCart(id);
+        this.itemsInCart = this.getCartArray;
+        this.maxPage = Math.ceil(this.itemsInCart.length / this.itemsPerPage);
+      }
     },
     async quantityPlus(id) {
-      await this.plusQuantity(id);
+      let idx = this.getCartArray.findIndex((el) => el.id === id);
+      if (this.getCartArray[idx].quantity < this.getCartArray[idx].stock) {
+        await this.plusQuantity(id);
+      }
     },
     changeQuery(newPage) {
       let queries = JSON.parse(JSON.stringify(this.$route.query));
