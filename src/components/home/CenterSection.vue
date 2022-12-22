@@ -1,67 +1,121 @@
 <template>
   <section class="main__home-content">
-    <h1>Products list</h1>
-    <img v-if="isLoader" src="../../assets/loader.gif" alt="loader" />
-    <p>{{ getQueryForFilters }}</p>
-    <p>Found items: {{ dataItems }}</p>
-    <input type="text" v-model="searchText" />
-    <div class="center-section">
-      <!--      {{ getFilterData }}-->
+    <div class="home-menu-crumbs">
+      <h1 class="crumbs-start">Filter page</h1>
+      <div class="crumbs-address">
+        <a class="img-address" href=""
+          ><img src="@/assets/icon/address-svg.svg" alt=""
+        /></a>
+        <a href="">Category</a>
+        <img
+          class="img-arrow"
+          src="@/assets/icon/arrow-link-right.svg"
+          alt=""
+        />
+        <a href="">Brand</a>
+        <img
+          class="img-arrow"
+          src="@/assets/icon/arrow-link-right.svg"
+          alt=""
+        />
+        <a href="">Product</a>
+      </div>
+    </div>
 
-      <template v-for="product in data" :key="product.id">
-        <div class="product__card">
-          <p>id- {{ product.id }}</p>
-          <hr />
-          <p>title- {{ product.title }}</p>
-          <hr />
-          <p>description- {{ product.description }}</p>
-          <hr />
-          <p>price- {{ product.price }}</p>
-          <hr />
-          <p>discountPercentage- {{ product.discountPercentage }}</p>
-          <hr />
-          <p>rating- {{ product.rating }}</p>
-          <hr />
-          <p>stock- {{ product.stock }}</p>
-          <hr />
-          <p>brand- {{ product.brand }}</p>
-          <hr />
-          <p>category- {{ product.category }}</p>
-          <hr />
-          <p>
-            thumbnail -
-            <img
-              class="thumbnail"
-              :src="product.thumbnail"
-              :alt="product.title"
-            />
-          </p>
-          <hr />
-          <p>
-            <button
-              v-if="!isActiveButton(product.id)"
-              @click="addToCart(product)"
-            >
-              Add to cart
-            </button>
+    <div class="home-menu">
+      <select v-model="sort" @change="changesToSort(sort)">
+        <option disabled value="">Sort options:</option>
+        <option
+          v-for="option in options"
+          :value="option.value"
+          :key="option.value"
+        >
+          {{ option.text }}
+        </option>
+      </select>
 
-            <button
-              class="delete__button"
-              v-if="isActiveButton(product.id)"
-              @click="delCart(product.id)"
-              :ref="`id-${product.id}`"
-            >
-              Delete from cart
-            </button>
-          </p>
-          <p>
-            <router-link
-              :to="`/catalog/${product.category}/product/${product.id}`"
-              >Details</router-link
-            >
-          </p>
-        </div>
-      </template>
+      <p class="home-menu-found">
+        Found: <span id="found">{{ dataItems }}</span>
+      </p>
+
+      <div class="home-menu-search">
+        <input type="text" placeholder="Search product" v-model="searchText" />
+      </div>
+
+      <div class="home-menu-img">
+        <button><img src="@/assets/icon/block-9.svg" alt="" /></button>
+        <button><img src="@/assets/icon/block-16.svg" alt="" /></button>
+      </div>
+    </div>
+    <img v-if="isLoader" src="@/assets/loader.gif" alt="loader" />
+    <div class="home-cards">
+      <div class="card-container">
+        <template v-for="product in data" :key="product.id">
+          <div class="card-item card-hover">
+            <div class="card-photo">
+              <router-link
+                :to="`/catalog/${product.category}/product/${product.id}`"
+                ><img
+                  class="card-img"
+                  :src="product.thumbnail"
+                  :alt="product.title"
+              /></router-link>
+            </div>
+            <div class="card-info">
+              <p class="card-name">
+                <span>{{ product.title }}</span>
+              </p>
+              <p class="card-brand">
+                Brand: <span>{{ product.brand }}</span>
+              </p>
+              <p class="card-category">
+                Category: <span>{{ product.category }}</span>
+              </p>
+              <p class="card-rating">
+                Rating: <span>{{ product.rating }}</span>
+              </p>
+              <p class="card-stock">
+                Stock: <span>{{ product.stock }}</span>
+              </p>
+
+              <div class="price-container">
+                <div class="price-price">
+                  <span class="card-price">€{{ product.price }}</span>
+                  <span class="card-discount"
+                    >-{{ product.discountPercentage }}%</span
+                  >
+                </div>
+                <div class="btn-card">
+                  <button
+                    title="Delete from cart"
+                    class="btn-less"
+                    v-if="isActiveButton(product.id)"
+                    @click="delCart(product.id)"
+                  >
+                    <img src="@/assets/icon/cart-btn.svg" alt="" />
+                  </button>
+                  <button
+                    title="Add to cart"
+                    class="btn-more"
+                    v-if="!isActiveButton(product.id)"
+                    @click="addToCart(product)"
+                  >
+                    <img src="@/assets/icon/cart-btn.svg" alt="" />
+                  </button>
+                </div>
+              </div>
+              <div class="card-btn-container">
+                <div class="card-link-more">
+                  <router-link
+                    :to="`/catalog/${product.category}/product/${product.id}`"
+                    >More Info</router-link
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
     </div>
   </section>
 </template>
@@ -77,6 +131,15 @@ export default {
       searchText: null,
       cart: [],
       dataItems: 0,
+      sort: "",
+      options: [
+        { text: "Sort by price ↑", value: "price-ASC" },
+        { text: "Sort by price ↓", value: "price-DESC" },
+        { text: "Sort by rating ↑", value: "rating-ASC" },
+        { text: "Sort by rating ↓", value: "rating-DESC" },
+        { text: "Sort by discount ↑", value: "discount-ASC" },
+        { text: "Sort by discount ↓", value: "discount-DESC" },
+      ],
     };
   },
   async mounted() {
@@ -91,7 +154,6 @@ export default {
         this.$router.push({
           query: {},
         });
-        //this.$router.go(this.$router.currentRoute);
       }, 50);
     });
     if (this.$route.query.search) {
@@ -119,17 +181,6 @@ export default {
   methods: {
     ...mapActions("Filter", ["getQuery", "getFilterParameters"]),
     ...mapActions("Cart", ["pushToCart", "delFromCart"]),
-    // async getImageData(imageId) {
-    //   let url = await axios.get(imageId).then((response) => {
-    //     return response.data;
-    //   });
-    //
-    //   this.getImage(JSON.stringify(url));
-    // },
-    // getImage(src) {
-    //   // console.log("src", src);
-    //   return src;
-    // },
     async changesToFilter() {
       if (this.searchText.length > 0) {
         this.getQueryForFilters.search = this.searchText;
@@ -141,6 +192,19 @@ export default {
       await this.getFilterParameters(this.getQueryForFilters);
       this.data = this.getFilterData;
       this.emitter.emit("changeSearch", this.searchText);
+    },
+    async changesToSort() {
+      console.log("sort was changed");
+      if (this.sort.length > 0) {
+        this.getQueryForFilters.sort = this.sort;
+      } else {
+        delete this.getQueryForFilters.sort;
+      }
+
+      // await this.getQuery(this.getQueryForFilters);
+      await this.getFilterParameters(this.getQueryForFilters);
+      this.data = this.getFilterData;
+      this.emitter.emit("changeSort", this.sort);
     },
     async addToCart(val) {
       val.quantity = 1;

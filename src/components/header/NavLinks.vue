@@ -1,25 +1,12 @@
 <template>
-  <!--  <nav>-->
-  <!--    <router-link :to="{ name: 'home' }">Home</router-link> |-->
-  <!--    <router-link :to="{ name: 'categories' }">Catalog</router-link> |-->
-  <!--    <router-link :to="{ name: 'cart' }">Cart</router-link> |-->
-  <!--    <router-link :to="{ name: 'checkout' }">Checkout</router-link> |-->
-  <!--    <router-link :to="{ name: 'error' }"> 404 </router-link> |-->
-  <!--  </nav>-->
   <div class="header__modal">
     <nav class="header__menu">
       <ul class="header__list">
         <li>
-          <router-link
-            class="header__link"
-            :to="{ name: 'home' }"
-            @click="emitToResetFilters()"
-            >Home</router-link
+          <a class="header__link" href="/" @click="emitToResetFilters()"
+            >Home</a
           >
         </li>
-        <!--        <li>-->
-        <!--          <a class="header__link" href="/">Home</a>-->
-        <!--        </li>-->
         <li>
           <router-link class="header__link" :to="{ name: 'categories' }"
             >Catalog</router-link

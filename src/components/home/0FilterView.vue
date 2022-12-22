@@ -1,79 +1,115 @@
 <template>
-  <aside class="filter">
-    <div>
-      <h1>I`m a filter section</h1>
-      <p>Found items: {{ dataItems }}</p>
-      <!--      {{ getCategories }}-->
-      <!--      {{ getBrands }}-->
+  <aside class="main__home-filter">
+    <div class="filter-button">
+      <button class="filter-btn-resset" @click="clearFilters()">
+        Reset Filters
+      </button>
 
-      <p>
-        <button v-if="successCopyLink">Link was copied successfully</button>
-        <button v-else @click="copyLink()">Copy link</button>
-      </p>
-      <p>
-        <button @click="clearFilters()">Clear filters</button>
-      </p>
-
-      <hr />
-      <div>
-        <h2>Categories</h2>
-        <!--        categories - {{ categories }}-->
-        <template v-for="cat in getCategories" :key="cat">
-          <p>
+      <button class="filter-btn-copy" v-if="successCopyLink">
+        Link was copied
+      </button>
+      <button class="filter-btn-copy" v-else @click="copyLink()">
+        Copy Link
+      </button>
+    </div>
+    <h3>Categories</h3>
+    <ul class="checkbox-categories vertical-scroll">
+      <template v-for="cat in getCategories" :key="cat">
+        <li class="checkbox-flex">
+          <div>
+            <input
+              type="checkbox"
+              :id="cat"
+              @change="changeCat(cat)"
+              :checked="isActiveCat(cat)"
+            />
             <label
-              ><input
-                type="checkbox"
-                @change="changeCat(cat)"
-                :checked="isActiveCat(cat)"
-              />{{ cat }}</label
+              :for="cat"
+              :class="{ 'gray-border': !showAllInFilter('category', cat) }"
+              >{{ cat }}</label
             >
-            {{ showAllInFilter("category", cat) }} /
-            {{ showAllInItem("category", cat) }}
-          </p>
-        </template>
-      </div>
-      <hr />
-      <div>
-        <h2>Brands</h2>
-        <template v-for="brand in getBrands" :key="brand">
-          <p>
-            <label
-              ><input
-                type="checkbox"
-                @change="changeBrand(brand)"
-                :checked="isActiveBrand(brand)"
-              />{{ brand }}</label
-            >
-            {{ showAllInFilter("brand", brand) }} /
-            {{ showAllInItem("brand", brand) }}
-          </p>
-        </template>
-      </div>
-      <hr />
-      <div>
-        <h2>Price</h2>
-        <p>{{ startPrice }}</p>
+          </div>
+          <div
+            class="checkbox-count"
+            :class="{ 'gray-color': !showAllInFilter('category', cat) }"
+          >
+            ({{ showAllInFilter("category", cat) }} /
+            {{ showAllInItem("category", cat) }})
+          </div>
+        </li>
+      </template>
+    </ul>
 
-        <div v-if="isFound">
-          min-
-          <input type="number" v-model="priceMin" @input="changePriceMin()" />|
-          max-
-          <input type="number" v-model="priceMax" @input="changePriceMax()" />
-        </div>
-        <div v-else>No found items</div>
-      </div>
-      <hr />
-      <div>
-        <h2>Stock</h2>
-        <p>{{ startStock }}</p>
-        <div v-if="isFound">
-          min-
-          <input type="number" v-model="stockMin" @input="changeStockMin()" />|
-          max-
-          <input type="number" v-model="stockMax" @input="changeStockMax()" />
-        </div>
-        <div v-else>No found items</div>
-      </div>
+    <h3>Brands</h3>
+    <ul class="checkbox-categories vertical-scroll">
+      <template v-for="brand in getBrands" :key="brand">
+        <li class="checkbox-flex">
+          <div>
+            <input
+              type="checkbox"
+              :id="brand"
+              @change="changeBrand(brand)"
+              :checked="isActiveBrand(brand)"
+            />
+            <label
+              :for="brand"
+              :class="{ 'gray-border': !showAllInFilter('brand', brand) }"
+              >{{ brand }}</label
+            >
+          </div>
+          <div
+            class="checkbox-count"
+            :class="{ 'gray-color': !showAllInFilter('brand', brand) }"
+          >
+            ({{ showAllInFilter("brand", brand) }} /
+            {{ showAllInItem("brand", brand) }})
+          </div>
+        </li>
+      </template>
+    </ul>
+
+    <h3>Price</h3>
+    <div class="range price">
+      <p class="range-price-to">€{{ priceMin }}</p>
+      <p class="range-price-from">€{{ priceMax }}</p>
+    </div>
+    <div class="multi-range border-bottom">
+      <input
+        type="range"
+        :min="priceMin"
+        :max="startPrice[1]"
+        v-model="priceMax"
+        @input="changePriceMax()"
+      />
+      <input
+        type="range"
+        min="0"
+        :max="priceMax"
+        v-model="priceMin"
+        @input="changePriceMin()"
+      />
+    </div>
+
+    <h3>Stock</h3>
+    <div class="range stock">
+      <p class="range-stock-to">{{ stockMin }}</p>
+      <p class="range-stock-from">{{ stockMax }}</p>
+    </div>
+    <div class="multi-range">
+      <input
+        type="range"
+        :min="stockMin"
+        :max="startStock[1]"
+        v-model="stockMax"
+        @input="changeStockMax()"
+      />
+      <input
+        type="range"
+        min="0"
+        :max="stockMax"
+        v-model="stockMin"
+        @input="changeStockMin()"
+      />
     </div>
   </aside>
 </template>
@@ -195,11 +231,20 @@ export default {
     this.emitter.on("changePriceData", () => {
       this.changeForPriceAndStock();
     });
+    this.emitter.on("resetFilters", () => {
+      this.clearFilters();
+    });
+    this.emitter.on("changeSort", (val) => {
+      this.changeSort(val);
+    });
   },
   watch: {
     $route() {
-      // console.log("route", this.$route, to, from);
+      //console.log("route", this.$route);
       //this.clearFilters();
+      // this.emitter.on("changeSort", (val) => {
+      //   this.changeSort(val);
+      // });
     },
     getFilterData() {
       if (this.startPrice.length === 0 && this.startStock.length === 0) {
@@ -343,7 +388,7 @@ export default {
         }
       }
 
-      this.changeQuery();
+      await this.changeQuery();
       this.changeForPriceAndStock();
       this.pushToRouter("categories", this.getQueryForFilters.categories);
     },
@@ -360,37 +405,41 @@ export default {
           );
         }
       }
-      this.changeQuery();
+      await this.changeQuery();
       this.changeForPriceAndStock();
       this.pushToRouter("brands", this.getQueryForFilters.brands);
     },
     async changePriceMin() {
       this.getQueryForFilters.price = [this.priceMin, this.priceMax];
-      this.changeQuery();
+      await this.changeQuery();
+      // this.changeForPriceAndStock();
       this.pushToRouter("price", this.getQueryForFilters.price);
     },
     async changePriceMax() {
       this.getQueryForFilters.price = [this.priceMin, this.priceMax];
-      this.changeQuery();
+      await this.changeQuery();
+      //this.changeForPriceAndStock();
       this.pushToRouter("price", this.getQueryForFilters.price);
     },
     async changeStockMin() {
       this.getQueryForFilters.stock = [this.stockMin, this.stockMax];
-      this.changeQuery();
+      await this.changeQuery();
+      //this.changeForPriceAndStock();
       this.pushToRouter("stock", this.getQueryForFilters.stock);
     },
     async changeStockMax() {
       this.getQueryForFilters.stock = [this.stockMin, this.stockMax];
-      this.changeQuery();
+      await this.changeQuery();
+      //this.changeForPriceAndStock();
       this.pushToRouter("stock", this.getQueryForFilters.stock);
     },
-    async changeSort() {
-      //this.getQueryForFilters.sort = sortVariable;
-      //this.changeQuery();
-      //this.pushToRouter("sort", value);
+    async changeSort(sortVariable) {
+      this.getQueryForFilters.sort = sortVariable;
+      //await this.changeQuery();
+      this.pushToRouter("sort", sortVariable);
     },
     async changeSizeOfCards() {
-      //this.pushToRouter("big", value);
+      //this.pushToRouter("big", big);
     },
     async changeForPriceAndStock() {
       await this.getPriceDiff(this.getFilterData);
@@ -409,20 +458,4 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.filter {
-  align-self: stretch;
-  flex-basis: 20%;
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-}
-
-hr {
-  margin: 20px 0;
-}
-
-aside {
-  border: 1px solid red;
-}
-</style>
+<style scoped lang="scss"></style>
