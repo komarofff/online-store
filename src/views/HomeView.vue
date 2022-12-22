@@ -18,20 +18,14 @@ export default {
       isLoader: false,
     };
   },
-  async beforeMount() {
+  async mounted() {
     await this.getAllProd();
     await this.getAllBrands();
     await this.getAllCat();
   },
   computed: {},
   methods: {
-    ...mapActions("Filter", [
-      "getAllBrands",
-      "getAllCat",
-      "getAllProd",
-      "getQuery",
-      "getFilterParameters",
-    ]),
+    ...mapActions("Filter", ["getAllBrands", "getAllCat", "getAllProd"]),
   },
   components: { FilterView, CenterSection },
 };

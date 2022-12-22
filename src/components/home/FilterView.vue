@@ -76,17 +76,18 @@
     <div class="multi-range border-bottom">
       <input
         type="range"
-        :min="priceMin"
+        :min="startPrice[0]"
         :max="startPrice[1]"
-        v-model="priceMax"
-        @input="changePriceMax()"
+        v-model="priceMin"
+        @input="changePriceRange()"
       />
       <input
+        id="555"
         type="range"
-        min="0"
-        :max="priceMax"
-        v-model="priceMin"
-        @input="changePriceMin()"
+        :min="startPrice[0]"
+        :max="startPrice[1]"
+        v-model="priceMax"
+        @input="changePriceRange()"
       />
     </div>
 
@@ -98,17 +99,17 @@
     <div class="multi-range">
       <input
         type="range"
-        :min="stockMin"
+        :min="startStock[0]"
         :max="startStock[1]"
-        v-model="stockMax"
-        @input="changeStockMax()"
+        v-model="stockMin"
+        @input="changeStockRange()"
       />
       <input
         type="range"
-        min="0"
-        :max="stockMax"
-        v-model="stockMin"
-        @input="changeStockMin()"
+        :min="startStock[0]"
+        :max="startStock[1]"
+        v-model="stockMax"
+        @input="changeStockRange()"
       />
     </div>
   </aside>
@@ -222,6 +223,34 @@ export default {
     });
   },
   watch: {
+    priceMin() {
+      if (this.priceMin >= this.priceMax) {
+        while (this.priceMin > this.priceMax) {
+          this.priceMin--;
+        }
+      }
+    },
+    priceMax() {
+      if (this.priceMax <= this.priceMin) {
+        while (this.priceMax < this.priceMin) {
+          this.priceMax++;
+        }
+      }
+    },
+    stockMin() {
+      if (this.stockMin >= this.stockMax) {
+        while (this.stockMin > this.stockMax) {
+          this.stockMin--;
+        }
+      }
+    },
+    stockMax() {
+      if (this.stockMax <= this.stockMin) {
+        while (this.stockMax < this.stockMin) {
+          this.stockMax++;
+        }
+      }
+    },
     $route() {
       //console.log("route", this.$route);
       //this.clearFilters();
@@ -238,6 +267,9 @@ export default {
         this.changeForPriceAndStock();
       }
       this.dataItems = this.getFilterData.length;
+    },
+    getAllProducts() {
+      return this.getAllProducts;
     },
     dataItems() {
       if (this.dataItems === 0) {
@@ -377,28 +409,16 @@ export default {
       this.changeForPriceAndStock();
       this.pushToRouter("brands", this.getQueryForFilters.brands);
     },
-    async changePriceMin() {
+    async changePriceRange() {
       this.getQueryForFilters.price = [this.priceMin, this.priceMax];
       await this.changeQuery();
-      // this.changeForPriceAndStock();
+      this.changeForStock();
       this.pushToRouter("price", this.getQueryForFilters.price);
     },
-    async changePriceMax() {
-      this.getQueryForFilters.price = [this.priceMin, this.priceMax];
-      await this.changeQuery();
-      //this.changeForPriceAndStock();
-      this.pushToRouter("price", this.getQueryForFilters.price);
-    },
-    async changeStockMin() {
+    async changeStockRange() {
       this.getQueryForFilters.stock = [this.stockMin, this.stockMax];
       await this.changeQuery();
-      //this.changeForPriceAndStock();
-      this.pushToRouter("stock", this.getQueryForFilters.stock);
-    },
-    async changeStockMax() {
-      this.getQueryForFilters.stock = [this.stockMin, this.stockMax];
-      await this.changeQuery();
-      //this.changeForPriceAndStock();
+      this.changeForPrice();
       this.pushToRouter("stock", this.getQueryForFilters.stock);
     },
     async changeSort(sortVariable) {
@@ -416,6 +436,16 @@ export default {
       this.priceMin = this.getPrice[0];
       this.stockMin = this.getStock[0];
       this.stockMax = this.getStock[1];
+    },
+    async changeForStock() {
+      await this.getStockDiff(this.getFilterData);
+      this.stockMin = this.getStock[0];
+      this.stockMax = this.getStock[1];
+    },
+    async changeForPrice() {
+      await this.getPriceDiff(this.getFilterData);
+      this.priceMax = this.getPrice[1];
+      this.priceMin = this.getPrice[0];
     },
     async changeQuery() {
       await this.getQuery(this.getQueryForFilters);
