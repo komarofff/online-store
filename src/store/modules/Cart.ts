@@ -25,11 +25,14 @@ export const getters: GetterTree<State, RootState> = {
     return state.cartArray;
   },
   getCartLength(state: State) {
-    return state.cartArray.length;
+    return state.cartArray.reduce(
+      (accumulator, el) => accumulator + el.quantity,
+      0
+    );
   },
   getCartSum(state: State) {
     return state.cartArray.reduce(
-      (accumulator, el) => accumulator + el.price,
+      (accumulator, el) => accumulator + el.price * el.quantity,
       0
     );
   },
@@ -59,6 +62,14 @@ export const mutations: MutationTree<State> = {
       //console.log(JSON.parse(localStorage.getItem("cart") || ""));
     }
   },
+  plusItemQuantity(state: State, id: number) {
+    const idd = state.cartArray.findIndex((el) => el.id === id);
+    state.cartArray[idd].quantity++;
+  },
+  minusItemQuantity(state: State, id: number) {
+    const idd = state.cartArray.findIndex((el) => el.id === id);
+    state.cartArray[idd].quantity--;
+  },
 };
 
 const actions: ActionTree<RootState, RootState> = {
@@ -70,6 +81,12 @@ const actions: ActionTree<RootState, RootState> = {
   },
   getFromStorage({ commit }) {
     commit("getDataFromStorage");
+  },
+  plusQuantity({ commit }, payload: number) {
+    commit("plusItemQuantity", payload);
+  },
+  minusQuantity({ commit }, payload: number) {
+    commit("minusItemQuantity", payload);
   },
 };
 
