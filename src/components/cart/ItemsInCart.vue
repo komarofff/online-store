@@ -54,14 +54,16 @@
               class="btn-control btn-control-less"
               @click="quantityMinus(prod.id)"
             >
-              <img src="@/assets/icon/arrow-link-right.svg" alt="" />
+              -
+              <!--              <img src="@/assets/icon/arrow-link-right.svg" alt="" />-->
             </button>
             <p>{{ prod.quantity }}</p>
             <button
               class="btn-control btn-control-more"
               @click="quantityPlus(prod.id)"
             >
-              <img src="@/assets/icon/arrow-link-right.svg" alt="" />
+              +
+              <!--              <img src="@/assets/icon/arrow-link-right.svg" alt="" />-->
             </button>
           </div>
           <p class="cart-control-price">€{{ prod.price }}</p>

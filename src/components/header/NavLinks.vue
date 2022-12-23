@@ -3,8 +3,11 @@
     <nav class="header__menu">
       <ul class="header__list">
         <li>
-          <a class="header__link" href="/" @click="emitToResetFilters()"
-            >Home</a
+          <!--          <a class="header__link" href="/" @click="emitToResetFilters()"-->
+          <!--            >Home</a-->
+          <!--          >-->
+          <router-link class="header__link" :to="{ name: 'home' }"
+            >Home</router-link
           >
         </li>
         <li>

@@ -23,9 +23,23 @@ export default {
     await this.getAllBrands();
     await this.getAllCat();
   },
+  watch: {
+    $route(to, from) {
+      if (
+        to.name === from.name &&
+        Object.keys(this.$route.query).length === 0
+      ) {
+        this.emitter.emit("resetFilters");
+      }
+    },
+  },
+
   computed: {},
   methods: {
     ...mapActions("Filter", ["getAllBrands", "getAllCat", "getAllProd"]),
+    emitToResetFilters() {
+      this.emitter.emit("resetFilters");
+    },
   },
   components: { FilterView, CenterSection },
 };

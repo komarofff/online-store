@@ -130,6 +130,7 @@ export default {
         stock: [],
         search: "",
         sort: "",
+        big: "",
       },
       startPrice: [],
       startStock: [],
@@ -140,6 +141,7 @@ export default {
         stock: [],
         search: "",
         sort: "",
+        big: "",
       },
       startQueryData: null,
       url: window.location.href,
@@ -220,6 +222,9 @@ export default {
     });
     this.emitter.on("changeSort", (val) => {
       this.changeSort(val);
+    });
+    this.emitter.on("changeCards", (val) => {
+      this.changeSizeOfCards(val);
     });
   },
   watch: {
@@ -426,8 +431,11 @@ export default {
       //await this.changeQuery();
       this.pushToRouter("sort", sortVariable);
     },
-    async changeSizeOfCards() {
-      //this.pushToRouter("big", big);
+    async changeSizeOfCards(big) {
+      let bigData;
+      big ? (bigData = "true") : (bigData = "false");
+      this.getQueryForFilters.big = bigData;
+      this.pushToRouter("big", bigData);
     },
     async changeForPriceAndStock() {
       await this.getPriceDiff(this.getFilterData);
