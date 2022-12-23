@@ -3,22 +3,16 @@
     <div class="home-menu-crumbs">
       <h1 class="crumbs-start">Filter page</h1>
       <div class="crumbs-address">
-        <a class="img-address" href=""
+        <router-link class="img-address" :to="{ name: 'home' }"
           ><img src="@/assets/icon/address-svg.svg" alt=""
-        /></a>
-        <a href="">Category</a>
+        /></router-link>
         <img
           class="img-arrow"
           src="@/assets/icon/arrow-link-right.svg"
           alt=""
         />
-        <a href="">Brand</a>
-        <img
-          class="img-arrow"
-          src="@/assets/icon/arrow-link-right.svg"
-          alt=""
-        />
-        <a href="">Product</a>
+
+        <span>Filter page</span>
       </div>
     </div>
 
@@ -43,15 +37,22 @@
       </div>
 
       <div class="home-menu-img">
-        <button><img src="@/assets/icon/block-9.svg" alt="" /></button>
-        <button><img src="@/assets/icon/block-16.svg" alt="" /></button>
+        <button v-if="isBigCards" @click="changeBigCards">
+          <img src="@/assets/icon/block-16.svg" alt="" />
+        </button>
+        <button v-else @click="changeBigCards">
+          <img src="@/assets/icon/block-9.svg" alt="" />
+        </button>
       </div>
     </div>
     <img v-if="isLoader" src="@/assets/loader.gif" alt="loader" />
     <div class="home-cards">
-      <div class="card-container">
+      <div class="card-container" :class="{ 'small-cards': !isBigCards }">
         <template v-for="product in data" :key="product.id">
-          <div class="card-item card-hover">
+          <div
+            class="card-item card-hover"
+            :class="{ 'card-checked': isActiveButton(product.id) }"
+          >
             <div class="card-photo">
               <router-link
                 :to="`/catalog/${product.category}/product/${product.id}`"
@@ -140,6 +141,7 @@ export default {
         { text: "Sort by discount ↑", value: "discount-ASC" },
         { text: "Sort by discount ↓", value: "discount-DESC" },
       ],
+      isBigCards: true,
     };
   },
   async mounted() {
@@ -154,19 +156,16 @@ export default {
         this.$router.push({
           query: {},
         });
-        //this.$router.go(this.$router.currentRoute);
       }, 50);
     });
     if (this.$route.query.search) {
       this.searchText = this.$route.query.search;
     }
+    this.isBigCards = !(
+      this.$route.query.big && this.$route.query.big === "false"
+    );
   },
   watch: {
-    sort() {
-      // событие в фильтр
-      // console.log("sort was changed");
-      //this.changesToSort();
-    },
     searchText() {
       //getQueryForFilters параметры фильтра сохраненные в сторе
       this.changesToFilter();
@@ -187,17 +186,15 @@ export default {
   methods: {
     ...mapActions("Filter", ["getQuery", "getFilterParameters"]),
     ...mapActions("Cart", ["pushToCart", "delFromCart"]),
-    // async getImageData(imageId) {
-    //   let url = await axios.get(imageId).then((response) => {
-    //     return response.data;
-    //   });
-    //
-    //   this.getImage(JSON.stringify(url));
-    // },
-    // getImage(src) {
-    //   // console.log("src", src);
-    //   return src;
-    // },
+    changeBigCards() {
+      this.isBigCards = !this.isBigCards;
+      this.getQueryForFilters.big = this.isBigCards;
+
+      //await this.getQuery(this.getQueryForFilters);
+      // await this.getFilterParameters(this.getQueryForFilters);
+      // this.data = this.getFilterData;
+      this.emitter.emit("changeCards", this.isBigCards);
+    },
     async changesToFilter() {
       if (this.searchText.length > 0) {
         this.getQueryForFilters.search = this.searchText;
@@ -241,19 +238,43 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.center-section {
-  flex-basis: 80%;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
+//.center-section {
+//  flex-basis: 80%;
+//  display: flex;
+//  flex-direction: row;
+//  flex-wrap: wrap;
+//  justify-content: space-evenly;
+//}
+//.product__card {
+//  max-width: 200px;
+//  border: 1px solid red;
+//  margin: 10px;
+//}
+//.thumbnail {
+//  max-width: 200px;
+//}
+.crumbs-address {
+  align-items: center;
 }
-.product__card {
-  max-width: 200px;
-  border: 1px solid red;
-  margin: 10px;
-}
-.thumbnail {
-  max-width: 200px;
+.small-cards {
+  grid-template-columns: repeat(auto-fit, minmax(175px, 175px));
+  grid-gap: 10px;
+  .card-photo {
+    width: 175px;
+    height: 120px;
+    overflow: hidden;
+  }
+  .card-name {
+    font-size: 13px;
+  }
+  .btn-more,
+  .btn-less {
+    width: 40px;
+    height: 30px;
+  }
+  .card-link-more a {
+    padding: 3px 15px;
+    font-size: 14px;
+  }
 }
 </style>

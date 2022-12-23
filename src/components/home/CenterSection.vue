@@ -258,6 +258,23 @@ export default {
 }
 .small-cards {
   grid-template-columns: repeat(auto-fit, minmax(175px, 175px));
-  grid-gap: 2px;
+  grid-gap: 10px;
+  .card-photo {
+    width: 175px;
+    height: 120px;
+    overflow: hidden;
+  }
+  .card-name {
+    font-size: 13px;
+  }
+  .btn-more,
+  .btn-less {
+    width: 40px;
+    height: 30px;
+  }
+  .card-link-more a {
+    padding: 3px 15px;
+    font-size: 14px;
+  }
 }
 </style>

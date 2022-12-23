@@ -4,9 +4,9 @@
       <div class="home-menu-crumbs">
         <h1 class="crumbs-start">Cart page</h1>
         <div class="crumbs-address">
-          <a class="img-address" href="/"
+          <router-link class="img-address" :to="{ name: 'home' }"
             ><img src="@/assets/icon/address-svg.svg" alt=""
-          /></a>
+          /></router-link>
           <img
             class="img-arrow"
             src="@/assets/icon/arrow-link-right.svg"

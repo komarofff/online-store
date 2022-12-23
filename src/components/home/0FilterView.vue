@@ -76,16 +76,17 @@
     <div class="multi-range border-bottom">
       <input
         type="range"
-        :min="priceMin"
+        :min="startPrice[0]"
         :max="startPrice[1]"
-        v-model="priceMax"
+        v-model="priceMin"
         @input="changePriceRange()"
       />
       <input
+        id="555"
         type="range"
         :min="startPrice[0]"
-        :max="priceMax"
-        v-model="priceMin"
+        :max="startPrice[1]"
+        v-model="priceMax"
         @input="changePriceRange()"
       />
     </div>
@@ -98,16 +99,16 @@
     <div class="multi-range">
       <input
         type="range"
-        :min="stockMin"
+        :min="startStock[0]"
         :max="startStock[1]"
-        v-model="stockMax"
+        v-model="stockMin"
         @input="changeStockRange()"
       />
       <input
         type="range"
         :min="startStock[0]"
-        :max="stockMax"
-        v-model="stockMin"
+        :max="startStock[1]"
+        v-model="stockMax"
         @input="changeStockRange()"
       />
     </div>
@@ -129,6 +130,7 @@ export default {
         stock: [],
         search: "",
         sort: "",
+        big: "",
       },
       startPrice: [],
       startStock: [],
@@ -139,6 +141,7 @@ export default {
         stock: [],
         search: "",
         sort: "",
+        big: "",
       },
       startQueryData: null,
       url: window.location.href,
@@ -158,7 +161,7 @@ export default {
 
     ////////////////////////////
     // price and stock
-    // this.changeForPriceAndStock();
+    this.changeForPriceAndStock();
     //  делаем startQuery в зависимости от адресной строки
     this.startQueryData = Object.entries(this.$route.query);
     if (this.startQueryData.length > 0) {
@@ -220,8 +223,39 @@ export default {
     this.emitter.on("changeSort", (val) => {
       this.changeSort(val);
     });
+    this.emitter.on("changeCards", (val) => {
+      this.changeSizeOfCards(val);
+    });
   },
   watch: {
+    priceMin() {
+      if (this.priceMin >= this.priceMax) {
+        while (this.priceMin > this.priceMax) {
+          this.priceMin--;
+        }
+      }
+    },
+    priceMax() {
+      if (this.priceMax <= this.priceMin) {
+        while (this.priceMax < this.priceMin) {
+          this.priceMax++;
+        }
+      }
+    },
+    stockMin() {
+      if (this.stockMin >= this.stockMax) {
+        while (this.stockMin > this.stockMax) {
+          this.stockMin--;
+        }
+      }
+    },
+    stockMax() {
+      if (this.stockMax <= this.stockMin) {
+        while (this.stockMax < this.stockMin) {
+          this.stockMax++;
+        }
+      }
+    },
     $route() {
       //console.log("route", this.$route);
       //this.clearFilters();
@@ -383,13 +417,13 @@ export default {
     async changePriceRange() {
       this.getQueryForFilters.price = [this.priceMin, this.priceMax];
       await this.changeQuery();
-      //this.changeForPriceAndStock();
+      this.changeForStock();
       this.pushToRouter("price", this.getQueryForFilters.price);
     },
     async changeStockRange() {
       this.getQueryForFilters.stock = [this.stockMin, this.stockMax];
       await this.changeQuery();
-      // this.changeForPriceAndStock();
+      this.changeForPrice();
       this.pushToRouter("stock", this.getQueryForFilters.stock);
     },
     async changeSort(sortVariable) {
@@ -397,8 +431,11 @@ export default {
       //await this.changeQuery();
       this.pushToRouter("sort", sortVariable);
     },
-    async changeSizeOfCards() {
-      //this.pushToRouter("big", big);
+    async changeSizeOfCards(big) {
+      let bigData;
+      big ? (bigData = "true") : (bigData = "false");
+      this.getQueryForFilters.big = bigData;
+      this.pushToRouter("big", bigData);
     },
     async changeForPriceAndStock() {
       await this.getPriceDiff(this.getFilterData);
@@ -407,6 +444,16 @@ export default {
       this.priceMin = this.getPrice[0];
       this.stockMin = this.getStock[0];
       this.stockMax = this.getStock[1];
+    },
+    async changeForStock() {
+      await this.getStockDiff(this.getFilterData);
+      this.stockMin = this.getStock[0];
+      this.stockMax = this.getStock[1];
+    },
+    async changeForPrice() {
+      await this.getPriceDiff(this.getFilterData);
+      this.priceMax = this.getPrice[1];
+      this.priceMin = this.getPrice[0];
     },
     async changeQuery() {
       await this.getQuery(this.getQueryForFilters);

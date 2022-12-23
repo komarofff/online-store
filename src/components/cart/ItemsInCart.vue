@@ -28,10 +28,16 @@
         <div class="cart__item-number">
           {{ getCartArray.indexOf(prod) + 1 }}
         </div>
-        <div class="cart__item-photo">
+        <router-link
+          :to="`/catalog/${prod.category}/product/${prod.id}`"
+          class="cart__item-photo"
+        >
           <img :src="prod.thumbnail" alt="" />
-        </div>
-        <div class="cart__item-info">
+        </router-link>
+        <router-link
+          class="cart__item-info"
+          :to="`/catalog/${prod.category}/product/${prod.id}`"
+        >
           <p class="cart-name">
             <span>{{ prod.title }}</span>
           </p>
@@ -44,7 +50,7 @@
           <p class="cart-rating">
             Rating: <span>{{ prod.rating }}</span>
           </p>
-        </div>
+        </router-link>
         <div class="cart__item-control">
           <p class="cart-stock">
             Stock: <span>{{ prod.stock }}</span>
@@ -190,5 +196,13 @@ export default {
 .page-counter {
   margin: 0 5px;
   font-weight: bold;
+}
+.cart__items {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.cart__item-info {
+  text-decoration: none;
 }
 </style>
