@@ -17,3 +17,21 @@
 .card-checked{
    box-shadow: 0px 0px 10px 0px #b9eeb0 !important;
 }
+
+.no-arrows input::-webkit-outer-spin-button,
+.no-arrows input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+ 
+.no-arrows input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.hidden{
+   display: none;
+}
+
+.visible{
+   display: block;
+}
