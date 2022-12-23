@@ -188,7 +188,10 @@ const actions: ActionTree<RootState, RootState> = {
               .toUpperCase()
               .includes(payload.search.toUpperCase() as string) ||
             el.price.toString().indexOf(payload.search as string) > -1 ||
-            el.stock.toString().indexOf(payload.search as string) > -1
+            el.stock.toString().indexOf(payload.search as string) > -1 ||
+            el.rating.toString().indexOf(payload.search as string) > -1 ||
+            el.discountPercentage.toString().indexOf(payload.search as string) >
+              -1
           ) {
             return el;
           }

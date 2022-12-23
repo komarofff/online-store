@@ -74,18 +74,23 @@ export default {
   async mounted() {
     this.isLoader = true;
     await this.getSingleCat(this.cat);
-    await this.getSingleProd(Number(this.id));
+    console.log(!isNaN(+this.id), parseInt(this.id));
+    if (!isNaN(+this.id) && parseInt(this.id) > 0 && parseInt(this.id) < 100) {
+      await this.getSingleProd(Number(this.id));
+    } else {
+      console.log("error-1");
+      this.$router.push({ name: "error" });
+    }
+
     this.isLoader = false;
 
-    console.log();
-    if (
-      Number(this.id) === 0 ||
-      this.getSingleCategory.products.some(
-        (el) => el.id === Number(this.id)
-      ) === false
-    ) {
-      return this.$router.push({ name: "error" });
-    }
+    // if (
+    //   this.id === 0 ||
+    //   this.getSingleCategory.products.some((el) => el.id === this.id) === false
+    // ) {
+    //   console.log("false id");
+    //   this.$router.push({ name: "error" });
+    // }
 
     this.isCatHere = this.getSingleCategory.products.every((el) => {
       return el.category === this.getSingleProduct.category;
@@ -94,7 +99,7 @@ export default {
       this.getSingleProduct.category !== this.cat ||
       this.isCatHere === false
     ) {
-      return this.$router.push({ name: "error" });
+      this.$router.push({ name: "error" });
     }
 
     //return this.$router.push({ name: "error" });
