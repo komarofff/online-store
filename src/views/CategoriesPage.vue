@@ -9,7 +9,6 @@
 import ListOfCategories from "../components/categories/ListOfCategories";
 import SingleCategory from "../components/categories/SingleCategory";
 export default {
-  name: "CategoriesPage",
   props: ["id"],
   components: {
     ListOfCategories,
@@ -18,9 +17,4 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-button {
-  margin: 5px;
-  cursor: pointer;
-}
-</style>
+<style scoped lang="scss"></style>

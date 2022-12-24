@@ -1,5 +1,4 @@
 <template>
-  <!--  {{ itemsInCart }}-->
   <div class="cart__product">
     <div class="cart__product-title">
       <!--      max-pages {{ maxPage }}-->
@@ -94,29 +93,14 @@ export default {
     };
   },
   mounted() {
-    this.itemsInCart = this.getCartArray;
-    this.maxPage = Math.ceil(this.itemsInCart.length / this.itemsPerPage);
     this.startQuery = this.$route.query.page;
-    if (
-      this.startQuery &&
-      this.startQuery > 0 &&
-      this.startQuery <= this.maxPage
-    ) {
-      console.log("start with query parameters", this.startQuery);
-      this.page = Number(this.$route.query.page);
-      this.showPaginatedItems(this.startQuery);
-    } else if (this.startQuery > this.maxPage) {
-      this.showPaginatedItems(1);
-      let queries = JSON.parse(JSON.stringify(this.$route.query));
-      queries.page = 1;
-      this.$router.replace({ query: queries });
-    } else {
-      this.showPaginatedItems(this.page);
-    }
+    this.startCart(this.startQuery);
   },
   watch: {
     getCartArray() {
-      return this.getCartArray;
+      this.startQuery = this.$route.query.page;
+      this.itemsInCart = this.getCartArray;
+      this.startCart(this.startQuery);
     },
   },
   computed: {
@@ -187,6 +171,25 @@ export default {
       queries.page = newPage;
       this.$router.replace({ query: queries });
       this.showPaginatedItems(newPage);
+    },
+    startCart(pageNumber) {
+      pageNumber = Number(pageNumber);
+      this.itemsInCart = this.getCartArray;
+      this.maxPage = Math.ceil(this.itemsInCart.length / this.itemsPerPage);
+      if (pageNumber && pageNumber > 0 && pageNumber <= this.maxPage) {
+        this.page = Number(this.$route.query.page);
+        this.showPaginatedItems(pageNumber);
+        let queries = JSON.parse(JSON.stringify(this.$route.query));
+        queries.page = pageNumber;
+        this.$router.replace({ query: queries });
+      } else if (pageNumber > this.maxPage) {
+        this.showPaginatedItems(1);
+        let queries = JSON.parse(JSON.stringify(this.$route.query));
+        queries.page = 1;
+        this.$router.replace({ query: queries });
+      } else {
+        this.showPaginatedItems(this.page);
+      }
     },
   },
 };

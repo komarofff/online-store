@@ -28,8 +28,11 @@
         </option>
       </select>
 
-      <p class="home-menu-found">
-        Found: <span id="found">{{ dataItems }}</span>
+      <p class="home-menu-found" v-if="dataItems">
+        Found: <span>{{ dataItems }}</span>
+      </p>
+      <p class="home-menu-found" v-if="dataItems === 0">
+        <strong>Not found</strong>
       </p>
 
       <div class="home-menu-search">
@@ -148,6 +151,7 @@ export default {
     // all products
     this.isLoader = true;
     this.data = this.getFilterData;
+    this.dataItems = this.getFilterData.length;
     this.cart = this.getCartArray;
     this.isLoader = false;
     this.emitter.on("clearUrls", () => {
@@ -180,7 +184,11 @@ export default {
     },
   },
   computed: {
-    ...mapGetters("Filter", ["getFilterData", "getQueryForFilters"]),
+    ...mapGetters("Filter", [
+      "getFilterData",
+      "getQueryForFilters",
+      "getAllProducts",
+    ]),
     ...mapGetters("Cart", ["getCartArray"]),
   },
   methods: {
@@ -253,6 +261,9 @@ export default {
 //.thumbnail {
 //  max-width: 200px;
 //}
+.card-name {
+  margin-bottom: 5px;
+}
 .crumbs-address {
   align-items: center;
 }

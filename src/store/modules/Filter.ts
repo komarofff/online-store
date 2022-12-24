@@ -2,7 +2,10 @@ import { RootState } from "@/store";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
 import axios from "axios";
 
-export type CatArr = string[];
+export interface CatArr {
+  name: string;
+  image: string;
+}
 export type BrandArr = string[];
 export type Price = number[];
 export type Stock = number[];
@@ -28,12 +31,16 @@ export interface FilterQuery {
   stock: number[];
   search: string;
   sort: string;
+  big: string;
 }
 
 const state = {
   products: [] as ProdArr[],
+  singleProduct: {} as ProdArr,
   filterData: [] as ProdArr[],
+  searchData: [] as ProdArr[],
   categories: [] as CatArr[],
+  singleCategory: [] as ProdArr[],
   brands: [] as BrandArr[],
   price: [] as Price[],
   stock: [] as Stock[],
@@ -53,6 +60,12 @@ export const getters: GetterTree<State, RootState> = {
   getCategories(state: State) {
     return state.categories;
   },
+  getSingleCategory(state: State) {
+    return state.singleCategory;
+  },
+  getSingleProduct(state: State) {
+    return state.singleProduct;
+  },
   getPrice(state: State) {
     return state.price;
   },
@@ -61,6 +74,9 @@ export const getters: GetterTree<State, RootState> = {
   },
   getFilterData(state: State) {
     return state.filterData;
+  },
+  getSearchData(state: State) {
+    return state.searchData;
   },
 };
 
@@ -74,6 +90,12 @@ export const mutations: MutationTree<State> = {
   setAllCategories(state: State, val: CatArr[]) {
     state.categories = val;
   },
+  setSingleCategory(state: State, val: ProdArr[]) {
+    state.singleCategory = val;
+  },
+  setSingleProduct(state: State, val: ProdArr) {
+    state.singleProduct = val;
+  },
   setAllBrands(state: State, val: BrandArr[]) {
     state.brands = val;
   },
@@ -86,6 +108,9 @@ export const mutations: MutationTree<State> = {
   setFilter(state: State, val: ProdArr[]) {
     state.filterData = val;
   },
+  setSearchData(state: State, val: ProdArr[]) {
+    state.searchData = val;
+  },
 };
 
 const actions: ActionTree<RootState, RootState> = {
@@ -93,26 +118,50 @@ const actions: ActionTree<RootState, RootState> = {
     commit("setQueryForFilters", payload);
   },
   async getAllProd({ commit }) {
-    if (!state.products.length) {
-      return await axios
-        .get("https://dummyjson.com/products?limit=100")
-        .then((response) => {
-          commit("setAllProducts", response.data.products as ProdArr[]);
-        });
-    }
+    // if (!state.products.length) {
+    return await axios
+      .get("https://dummyjson.com/products?limit=100")
+      .then((response) => {
+        commit("setAllProducts", response.data.products as ProdArr[]);
+      });
+    // }
   },
   async getAllCat({ commit }) {
-    if (!state.categories.length) {
-      return await axios
-        .get("https://dummyjson.com/products/categories")
-        .then((response) => {
-          commit("setAllCategories", response.data as CatArr[]);
+    // if (!state.categories.length) {
+    //   console.log("get categories from server");
+    //   return await axios
+    //     .get("https://dummyjson.com/products/categories")
+    //     .then((response) => {
+    //       commit("setAllCategories", response.data as CatArr[]);
+    //     });
+    // } else {
+    const cat = [] as CatArr[];
+    state.products.forEach((el) => {
+      if (!cat.some((elem) => elem.name === el.category)) {
+        cat.push({
+          name: el.category,
+          image: el.thumbnail,
         });
+      }
+    });
+    commit("setAllCategories", cat);
+    //}
+  },
+  async getSingleCat({ commit }, payload: string) {
+    if (state.products) {
+      const arr = state.products.filter((el) => el.category === payload);
+      commit("setSingleCategory", arr);
+    }
+  },
+  async getSingleProd({ commit }, payload: number) {
+    if (state.products) {
+      const val = state.products.filter((el) => el.id === payload);
+      commit("setSingleProduct", val);
     }
   },
 
   async getAllBrands({ commit }) {
-    if (state.products.length) {
+    if (state.products) {
       const brand = [] as BrandArr;
       state.products.forEach((el) => {
         if (!brand.includes(el.brand)) {
@@ -221,6 +270,34 @@ const actions: ActionTree<RootState, RootState> = {
       }
 
       commit("setFilter", arr);
+    }
+  },
+  async getSearchParameters({ commit }, payload: string) {
+    if (state.products.length) {
+      let arr: ProdArr[] = state.products;
+
+      if (payload && payload.length) {
+        arr = arr.filter((el) => {
+          if (
+            el.brand.toUpperCase().includes(payload.toUpperCase() as string) ||
+            el.category
+              .toUpperCase()
+              .includes(payload.toUpperCase() as string) ||
+            el.title.toUpperCase().includes(payload.toUpperCase() as string) ||
+            el.description
+              .toUpperCase()
+              .includes(payload.toUpperCase() as string) ||
+            el.price.toString().indexOf(payload as string) > -1 ||
+            el.stock.toString().indexOf(payload as string) > -1 ||
+            el.rating.toString().indexOf(payload as string) > -1 ||
+            el.discountPercentage.toString().indexOf(payload as string) > -1
+          ) {
+            return el;
+          }
+        });
+      }
+
+      commit("setSearchData", arr);
     }
   },
 };
