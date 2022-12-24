@@ -16,12 +16,12 @@
           >
           <span class="header__link-arrow link-arrow"></span>
           <ul class="sub-header__list">
-            <template v-for="category in getAllCategories" :key="category">
+            <template v-for="category in getCategories" :key="category">
               <li>
                 <router-link
                   class="sub-header__link"
-                  :to="`/catalog/${category}`"
-                  >{{ category }}</router-link
+                  :to="`/catalog/${category.name}`"
+                  >{{ category.name }}</router-link
                 >
               </li>
             </template>
@@ -47,10 +47,10 @@ export default {
     await this.getAllCat();
   },
   computed: {
-    ...mapGetters("Categories", ["getAllCategories"]),
+    ...mapGetters("Filter", ["getCategories"]),
   },
   methods: {
-    ...mapActions("Categories", ["getAllCat"]),
+    ...mapActions("Filter", ["getAllCat"]),
     emitToResetFilters() {
       this.emitter.emit("resetFilters");
     },

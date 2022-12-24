@@ -2,7 +2,7 @@
   <img v-if="isLoader" src="../../assets/loader.gif" alt="loader" />
   <h1>Category {{ id }}</h1>
   <div class="product__list">
-    <template v-for="product in catProducts.products" :key="product.id">
+    <template v-for="product in catProducts" :key="product.id">
       <div class="product__card">
         <p>id- {{ product.id }}</p>
         <hr />
@@ -78,9 +78,9 @@ export default {
       await this.getSingleCat(this.id);
       //this.catProducts = this.$store.getters["Categories/getSingleCategory"];
       this.catProducts = this.getSingleCategory; // getSingleCategory from mapGetters
-      if (this.catProducts.products.length === 0) {
+      if (this.catProducts.length === 0) {
         this.catProducts = [];
-        return this.$router.push({ name: "error" });
+        this.$router.push({ name: "error" });
       }
     } else {
       this.catProducts = [];
@@ -90,24 +90,17 @@ export default {
   watch: {
     id() {
       console.log("id changed");
-      this.newData();
+      this.newData(this.id);
     },
   },
   computed: {
-    ...mapGetters("Categories", ["getSingleCategory"]),
+    ...mapGetters("Filter", ["getSingleCategory", "getAllProducts"]),
     ...mapGetters("Cart", ["getCartArray"]),
   },
   methods: {
-    ...mapActions("Categories", ["getSingleCat"]),
+    ...mapActions("Filter", ["getSingleCat"]),
     ...mapActions("Cart", ["pushToCart", "delFromCart"]),
     isActive(val) {
-      // подключаем показ кнопки удалить если товар в сторе в массиве корзины
-      //console.log("val", val);
-      // let answer = this.getCartArray.find((product) => {
-      //  return product.id === val;
-      //});
-      //console.log("answer", answer);
-      //return answer;
       return this.getCartArray.find((product) => {
         return product.id === val;
       });
@@ -119,9 +112,9 @@ export default {
     async delCart(val) {
       await this.delFromCart(val);
     },
-    async newData() {
+    async newData(idd) {
       this.isLoader = true;
-      await this.getSingleCat(this.id);
+      await this.getSingleCat(idd);
       this.catProducts = this.getSingleCategory;
       this.isLoader = false;
     },

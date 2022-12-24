@@ -5,51 +5,55 @@
     <!--    <h3>{{ productData }}</h3>-->
 
     <div class="product__card">
-      <h1>title- {{ getSingleProduct.title }}</h1>
-      <p>id- {{ getSingleProduct.id }}</p>
+      <h1>title- {{ getSingleProduct[0].title }}</h1>
+      <p>id- {{ getSingleProduct[0].id }}</p>
       <hr />
-      <p>title- {{ getSingleProduct.title }}</p>
+      <p>title- {{ getSingleProduct[0].title }}</p>
       <hr />
-      <p>description- {{ getSingleProduct.description }}</p>
+      <p>description- {{ getSingleProduct[0].description }}</p>
       <hr />
-      <p>price- {{ getSingleProduct.price }}</p>
+      <p>price- {{ getSingleProduct[0].price }}</p>
       <hr />
-      <p>rating- {{ getSingleProduct.rating }}</p>
+      <p>rating- {{ getSingleProduct[0].rating }}</p>
       <hr />
-      <p>stock- {{ getSingleProduct.stock }}</p>
+      <p>stock- {{ getSingleProduct[0].stock }}</p>
       <hr />
-      <p>brand- {{ getSingleProduct.brand }}</p>
+      <p>brand- {{ getSingleProduct[0].brand }}</p>
       <hr />
-      <p>category- {{ getSingleProduct.category }}</p>
+      <p>category- {{ getSingleProduct[0].category }}</p>
       <hr />
       <p>
         thumbnail -
         <img
           class="thumbnail"
-          :src="getSingleProduct.thumbnail"
-          :alt="getSingleProduct.title"
+          :src="getSingleProduct[0].thumbnail"
+          :alt="getSingleProduct[0].title"
         />
       </p>
       <hr />
       <p>
         Images -
-        <template v-for="image in getSingleProduct.images" :key="image">
-          <img class="thumbnail" :src="image" :alt="getSingleProduct.title" />
+        <template v-for="image in getSingleProduct[0].images" :key="image">
+          <img
+            class="thumbnail"
+            :src="image"
+            :alt="getSingleProduct[0].title"
+          />
         </template>
       </p>
       <p>
         <button
-          v-if="!isActive(getSingleProduct.id)"
-          @click="addToCart(getSingleProduct)"
+          v-if="!isActive(getSingleProduct[0].id)"
+          @click="addToCart(getSingleProduct[0])"
         >
           Add to cart
         </button>
 
         <button
           class="delete__button"
-          v-if="isActive(getSingleProduct.id)"
-          @click="delCart(getSingleProduct.id)"
-          :ref="`id-${getSingleProduct.id}`"
+          v-if="isActive(getSingleProduct[0].id)"
+          @click="delCart(getSingleProduct[0].id)"
+          :ref="`id-${getSingleProduct[0].id}`"
         >
           Delete from cart
         </button>
@@ -92,27 +96,25 @@ export default {
     //   this.$router.push({ name: "error" });
     // }
 
-    this.isCatHere = this.getSingleCategory.products.every((el) => {
-      return el.category === this.getSingleProduct.category;
+    this.isCatHere = this.getSingleCategory.every((el) => {
+      return el.category === this.getSingleProduct[0].category;
     });
     if (
-      this.getSingleProduct.category !== this.cat ||
+      this.getSingleProduct[0].category !== this.cat ||
       this.isCatHere === false
     ) {
-      this.$router.push({ name: "error" });
+      // this.$router.push({ name: "error" });
     }
 
     //return this.$router.push({ name: "error" });
   },
   watch: {},
   computed: {
-    ...mapGetters("Products", ["getSingleProduct", "getProdThroughId"]),
-    ...mapGetters("Categories", ["getAllCategories", "getSingleCategory"]),
+    ...mapGetters("Filter", ["getSingleCategory", "getSingleProduct"]),
     ...mapGetters("Cart", ["getCartArray"]),
   },
   methods: {
-    ...mapActions("Products", ["getSingleProd"]),
-    ...mapActions("Categories", ["getAllCat", "getSingleCat"]),
+    ...mapActions("Filter", ["getSingleCat", "getSingleProd"]),
     ...mapActions("Cart", ["pushToCart", "delFromCart"]),
 
     isActive(val) {

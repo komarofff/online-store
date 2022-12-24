@@ -1,7 +1,7 @@
 <template>
   <HeaderView></HeaderView>
   <main class="main">
-    <router-view />
+    <router-view v-if="getAllProducts.length" />
   </main>
   <FooterView></FooterView>
   <CheckoutModalView v-if="isShowCheckoutModal"></CheckoutModalView>
@@ -10,7 +10,7 @@
 import HeaderView from "./components/HeaderView";
 import FooterView from "./components/FooterView";
 import CheckoutModalView from "./components/modals/CheckoutModalView";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   data() {
@@ -18,10 +18,22 @@ export default {
       isShowCheckoutModal: false,
     };
   },
-  async beforeMount() {
+  async created() {
+    await this.getAllProd();
+    // await this.getFilterParameters({
+    //   categories: [],
+    //   brands: [],
+    //   price: [],
+    //   stock: [],
+    //   search: "",
+    //   sort: "",
+    //   big: "",
+    // });
     await this.getFromStorage();
+    await this.getAllBrands();
+    await this.getAllCat();
   },
-  mounted() {
+  async mounted() {
     const menuButton = document.querySelector(".header__burger");
     const menuButton1 = document.querySelector(".header__menu");
     const menuModal = document.querySelector(".header__modal");
@@ -46,8 +58,17 @@ export default {
       contentBody.classList.remove("lock");
     };
   },
+  computed: {
+    ...mapGetters("Filter", ["getAllProducts"]),
+  },
   methods: {
     ...mapActions("Cart", ["getFromStorage"]),
+    ...mapActions("Filter", [
+      "getAllProd",
+      "getFilterParameters",
+      "getAllCat",
+      "getAllBrands",
+    ]),
   },
   components: {
     HeaderView,

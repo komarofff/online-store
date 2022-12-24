@@ -14,27 +14,27 @@
     </div>
     <h3>Categories</h3>
     <ul class="checkbox-categories vertical-scroll">
-      <template v-for="cat in getCategories" :key="cat">
+      <template v-for="cat in getCategories" :key="cat.name">
         <li class="checkbox-flex">
           <div>
             <input
               type="checkbox"
-              :id="cat"
-              @change="changeCat(cat)"
-              :checked="isActiveCat(cat)"
+              :id="cat.name"
+              @change="changeCat(cat.name)"
+              :checked="isActiveCat(cat.name)"
             />
             <label
-              :for="cat"
-              :class="{ 'gray-border': !showAllInFilter('category', cat) }"
-              >{{ cat }}</label
+              :for="cat.name"
+              :class="{ 'gray-border': !showAllInFilter('category', cat.name) }"
+              >{{ cat.name }}</label
             >
           </div>
           <div
             class="checkbox-count"
-            :class="{ 'gray-color': !showAllInFilter('category', cat) }"
+            :class="{ 'gray-color': !showAllInFilter('category', cat.name) }"
           >
-            ({{ showAllInFilter("category", cat) }} /
-            {{ showAllInItem("category", cat) }})
+            ({{ showAllInFilter("category", cat.name) }} /
+            {{ showAllInItem("category", cat.name) }})
           </div>
         </li>
       </template>
@@ -71,6 +71,7 @@
     <h3>Price</h3>
     <div class="range price">
       <p class="range-price-to">€{{ priceMin }}</p>
+      <p v-if="!getFilterData.length"><strong>Not found</strong></p>
       <p class="range-price-from">€{{ priceMax }}</p>
     </div>
     <div class="multi-range border-bottom">
@@ -94,6 +95,7 @@
     <h3>Stock</h3>
     <div class="range stock">
       <p class="range-stock-to">{{ stockMin }}</p>
+      <p v-if="!getFilterData.length"><strong>Not found</strong></p>
       <p class="range-stock-from">{{ stockMax }}</p>
     </div>
     <div class="multi-range">
@@ -157,8 +159,8 @@ export default {
   },
   async mounted() {
     this.isLoader = true;
-    await this.getAllProd();
-
+    //await this.getAllBrands();
+    // await this.getFilterParameters(this.firstQuery);
     ////////////////////////////
     // price and stock
     this.changeForPriceAndStock();
@@ -273,9 +275,9 @@ export default {
       }
       this.dataItems = this.getFilterData.length;
     },
-    getAllProducts() {
-      return this.getAllProducts;
-    },
+    // getAllProducts() {
+    //   return this.getAllProducts;
+    // },
     dataItems() {
       if (this.dataItems === 0) {
         this.isFound = false;
@@ -297,7 +299,6 @@ export default {
   },
   methods: {
     ...mapActions("Filter", [
-      "getAllProd",
       "getQuery",
       "getPriceDiff",
       "getStockDiff",

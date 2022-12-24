@@ -10,18 +10,12 @@
 <script>
 import FilterView from "@/components/home/FilterView";
 import CenterSection from "@/components/home/CenterSection";
-import { mapActions } from "vuex";
 
 export default {
   data() {
     return {
       isLoader: false,
     };
-  },
-  async mounted() {
-    await this.getAllProd();
-    await this.getAllBrands();
-    await this.getAllCat();
   },
   watch: {
     $route(to, from) {
@@ -36,7 +30,6 @@ export default {
 
   computed: {},
   methods: {
-    ...mapActions("Filter", ["getAllBrands", "getAllCat", "getAllProd"]),
     emitToResetFilters() {
       this.emitter.emit("resetFilters");
     },
@@ -45,7 +38,8 @@ export default {
 };
 </script>
 <style scoped lang="scss">
-.home {
-  display: flex;
+::placeholder {
+  font-size: 13px;
+  color: #bbb;
 }
 </style>
