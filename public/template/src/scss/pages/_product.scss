@@ -1,3 +1,11 @@
+.main__home-content-product{
+   width: 100%;
+   background-color: #e3f2fd;
+   border-radius: 10px;
+   padding: 15px;
+   margin-top: 15px;
+}
+
 .product{
    background-color: $background;
    padding: 15px;
@@ -25,37 +33,55 @@
 }
 
 .product__content{
-   margin-top: 15px;
+   margin: 15px auto 0;
    display: flex;
+   justify-content: center;
    gap: 15px;
+   max-width: 800px;   
 }
 
 .product__photo-main{
    display: flex;
    flex-direction: column;
-   flex-basis: 50%;
+   gap: 10px;
 }
 
 .product__photo-big{
+   border-radius: 10px;
+   width: 400px;
+   height: 400px;
+   overflow: hidden;   
    img{
-      border-radius: 10px;
+      @extend %photo-center;
+      transition: all 0.3s ease;
+      &:hover{
+         transform: scale(1.1);
+      }
    }
 }
 
 .product__photo-small{
    display: flex;
    gap: 10px;
-   // width: 73px;
-   // height: 73px;
+}
+
+.product__photo-small-div{
+   width: 71px;
+   height: 71px;
+   border-radius: 10px;
+   overflow: hidden;
+   cursor: pointer;
    img{
-      max-width: 73px;
-      max-height: 73px;
       width: 100%;
       height: 100%;
       -o-object-fit: cover;
       object-fit: cover;
       object-position: center;
-      border-radius: 10px;
+      @extend %photo-center;
+      transition: all 0.3s ease;
+      &:hover{
+         transform: scale(1.1);
+      }
    }
 }
 
@@ -73,20 +99,66 @@
 }
 
 .product__info{
-   flex-basis: 50%;
+   padding: 10px;
 }
 
 .product__name{
    font-weight: 700;
-   font-size: 20px;
-   color: $color-text-main;
+   font-size: 35px;
+   color: #212121;
+   margin: 10px auto 30px;
 }
 
 .product__description{
    font-weight: 400;
-   font-size: 12px;
+   font-size: 14px;
    color: #757575;
+   margin: 0 auto 25px;
 }
+
+.product__brand-name,
+.product__category,
+.product__rating,
+.product__stock{
+   margin: 0 auto 10px;
+   font-size: 16px;
+}
+
+.product__price{
+   font-weight: 700;
+   font-size: 30px;
+   margin-top: 30px;
+}
+
+.product__btn{
+   display: flex;
+   gap: 5px;
+}
+
+.product__button{
+   width: 180px;
+   height: 45px;
+   border: none;
+   border-radius: 5px;
+   color: $color-white;
+   cursor: pointer;
+}
+
+.btn-pay{
+   @extend %btn;
+}
+
+.btn-del{
+   background-color: red;
+   transition: all 0.3s ease;
+   &:hover{
+      background-color: darken( red, 5%);
+   }
+}
+
+
+
+
 
 
 
