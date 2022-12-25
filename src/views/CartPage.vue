@@ -18,36 +18,37 @@
 
       <div class="cart__content">
         <ItemsInCart></ItemsInCart>
-        <div class="cart__pay">
-          <p class="card__pay-title">Shopping Cart</p>
-          <p class="card__pay-score">
-            Items: <span>{{ getCartLength }}</span>
-          </p>
-          <p class="card__pay-sum">
-            Total Sum: <span>€{{ getCartSum }}</span>
-          </p>
-          <input
-            class="card__pay-input"
-            type="text"
-            placeholder="Enter promo code"
-          />
-          <p class="card__pay-promo">Promo for test: 'RS', 'EPM'</p>
-          <button class="card__pay-btn">BUY NOW</button>
-        </div>
+        <CartPay></CartPay>
       </div>
     </div>
   </div>
+  <CheckoutModalView v-if="isShowCheckoutModal"></CheckoutModalView>
 </template>
 
 <script>
-import ItemsInCart from "../components/cart/ItemsInCart";
+import ItemsInCart from "@/components/cart/ItemsInCart";
+import CartPay from "@/components/cart/CartPay";
+import CheckoutModalView from "@/components/modals/CheckoutModalView";
 import { mapGetters } from "vuex";
 export default {
   name: "CartPage",
+  data() {
+    return {
+      isShowCheckoutModal: false,
+    };
+  },
+  mounted() {
+    this.emitter.on("openCheckout", () => {
+      this.isShowCheckoutModal = true;
+    });
+    this.emitter.on("closeModal", () => {
+      this.isShowCheckoutModal = false;
+    });
+  },
   computed: {
     ...mapGetters("Cart", ["getCartArray", "getCartLength", "getCartSum"]),
   },
-  components: { ItemsInCart },
+  components: { ItemsInCart, CartPay, CheckoutModalView },
 };
 </script>
 

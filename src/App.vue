@@ -4,31 +4,15 @@
     <router-view v-if="getAllProducts.length" />
   </main>
   <FooterView></FooterView>
-  <CheckoutModalView v-if="isShowCheckoutModal"></CheckoutModalView>
 </template>
 <script>
 import HeaderView from "./components/HeaderView";
 import FooterView from "./components/FooterView";
-import CheckoutModalView from "./components/modals/CheckoutModalView";
 import { mapActions, mapGetters } from "vuex";
 
 export default {
-  data() {
-    return {
-      isShowCheckoutModal: false,
-    };
-  },
   async created() {
     await this.getAllProd();
-    // await this.getFilterParameters({
-    //   categories: [],
-    //   brands: [],
-    //   price: [],
-    //   stock: [],
-    //   search: "",
-    //   sort: "",
-    //   big: "",
-    // });
     await this.getFromStorage();
     await this.getAllBrands();
     await this.getAllCat();
@@ -73,10 +57,13 @@ export default {
   components: {
     HeaderView,
     FooterView,
-    CheckoutModalView,
   },
 };
 </script>
 <style lang="scss">
 @import "./styles/style";
+::placeholder {
+  color: #ccc;
+  font-size: 14px;
+}
 </style>

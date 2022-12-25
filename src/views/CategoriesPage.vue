@@ -1,7 +1,23 @@
 <template>
   <section class="container">
-    <ListOfCategories v-if="!id"></ListOfCategories>
-    <SingleCategory v-if="id" :id="id"></SingleCategory>
+    <div class="cart">
+      <div class="home-menu-crumbs">
+        <h1 class="crumbs-start">Categories</h1>
+        <div class="crumbs-address">
+          <router-link class="img-address" :to="{ name: 'home' }"
+            ><img src="@/assets/icon/address-svg.svg" alt=""
+          /></router-link>
+          <img
+            class="img-arrow"
+            src="@/assets/icon/arrow-link-right.svg"
+            alt=""
+          />
+          <p>Categories</p>
+        </div>
+      </div>
+      <ListOfCategories v-if="!id"></ListOfCategories>
+      <SingleCategory v-if="id" :id="id"></SingleCategory>
+    </div>
   </section>
 </template>
 
@@ -17,4 +33,8 @@ export default {
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.crumbs-address {
+  align-items: center;
+}
+</style>

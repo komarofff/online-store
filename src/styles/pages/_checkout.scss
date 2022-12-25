@@ -1,0 +1,175 @@
+.modal{
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   width: 100vw;
+   height: 100vh;
+   background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content{
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   max-width: 600px;
+   width: 100%;
+   // max-height: 400px;
+   // height: 100%;
+   text-align: center;
+   background-color: $background;
+   padding: 15px;
+   border-radius: 10px;
+}
+
+.modal__title{
+   margin: 5px auto 0;
+   font-size: 20px;
+   font-weight: 500;
+}
+
+.modal__input{
+   width: 100%;
+   height: 25px;
+   border: 1px solid $background-violet-light;
+   border-radius: 7px;
+   color: $color-text-main;
+   font-size: 14px;
+   text-align: center;
+   outline: none;
+}
+
+.input-valid{
+   input{
+      color: green;
+      border: 1px solid green !important;
+   }
+}
+
+.modal__name,
+.modal__phone,
+.modal__address,
+.modal__email{
+   margin-top: 25px;
+}
+p.is-invalid{
+   display: none;
+   color: red !important;
+}
+.error{
+   position: relative;
+   input{
+      border: 1px solid red !important;
+      color: red !important;
+   }
+   .is-invalid{
+      display: block;
+      color: red !important;
+      font-size: 12px;
+      position: absolute;
+      top: 19px;
+      left: 50%;
+      transform: translateX(-50%);
+   }
+}
+
+.modal__card-title{
+   margin: 25px auto 0;
+   font-size: 18px;
+   font-weight: 500;
+}
+
+.modal__card-block{
+   background-color: $color-blue-light;
+   padding: 5px;
+   border-radius: 10px;
+   width: 280px;
+   height: 130px;
+   margin: 10px auto 0;
+}
+
+.modal__card-top{
+   display: flex;
+   justify-content: space-around;
+   align-items: center;
+   margin-top: 20px;
+}
+
+.modal__card-logo{
+   background-color: $background;
+   width: 45px;
+   height: 33px;
+   border: 1px solid $background-violet-light;
+   border-radius: 5px;
+}
+
+.american{
+   background: url(~@/assets/img/American-Express.jpg) no-repeat;
+   background-size: cover;
+}
+
+.visa{
+   background: url(~@/assets/img/visa.jpg) no-repeat;
+   background-size: cover;
+}
+
+.master{
+   background: url(~@/assets/img/master-card.jpg) no-repeat;
+   background-size: cover;
+}
+
+.modal__card-number{
+   width: 200px;
+   height: 25px;
+   text-align: center;
+   outline: none;
+   border: 1px solid $background-violet-light;
+   border-radius: 5px;
+}
+
+.modal__card-bottom{
+   display: flex;
+   justify-content: space-around;
+   margin-top: 30px;
+}
+
+.modal__card-data{
+   label{
+      font-size: 14px;
+   }
+   input{
+      width: 50px;
+      height: 25px;
+      text-align: center;
+      outline: none;
+      border: 1px solid $background-violet-light;
+      border-radius: 5px;
+   }
+}
+
+.modal__card-cvv{
+   label{
+      font-size: 14px;
+   }
+   input{
+      width: 50px;
+      height: 25px;
+      text-align: center;
+      outline: none;
+      border: 1px solid $background-violet-light;
+      border-radius: 5px;
+   }
+}
+
+.modal__submit{
+   @extend %btn;
+   margin: 30px auto 15px;
+   font-size: 22px;
+   width: 150px;
+   height: 40px;
+   border: none;
+   cursor: pointer;
+}
+

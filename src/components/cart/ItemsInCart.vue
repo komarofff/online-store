@@ -9,8 +9,8 @@
         Products In Cart - <span>{{ getCartLength }}</span>
       </p>
       <div class="cart__product-control">
-        <span>Items per page: </span>
-        <span class="count-item-pages"> {{ itemsPerPage }}</span>
+        <span class="small">Items per page: </span>
+        <span class="count-item-pages small"> {{ itemsPerPage }}</span>
         <span>Page</span>
         <button class="control-arrow arrow-to-left" @click="goToPageLeft()">
           <img src="@/assets/icon/arrow-link-right.svg" alt="" />
@@ -101,6 +101,11 @@ export default {
       this.startQuery = this.$route.query.page;
       this.itemsInCart = this.getCartArray;
       this.startCart(this.startQuery);
+    },
+    page() {
+      if (this.page === 0) {
+        this.page = 1;
+      }
     },
   },
   computed: {
@@ -196,6 +201,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.small {
+  font-size: 12px;
+  font-weight: bold;
+}
 .page-counter {
   margin: 0 5px;
   font-weight: bold;

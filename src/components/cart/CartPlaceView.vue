@@ -1,6 +1,8 @@
 <template>
   <div class="header__cart">
-    <span class="header__cart-count-sum">Total: €{{ getCartSum }}</span>
+    <span class="header__cart-count-sum" v-if="getCartSum"
+      ><strong> €{{ getCartSum }}</strong></span
+    >
     <div class="header__cart-count-item">
       <p>{{ getCartLength }}</p>
     </div>
