@@ -122,6 +122,9 @@ const actions: ActionTree<RootState, RootState> = {
     return await axios
       .get("https://dummyjson.com/products?limit=100")
       .then((response) => {
+        response.data.products.forEach((el: ProdArr) => {
+          el.brand = el.brand.toLowerCase();
+        });
         commit("setAllProducts", response.data.products as ProdArr[]);
       });
     // }

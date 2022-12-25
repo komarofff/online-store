@@ -206,6 +206,9 @@ export default {
 
       // price and stock
       this.changeForPriceAndStock();
+      if (this.$route.query.sort) {
+        this.emitter.emit("needChangeTextInSelect", this.$route.query.sort);
+      }
     } else {
       await this.getQuery(this.firstQuery);
       await this.getFilterParameters(this.firstQuery);
@@ -377,6 +380,7 @@ export default {
         query: {},
       });
       this.emitter.emit("clearUrls");
+      this.emitter.emit("clearSelect");
 
       this.$router.push(this.$route.path);
     },
@@ -387,10 +391,14 @@ export default {
         if (!this.getQueryForFilters.categories.includes(val)) {
           this.getQueryForFilters.categories.push(val);
         } else {
-          this.getQueryForFilters.categories.splice(
-            this.getQueryForFilters.categories.indexOf(val),
-            1
-          );
+          if (Array.isArray(this.getQueryForFilters.categories)) {
+            this.getQueryForFilters.categories.splice(
+              this.getQueryForFilters.categories.indexOf(val),
+              1
+            );
+          } else {
+            this.getQueryForFilters.categories = "";
+          }
         }
       }
 
@@ -405,10 +413,14 @@ export default {
         if (!this.getQueryForFilters.brands.includes(val)) {
           this.getQueryForFilters.brands.push(val);
         } else {
-          this.getQueryForFilters.brands.splice(
-            this.getQueryForFilters.brands.indexOf(val),
-            1
-          );
+          if (Array.isArray(this.getQueryForFilters.brands)) {
+            this.getQueryForFilters.brands.splice(
+              this.getQueryForFilters.brands.indexOf(val),
+              1
+            );
+          } else {
+            this.getQueryForFilters.brands = "";
+          }
         }
       }
       await this.changeQuery();

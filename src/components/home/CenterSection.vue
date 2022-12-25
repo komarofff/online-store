@@ -18,7 +18,7 @@
 
     <div class="home-menu">
       <select v-model="sort" @change="changesToSort(sort)">
-        <option disabled value="">Sort options:</option>
+        <option disabled value="" ref="startText">Sort options:</option>
         <option
           v-for="option in options"
           :value="option.value"
@@ -137,12 +137,30 @@ export default {
       dataItems: 0,
       sort: "",
       options: [
-        { text: "Sort by price ↑", value: "price-ASC" },
-        { text: "Sort by price ↓", value: "price-DESC" },
-        { text: "Sort by rating ↑", value: "rating-ASC" },
-        { text: "Sort by rating ↓", value: "rating-DESC" },
-        { text: "Sort by discount ↑", value: "discount-ASC" },
-        { text: "Sort by discount ↓", value: "discount-DESC" },
+        {
+          text: "Sort by price ↑",
+          value: "price-ASC",
+        },
+        {
+          text: "Sort by price ↓",
+          value: "price-DESC",
+        },
+        {
+          text: "Sort by rating ↑",
+          value: "rating-ASC",
+        },
+        {
+          text: "Sort by rating ↓",
+          value: "rating-DESC",
+        },
+        {
+          text: "Sort by discount ↑",
+          value: "discount-ASC",
+        },
+        {
+          text: "Sort by discount ↓",
+          value: "discount-DESC",
+        },
       ],
       isBigCards: true,
     };
@@ -168,6 +186,12 @@ export default {
     this.isBigCards = !(
       this.$route.query.big && this.$route.query.big === "false"
     );
+    this.emitter.on("clearSelect", () => {
+      this.sort = "";
+    });
+    this.emitter.on("needChangeTextInSelect", (val) => {
+      this.sort = val;
+    });
   },
   watch: {
     searchText() {
@@ -194,6 +218,9 @@ export default {
   methods: {
     ...mapActions("Filter", ["getQuery", "getFilterParameters"]),
     ...mapActions("Cart", ["pushToCart", "delFromCart"]),
+    changeCountry(event) {
+      console.log("event", event);
+    },
     changeBigCards() {
       this.isBigCards = !this.isBigCards;
       this.getQueryForFilters.big = this.isBigCards;
