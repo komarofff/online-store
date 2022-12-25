@@ -1,6 +1,17 @@
 <template>
-  <section class="container">
-    <h1>This is an 404 page</h1>
+  <section class="error">
+    <div class="container">
+      <div class="error__content">
+        <div class="error__photo">
+          <img src="@/assets/img/pixar.jpg" alt="404" />
+        </div>
+
+        <div class="error__text">
+          <p class="error__text-404">404</p>
+          <p class="error__text-page">Page not found</p>
+        </div>
+      </div>
+    </div>
   </section>
 </template>
 
@@ -10,4 +21,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style lang="scss">
+.error__content {
+  padding-bottom: 10px;
+}
+</style>

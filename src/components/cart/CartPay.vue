@@ -81,7 +81,9 @@
       Promo for test:
       <template v-for="item in promoCodes"> "{{ item.promo }}"</template>
     </p>
-    <button class="card__pay-btn" @click="openCheckout()">BUY NOW</button>
+    <button class="card__pay-btn" @click="openCheckout()" v-if="getCartLength">
+      BUY NOW
+    </button>
   </div>
 </template>
 

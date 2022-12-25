@@ -90,6 +90,7 @@ export default {
       maxPage: 1,
       itemsPerPage: 5,
       startQuery: {},
+      currentPage: 1,
     };
   },
   mounted() {
@@ -106,6 +107,7 @@ export default {
       if (this.page === 0) {
         this.page = 1;
       }
+      this.currentPage = this.page;
     },
   },
   computed: {
@@ -158,8 +160,11 @@ export default {
         await this.delFromCart(id);
         this.itemsInCart = this.getCartArray;
         this.maxPage = Math.ceil(this.itemsInCart.length / this.itemsPerPage);
-        if (this.itemsInCart.length % this.itemsPerPage === 0) {
-          this.page--;
+        if (
+          this.itemsInCart.length % this.itemsPerPage === 0 &&
+          this.page !== this.maxPage
+        ) {
+          if (this.page > 1) this.page--;
           this.changeQuery(this.page);
         }
         this.showPaginatedItems(this.page);
