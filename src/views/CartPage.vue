@@ -38,11 +38,17 @@ export default {
     };
   },
   mounted() {
+    if (this.$route.query.byeNow === "true") {
+      this.isShowCheckoutModal = true;
+    }
     this.emitter.on("openCheckout", () => {
       this.isShowCheckoutModal = true;
     });
     this.emitter.on("closeModal", () => {
       this.isShowCheckoutModal = false;
+      let queries = JSON.parse(JSON.stringify(this.$route.query));
+      delete queries.byeNow;
+      this.$router.replace({ query: queries });
     });
   },
   computed: {

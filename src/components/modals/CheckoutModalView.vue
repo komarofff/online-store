@@ -1,5 +1,5 @@
 <template>
-  <div class="modal" @click="closeModal()"></div>
+  <div class="modal" @click="closeModal()" @keyup.esc="closeModal()"></div>
   <div class="modal-content">
     <p class="modal__title">Personal details</p>
     <form action="#">

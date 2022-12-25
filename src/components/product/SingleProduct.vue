@@ -1,64 +1,111 @@
 <template>
+  <img v-if="isLoader" src="@/assets/loader.gif" alt="loader" />
+
   <section class="container" v-if="isCatHere">
-    <h1>Product page</h1>
-    <img v-if="isLoader" src="../../assets/loader.gif" alt="loader" />
-    <!--    <h3>{{ productData }}</h3>-->
-
-    <div class="product__card">
-      <h1>title- {{ getSingleProduct[0].title }}</h1>
-      <p>id- {{ getSingleProduct[0].id }}</p>
-      <hr />
-      <p>title- {{ getSingleProduct[0].title }}</p>
-      <hr />
-      <p>description- {{ getSingleProduct[0].description }}</p>
-      <hr />
-      <p>price- {{ getSingleProduct[0].price }}</p>
-      <hr />
-      <p>rating- {{ getSingleProduct[0].rating }}</p>
-      <hr />
-      <p>stock- {{ getSingleProduct[0].stock }}</p>
-      <hr />
-      <p>brand- {{ getSingleProduct[0].brand }}</p>
-      <hr />
-      <p>category- {{ getSingleProduct[0].category }}</p>
-      <hr />
-      <p>
-        thumbnail -
-        <img
-          class="thumbnail"
-          :src="getSingleProduct[0].thumbnail"
-          :alt="getSingleProduct[0].title"
-        />
-      </p>
-      <hr />
-      <p>
-        Images -
-        <template v-for="image in getSingleProduct[0].images" :key="image">
+    <div class="main__home-content-product">
+      <div class="home-menu-crumbs">
+        <p class="crumbs-start">{{ getSingleProduct[0].title }}</p>
+        <div class="crumbs-address">
+          <a class="img-address" href=""
+            ><img src="@/assets/icon/address-svg.svg" alt=""
+          /></a>
+          <a href="">Catalog</a>
           <img
-            class="thumbnail"
-            :src="image"
-            :alt="getSingleProduct[0].title"
+            class="img-arrow"
+            src="@/assets/icon/arrow-link-right.svg"
+            alt=""
           />
-        </template>
-      </p>
-      <p>
-        <button
-          v-if="!isActive(getSingleProduct[0].id)"
-          @click="addToCart(getSingleProduct[0])"
-        >
-          Add to cart
-        </button>
+          <a href="">{{ getSingleProduct[0].category }}</a>
+          <img
+            class="img-arrow"
+            src="@/assets/icon/arrow-link-right.svg"
+            alt=""
+          />
+          <a href="">{{ getSingleProduct[0].brand }}</a>
+          <img
+            class="img-arrow"
+            src="@/assets/icon/arrow-link-right.svg"
+            alt=""
+          />
+          <a href="">{{ getSingleProduct[0].title }}</a>
+        </div>
+      </div>
 
-        <button
-          class="delete__button"
-          v-if="isActive(getSingleProduct[0].id)"
-          @click="delCart(getSingleProduct[0].id)"
-          :ref="`id-${getSingleProduct[0].id}`"
-        >
-          Delete from cart
-        </button>
-      </p>
-      <p></p>
+      <div class="product">
+        <img v-if="isLoader" src="@/assets/loader.gif" alt="loader" />
+        <p class="product__brand">{{ getSingleProduct[0].brand }}</p>
+        <p class="product__link">
+          Shop <img src="@/assets/icon/arrow-link-right.svg" alt="" />
+        </p>
+
+        <div class="product__content">
+          <div class="product__photo-main">
+            <div class="product__photo-big">
+              <img
+                :src="getSingleProduct[0].thumbnail"
+                :alt="getSingleProduct[0].title"
+              />
+            </div>
+            <div class="product__photo-small">
+              <div
+                class="product__photo-small-div"
+                v-for="image in getSingleProduct[0].images"
+                :key="image"
+              >
+                <img :src="image" :alt="getSingleProduct[0].title" />
+              </div>
+
+              <div class="product__photo-small-false">+2</div>
+            </div>
+          </div>
+
+          <div class="product__info">
+            <p class="product__name">{{ getSingleProduct[0].title }}</p>
+            <p class="product__description">
+              {{ getSingleProduct[0].description }}
+            </p>
+            <p class="product__brand-name">
+              Brand: <span>{{ getSingleProduct[0].brand }}</span>
+            </p>
+            <p class="product__category">
+              Category: <span>{{ getSingleProduct[0].category }}</span>
+            </p>
+            <p class="product__rating">
+              Rating:
+              <span class="product__rating-score">{{
+                getSingleProduct[0].rating
+              }}</span>
+            </p>
+            <p class="product__stock">
+              Stock: <span>{{ getSingleProduct[0].stock }}</span>
+            </p>
+            <p class="product__price">€{{ getSingleProduct[0].price }}</p>
+
+            <div class="product__btn">
+              <button
+                class="product__button btn-pay"
+                v-if="!isActive(getSingleProduct[0].id)"
+                @click="addToCart(getSingleProduct[0])"
+              >
+                ADD TO CART
+              </button>
+              <button
+                class="product__button btn-del"
+                v-if="isActive(getSingleProduct[0].id)"
+                @click="delCart(getSingleProduct[0].id)"
+              >
+                DROP FROM CART
+              </button>
+              <button
+                class="product__button btn-pay"
+                @click="openCheckout(getSingleProduct[0])"
+              >
+                BUY NOW
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -118,13 +165,6 @@ export default {
     ...mapActions("Cart", ["pushToCart", "delFromCart"]),
 
     isActive(val) {
-      // подключаем показ кнопки удалить если товар в сторе в массиве корзины
-      //console.log("val", val);
-      // let answer = this.getCartArray.find((product) => {
-      //  return product.id === val;
-      //});
-      //console.log("answer", answer);
-      //return answer;
       return this.getCartArray.find((product) => {
         return product.id === val;
       });
@@ -135,6 +175,11 @@ export default {
     },
     async delCart(val) {
       await this.delFromCart(val);
+    },
+    async openCheckout(val) {
+      val.quantity = 1;
+      await this.pushToCart(val);
+      this.$router.push({ name: "cart", query: { byeNow: "true" } });
     },
   },
 };
