@@ -9,7 +9,7 @@
     <span class="amount" v-if="isSearchOpen">({{ data.length }})</span>
     <div class="search-box vertical-scroll" v-if="isSearchOpen">
       <a
-        :href="`/catalog/${prod.category}/product/${prod.id}`"
+        :href="`/product-details/${prod.id}`"
         v-for="prod in data"
         :key="prod.id"
         class="search-box__product"
