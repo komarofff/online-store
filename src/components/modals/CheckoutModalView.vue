@@ -89,4 +89,9 @@ export default {
 .modal-content {
   z-index: 100;
 }
+@media (max-width: 768px) {
+  .modal-content {
+    max-width: 90%;
+  }
+}
 </style>
