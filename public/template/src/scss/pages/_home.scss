@@ -435,7 +435,22 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
    }
 }
 
-
+.filter-btn-show{
+   width: 18px;
+   padding: 8px 0 8px 0;
+   border: 1px solid $color-blue;
+   background-color: $color-blue-light;
+   border-top-right-radius: 13px;
+   border-bottom-right-radius: 13px;
+   p{
+      margin: 4px 0 0 0;
+      writing-mode: vertical-rl;
+      font-size: 12px;
+   }
+   img{
+      rotate: 180deg;
+   }
+}
 
 
 
