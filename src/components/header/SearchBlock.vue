@@ -3,7 +3,7 @@
     <input
       type="text"
       v-model="search"
-      placeholder="quick search"
+      placeholder="Quick search"
       @blur="clearSearch()"
     />
     <span class="amount" v-if="isSearchOpen">({{ data.length }})</span>

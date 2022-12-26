@@ -44,4 +44,9 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.header__cart-svg {
+  width: 73px;
+  height: 55px;
+}
+</style>

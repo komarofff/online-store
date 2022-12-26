@@ -1,118 +1,123 @@
 <template>
-  <aside class="main__home-filter">
-    <div class="filter-button">
-      <button class="filter-btn-resset" @click="clearFilters()">
-        Reset Filters
-      </button>
+  <aside class="main__home-filter" :class="{ 'filter-show': isFilter }">
+    <div class="relative">
+      <button class="filter-btn-copy filter" @click="showFilter()">></button>
+      <div class="filter-button">
+        <button class="filter-btn-resset" @click="clearFilters()">
+          Reset Filters
+        </button>
 
-      <button class="filter-btn-copy" v-if="successCopyLink">
-        Link was copied
-      </button>
-      <button class="filter-btn-copy" v-else @click="copyLink()">
-        Copy Link
-      </button>
-    </div>
-    <h3>Categories</h3>
-    <ul class="checkbox-categories vertical-scroll">
-      <template v-for="cat in getCategories" :key="cat.name">
-        <li class="checkbox-flex">
-          <div>
-            <input
-              type="checkbox"
-              :id="cat.name"
-              @change="changeCat(cat.name)"
-              :checked="isActiveCat(cat.name)"
-            />
-            <label
-              :for="cat.name"
-              :class="{ 'gray-border': !showAllInFilter('category', cat.name) }"
-              >{{ cat.name }}</label
+        <button class="filter-btn-copy" v-if="successCopyLink">
+          Link was copied
+        </button>
+        <button class="filter-btn-copy" v-else @click="copyLink()">
+          Copy Link
+        </button>
+      </div>
+      <h3>Categories</h3>
+      <ul class="checkbox-categories vertical-scroll">
+        <template v-for="cat in getCategories" :key="cat.name">
+          <li class="checkbox-flex">
+            <div>
+              <input
+                type="checkbox"
+                :id="cat.name"
+                @change="changeCat(cat.name)"
+                :checked="isActiveCat(cat.name)"
+              />
+              <label
+                :for="cat.name"
+                :class="{
+                  'gray-border': !showAllInFilter('category', cat.name),
+                }"
+                >{{ cat.name }}</label
+              >
+            </div>
+            <div
+              class="checkbox-count"
+              :class="{ 'gray-color': !showAllInFilter('category', cat.name) }"
             >
-          </div>
-          <div
-            class="checkbox-count"
-            :class="{ 'gray-color': !showAllInFilter('category', cat.name) }"
-          >
-            ({{ showAllInFilter("category", cat.name) }} /
-            {{ showAllInItem("category", cat.name) }})
-          </div>
-        </li>
-      </template>
-    </ul>
+              ({{ showAllInFilter("category", cat.name) }} /
+              {{ showAllInItem("category", cat.name) }})
+            </div>
+          </li>
+        </template>
+      </ul>
 
-    <h3>Brands</h3>
-    <ul class="checkbox-categories vertical-scroll">
-      <template v-for="brand in getBrands" :key="brand">
-        <li class="checkbox-flex">
-          <div>
-            <input
-              type="checkbox"
-              :id="brand"
-              @change="changeBrand(brand)"
-              :checked="isActiveBrand(brand)"
-            />
-            <label
-              :for="brand"
-              :class="{ 'gray-border': !showAllInFilter('brand', brand) }"
-              >{{ brand }}</label
+      <h3>Brands</h3>
+      <ul class="checkbox-categories vertical-scroll">
+        <template v-for="brand in getBrands" :key="brand">
+          <li class="checkbox-flex">
+            <div>
+              <input
+                type="checkbox"
+                :id="brand"
+                @change="changeBrand(brand)"
+                :checked="isActiveBrand(brand)"
+              />
+              <label
+                :for="brand"
+                :class="{ 'gray-border': !showAllInFilter('brand', brand) }"
+                >{{ brand }}</label
+              >
+            </div>
+            <div
+              class="checkbox-count"
+              :class="{ 'gray-color': !showAllInFilter('brand', brand) }"
             >
-          </div>
-          <div
-            class="checkbox-count"
-            :class="{ 'gray-color': !showAllInFilter('brand', brand) }"
-          >
-            ({{ showAllInFilter("brand", brand) }} /
-            {{ showAllInItem("brand", brand) }})
-          </div>
-        </li>
-      </template>
-    </ul>
+              ({{ showAllInFilter("brand", brand) }} /
+              {{ showAllInItem("brand", brand) }})
+            </div>
+          </li>
+        </template>
+      </ul>
 
-    <h3>Price</h3>
-    <div class="range price">
-      <p class="range-price-to">€{{ priceMin }}</p>
-      <p v-if="!getFilterData.length"><strong>Not found</strong></p>
-      <p class="range-price-from">€{{ priceMax }}</p>
-    </div>
-    <div class="multi-range border-bottom">
-      <input
-        type="range"
-        :min="startPrice[0]"
-        :max="startPrice[1]"
-        v-model="priceMin"
-        @input="changePriceRange()"
-      />
-      <input
-        id="555"
-        type="range"
-        :min="startPrice[0]"
-        :max="startPrice[1]"
-        v-model="priceMax"
-        @input="changePriceRange()"
-      />
-    </div>
+      <h3>Price</h3>
+      <div class="range price">
+        <p class="range-price-to">€{{ priceMin }}</p>
+        <p v-if="!getFilterData.length"><strong>Not found</strong></p>
+        <p class="range-price-from">€{{ priceMax }}</p>
+      </div>
+      <div class="multi-range border-bottom">
+        <input
+          type="range"
+          :min="startPrice[0]"
+          :max="startPrice[1]"
+          v-model="priceMin"
+          @input="changePriceRange()"
+        />
+        <input
+          id="555"
+          type="range"
+          :min="startPrice[0]"
+          :max="startPrice[1]"
+          v-model="priceMax"
+          @input="changePriceRange()"
+        />
+      </div>
 
-    <h3>Stock</h3>
-    <div class="range stock">
-      <p class="range-stock-to">{{ stockMin }}</p>
-      <p v-if="!getFilterData.length"><strong>Not found</strong></p>
-      <p class="range-stock-from">{{ stockMax }}</p>
-    </div>
-    <div class="multi-range">
-      <input
-        type="range"
-        :min="startStock[0]"
-        :max="startStock[1]"
-        v-model="stockMin"
-        @input="changeStockRange()"
-      />
-      <input
-        type="range"
-        :min="startStock[0]"
-        :max="startStock[1]"
-        v-model="stockMax"
-        @input="changeStockRange()"
-      />
+      <h3>Stock</h3>
+      <div class="range stock">
+        <p class="range-stock-to">{{ stockMin }}</p>
+        <p v-if="!getFilterData.length"><strong>Not found</strong></p>
+        <p class="range-stock-from">{{ stockMax }}</p>
+      </div>
+      <div class="multi-range">
+        <input
+          type="range"
+          :min="startStock[0]"
+          :max="startStock[1]"
+          v-model="stockMin"
+          @input="changeStockRange()"
+        />
+        <input
+          type="range"
+          :min="startStock[0]"
+          :max="startStock[1]"
+          v-model="stockMax"
+          @input="changeStockRange()"
+        />
+      </div>
     </div>
   </aside>
 </template>
@@ -125,6 +130,7 @@ export default {
   //props: ["products"],
   data() {
     return {
+      isFilter: false,
       firstQuery: {
         categories: [],
         brands: [],
@@ -301,6 +307,9 @@ export default {
     ]),
   },
   methods: {
+    showFilter() {
+      this.isFilter = !this.isFilter;
+    },
     ...mapActions("Filter", [
       "getQuery",
       "getPriceDiff",
