@@ -45,20 +45,36 @@
           <div class="product__photo-main">
             <div class="product__photo-big">
               <img
-                :src="getSingleProduct[0].thumbnail"
+                class="fade-innn"
+                :src="bigImage"
                 :alt="getSingleProduct[0].title"
               />
             </div>
             <div class="product__photo-small">
               <div
                 class="product__photo-small-div"
+                :class="{ active: isBigImage(getSingleProduct[0].thumbnail) }"
+              >
+                <img
+                  @click="changeBigPhoto(getSingleProduct[0].thumbnail)"
+                  :src="getSingleProduct[0].thumbnail"
+                  :alt="getSingleProduct[0].title"
+                />
+              </div>
+              <div
+                class="product__photo-small-div"
+                :class="{ active: isBigImage(image) }"
                 v-for="image in getSingleProduct[0].images"
                 :key="image"
               >
-                <img :src="image" :alt="getSingleProduct[0].title" />
+                <img
+                  @click="changeBigPhoto(image)"
+                  :src="image"
+                  :alt="getSingleProduct[0].title"
+                />
               </div>
 
-              <div class="product__photo-small-false">+2</div>
+              <!--              <div class="product__photo-small-false">+2</div>-->
             </div>
           </div>
 
@@ -122,15 +138,17 @@ export default {
     return {
       isLoader: false,
       isCatHere: false,
+      bigImage: null,
     };
   },
 
   async mounted() {
     this.isLoader = true;
-    console.log("this.id", this.id);
+    // console.log("this.id", this.id);
     //await this.getSingleCat(this.cat);
     if (!isNaN(+this.id) && parseInt(this.id) > 0 && parseInt(this.id) < 100) {
       await this.getSingleProd(Number(this.id));
+      this.bigImage = this.getSingleProduct[0].thumbnail;
     } else {
       this.$router.push({ name: "error" });
     }
@@ -153,7 +171,12 @@ export default {
   methods: {
     ...mapActions("Filter", ["getSingleProd"]),
     ...mapActions("Cart", ["pushToCart", "delFromCart"]),
-
+    changeBigPhoto(src) {
+      this.bigImage = src;
+    },
+    isBigImage(src) {
+      return src === this.bigImage;
+    },
     isActive(val) {
       return this.getCartArray.find((product) => {
         return product.id === val;
@@ -175,7 +198,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
 .home-menu-crumbs {
   align-items: center;
 }
@@ -192,9 +215,41 @@ export default {
   text-transform: uppercase;
 }
 .product__photo-big {
-  filter: drop-shadow(0 0 10px #ccc);
+  box-shadow: 0 0 10px #cccccc4f;
 }
 .product__photo-small-div {
   border: 1px solid #ede7f6;
+}
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.product__photo-big {
+  transition: 0.3s ease-in-out;
+  border-radius: 10px;
+  width: 30vw;
+  height: 20vw;
+  overflow: hidden;
+}
+.product__photo-big {
+  img {
+    animation: fade 0.3s ease-in-out;
+    object-fit: contain;
+  }
+}
+.fade-innn {
+  animation: fade 0.3s ease-in-out;
+}
+.product__photo-small-div.active {
+  box-shadow: 0 0 5px rgba(255, 0, 0, 0.99);
+}
+.product__photo-small {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
 }
 </style>
