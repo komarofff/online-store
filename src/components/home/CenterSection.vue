@@ -165,6 +165,7 @@ export default {
   },
   async mounted() {
     // all products
+
     this.isLoader = true;
     this.data = this.getFilterData;
     this.dataItems = this.getFilterData.length;
@@ -270,22 +271,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-//.center-section {
-//  flex-basis: 80%;
-//  display: flex;
-//  flex-direction: row;
-//  flex-wrap: wrap;
-//  justify-content: space-evenly;
-//}
-//.product__card {
-//  max-width: 200px;
-//  border: 1px solid red;
-//  margin: 10px;
-//}
-//.thumbnail {
-//  max-width: 200px;
-//}
+<style lang="scss">
 .card-name {
   margin-bottom: 5px;
 }
@@ -295,6 +281,13 @@ export default {
 .small-cards {
   grid-template-columns: repeat(auto-fit, minmax(175px, 175px));
   grid-gap: 10px;
+  .card-brand,
+  .card-category,
+  .card-rating,
+  .card-stock {
+    margin: 0;
+    font-size: 11px;
+  }
   .card-photo {
     width: 175px;
     height: 120px;

@@ -1,7 +1,15 @@
 <template>
   <aside class="main__home-filter" :class="{ 'filter-show': isFilter }">
     <div class="relative">
-      <button class="filter-btn-copy filter" @click="showFilter()">></button>
+      <!--      <button class="filter-btn-copy " @click="showFilter()">></button>-->
+      <button class="filter-btn-show filter" @click="showFilter()">
+        <img
+          :class="{ 'rotate-180': isFilter }"
+          src="@/assets/icon/arrow-link-right.svg"
+          alt=""
+        />
+        <p>FILTER</p>
+      </button>
       <div class="filter-button">
         <button class="filter-btn-resset" @click="clearFilters()">
           Reset Filters
@@ -487,4 +495,9 @@ export default {
 };
 </script>
 
-<style scoped lang="scss"></style>
+<style lang="scss">
+.rotate-180 {
+  transition: 0.3s ease-in-out;
+  transform: rotate(180deg);
+}
+</style>

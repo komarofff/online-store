@@ -42,6 +42,13 @@ export default {
   font-size: 13px;
   color: #bbb;
 }
+.card-brand,
+.card-category,
+.card-rating,
+.card-stock {
+  margin: 0;
+  font-size: 14px;
+}
 .main__home-filter {
   background: #fff;
   transition: 0.5s linear;
@@ -53,8 +60,19 @@ export default {
 .filter {
   display: none !important;
   position: absolute !important;
-  right: -35px;
-  top: -23px;
+  right: -29px;
+  top: -3px;
+  width: 18px;
+  padding: 8px 0 8px 0;
+  border: 1px solid #2196f3;
+  background-color: #e3f2fd;
+  border-top-right-radius: 13px;
+  border-bottom-right-radius: 13px;
+  p {
+    margin: 4px 0 0 0;
+    writing-mode: vertical-rl;
+    font-size: 11px;
+  }
 }
 .home-menu {
   gap: 10px;
@@ -90,6 +108,40 @@ export default {
   }
   .filter-show {
     transform: translateX(0%);
+  }
+}
+@media (max-width: 625px) {
+  .card-container {
+    grid-template-columns: 1fr;
+    .card-item {
+      max-width: 100%;
+    }
+
+    .card-photo {
+      width: 100%;
+      height: unset;
+      overflow: hidden;
+    }
+  }
+  .small-cards {
+    grid-template-columns: 1fr !important;
+
+    .card-item {
+      max-width: 100%;
+    }
+
+    .card-photo {
+      width: 100%;
+      height: unset;
+      overflow: hidden;
+    }
+    .card-brand,
+    .card-category,
+    .card-rating,
+    .card-stock {
+      margin: 0;
+      font-size: 14px;
+    }
   }
 }
 </style>
