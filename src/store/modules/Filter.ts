@@ -37,7 +37,6 @@ export interface FilterQuery {
 const state = {
   products: [] as ProdArr[],
   singleProduct: {} as ProdArr,
-  singleProductNew: {} as ProdArr,
   filterData: [] as ProdArr[],
   searchData: [] as ProdArr[],
   categories: [] as CatArr[],
@@ -66,9 +65,6 @@ export const getters: GetterTree<State, RootState> = {
   },
   getSingleProduct(state: State) {
     return state.singleProduct;
-  },
-  getSingleProductNew(state: State) {
-    return state.singleProductNew;
   },
   getPrice(state: State) {
     return state.price;
@@ -99,9 +95,6 @@ export const mutations: MutationTree<State> = {
   },
   setSingleProduct(state: State, val: ProdArr) {
     state.singleProduct = val;
-  },
-  setSingleProductNew(state: State, val: ProdArr) {
-    state.singleProductNew = val;
   },
   setAllBrands(state: State, val: BrandArr[]) {
     state.brands = val;
@@ -167,13 +160,6 @@ const actions: ActionTree<RootState, RootState> = {
     if (state.products) {
       const val = state.products.filter((el) => el.id === payload);
       commit("setSingleProduct", val);
-    }
-  },
-  async getSingleProdNew({ commit }, payload: string) {
-    console.log("payload", payload);
-    if (state.products) {
-      const val = state.products.filter((el) => el.title === payload);
-      commit("setSingleProductNew", val);
     }
   },
 

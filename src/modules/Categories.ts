@@ -21,7 +21,7 @@ export const mutations: MutationTree<State> = {
 };
 
 const actions: ActionTree<RootState, RootState> = {
-  getCat({ commit }, payload?: string) {
+  getCat({ commit }) {
     return axios
       .get("https://dummyjson.com/products/categories")
       .then((response) => {

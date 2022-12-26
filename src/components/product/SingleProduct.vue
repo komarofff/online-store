@@ -1,6 +1,7 @@
 <template>
   <img v-if="isLoader" src="@/assets/loader.gif" alt="loader" />
-  <section class="container">
+
+  <section class="container" v-if="isCatHere">
     <div class="main__home-content-product">
       <div class="home-menu-crumbs">
         <p class="crumbs-start">{{ getSingleProduct[0].title }}</p>
@@ -116,7 +117,7 @@
 import { mapActions, mapGetters } from "vuex";
 
 export default {
-  props: ["cat", "id"],
+  props: ["id"],
   data() {
     return {
       isLoader: false,
@@ -126,29 +127,25 @@ export default {
 
   async mounted() {
     this.isLoader = true;
+    console.log("this.id", this.id);
     //await this.getSingleCat(this.cat);
     if (!isNaN(+this.id) && parseInt(this.id) > 0 && parseInt(this.id) < 100) {
       await this.getSingleProd(Number(this.id));
     } else {
       this.$router.push({ name: "error" });
     }
-    if (!this.getSingleProduct[0]) {
+    if (!this.getSingleProduct) {
       this.$router.push({ name: "error" });
     } else {
       this.isLoader = false;
-
-      // this.isCatHere = this.getSingleCategory.every((el) => {
-      //   return el.category === this.getSingleProduct[0].category;
-      // });
-      // if (
-      //   this.getSingleProduct[0].category !== this.cat ||
-      //   this.isCatHere === false
-      // ) {
-      //   this.$router.push({ name: "error" });
-      // }
     }
   },
-  watch: {},
+  watch: {
+    getSingleProduct() {
+      this.isCatHere = !!this.getSingleProduct.length;
+      return this.getSingleProduct;
+    },
+  },
   computed: {
     ...mapGetters("Filter", ["getSingleProduct"]),
     ...mapGetters("Cart", ["getCartArray"]),
