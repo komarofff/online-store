@@ -1,30 +1,48 @@
 <template>
+  <BreadCrumbs></BreadCrumbs>
   <div class="home-cards">
     <div class="card-container">
-      <router-link
-        :to="`/catalog/${category.name}`"
-        class="card-item card-hover"
-        v-for="category in getCategories"
-        :key="category.id"
-      >
-        <div class="card-photo">
-          <img class="card-img" :src="category.image" :alt="category.name" />
-          <p class="card-name">
-            {{ category.name }}
-          </p>
-          <p class="background-black"></p>
-        </div>
-      </router-link>
+      <template v-for="category in getCategories" :key="category.name">
+        <router-link
+          :to="`/catalog/${category.name}`"
+          class="card-item card-hover"
+        >
+          <div class="card-photo">
+            <img class="card-img" :src="category.image" :alt="category.name" />
+            <p class="card-name">
+              {{ category.name }}
+            </p>
+            <p class="background-black"></p>
+          </div>
+        </router-link>
+      </template>
     </div>
   </div>
 </template>
 <script>
 import { mapGetters } from "vuex";
-
+import BreadCrumbs from "@/components/breadcrumbs/BreadCrumbs";
 export default {
   data() {
     return {
       isLoader: false,
+      links: {
+        pageName: this.$route.params.id
+          ? this.$route.params.id
+          : this.$route.name,
+        currentLink: {
+          routeName: this.$route.name,
+          link: this.$route.params.id
+            ? this.$route.params.id
+            : this.$route.path.replace(/\//g, ""),
+        },
+        previousLinks: [
+          // {
+          //   routeName: "categories",
+          //   linkName: "Catalog",
+          // },
+        ],
+      },
     };
   },
   async mounted() {
@@ -34,6 +52,9 @@ export default {
   watch: {},
   computed: {
     ...mapGetters("Filter", ["getCategories"]),
+  },
+  components: {
+    BreadCrumbs,
   },
 };
 </script>

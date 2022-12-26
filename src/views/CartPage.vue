@@ -16,10 +16,11 @@
         </div>
       </div>
 
-      <div class="cart__content">
+      <div class="cart__content" v-if="getCartLength">
         <ItemsInCart></ItemsInCart>
         <CartPay></CartPay>
       </div>
+      <h1 class="center" v-else>Cart is empty</h1>
     </div>
   </div>
   <CheckoutModalView v-if="isShowCheckoutModal"></CheckoutModalView>
@@ -61,5 +62,8 @@ export default {
 <style scoped lang="scss">
 .crumbs-address {
   align-items: center;
+}
+.center {
+  text-align: center;
 }
 </style>

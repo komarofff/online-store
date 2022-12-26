@@ -10,7 +10,12 @@
       </p>
       <div class="cart__product-control">
         <span class="small">Items per page: </span>
-        <span class="count-item-pages small"> {{ itemsPerPage }}</span>
+        <input
+          type="number"
+          min="1"
+          class="count-item-pages small"
+          v-model="itemsPerPage"
+        />
         <span>Page</span>
         <button class="control-arrow arrow-to-left" @click="goToPageLeft()">
           <img src="@/assets/icon/arrow-link-right.svg" alt="" />
@@ -28,14 +33,14 @@
           {{ getCartArray.indexOf(prod) + 1 }}
         </div>
         <router-link
-          :to="`/catalog/${prod.category}/product/${prod.id}`"
+          :to="`/catalog/${prod.category}/${prod.title.replace(/[/ ]/g, '_')}`"
           class="cart__item-photo"
         >
           <img :src="prod.thumbnail" alt="" />
         </router-link>
         <router-link
           class="cart__item-info"
-          :to="`/catalog/${prod.category}/product/${prod.id}`"
+          :to="`/catalog/${prod.category}/${prod.title.replace(/[/ ]/g, '_')}`"
         >
           <p class="cart-name">
             <span>{{ prod.title }}</span>
@@ -95,6 +100,11 @@ export default {
   },
   mounted() {
     this.startQuery = this.$route.query.page;
+    if (this.$route.query.limit && +this.$route.query.limit > 0) {
+      this.itemsPerPage = this.$route.query.limit;
+    } else {
+      this.itemsPerPage = 5;
+    }
     this.startCart(this.startQuery);
   },
   watch: {
@@ -108,6 +118,16 @@ export default {
         this.page = 1;
       }
       this.currentPage = this.page;
+    },
+    itemsPerPage() {
+      if (this.itemsPerPage) {
+        let queries = JSON.parse(JSON.stringify(this.$route.query));
+        queries.limit = this.itemsPerPage;
+        queries.page = this.page;
+        this.$router.replace({ query: queries });
+        //console.log(queries);
+        this.changeLimit();
+      }
     },
   },
   computed: {
@@ -201,6 +221,18 @@ export default {
         this.showPaginatedItems(this.page);
       }
     },
+    changeLimit() {
+      this.itemsInCart = this.getCartArray;
+      this.maxPage = Math.ceil(this.itemsInCart.length / this.itemsPerPage);
+      if (this.maxPage < this.page) {
+        this.page = this.maxPage;
+      }
+      let queries = JSON.parse(JSON.stringify(this.$route.query));
+      queries.limit = this.itemsPerPage;
+      queries.page = this.page;
+      this.$router.replace({ query: queries });
+      this.showPaginatedItems(this.page);
+    },
   },
 };
 </script>
@@ -221,5 +253,13 @@ export default {
 }
 .cart__item-info {
   text-decoration: none;
+}
+.count-item-pages {
+  font-size: 16px;
+  outline: none;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  max-width: 70px;
+  text-align: center;
 }
 </style>

@@ -1,75 +1,112 @@
 <template>
-  <img v-if="isLoader" src="../../assets/loader.gif" alt="loader" />
-  <h1>Category {{ id }}</h1>
-  <div class="product__list">
-    <template v-for="product in catProducts" :key="product.id">
-      <div class="product__card">
-        <p>id- {{ product.id }}</p>
-        <hr />
-        <p>title- {{ product.title }}</p>
-        <hr />
-        <p>description- {{ product.description }}</p>
-        <hr />
-        <p>price- {{ product.price }}</p>
-        <hr />
-        <p>rating- {{ product.rating }}</p>
-        <hr />
-        <p>stock- {{ product.stock }}</p>
-        <hr />
-        <p>brand- {{ product.brand }}</p>
-        <hr />
-        <p>category- {{ product.category }}</p>
-        <hr />
-        <p>
-          thumbnail -
-          <img
-            class="thumbnail"
-            :src="product.thumbnail"
-            :alt="product.title"
-          />
-        </p>
-        <hr />
-        <p>
-          Images -
-          <template v-for="image in product.images" :key="image">
-            <img class="thumbnail" :src="image" :alt="product.title" />
-          </template>
-        </p>
-        <hr />
-        <p>
-          <button v-if="!isActive(product.id)" @click="addToCart(product)">
-            Add to cart
-          </button>
+  <img v-if="isLoader" src="@/assets/loader.gif" alt="loader" />
+  <BreadCrumbs></BreadCrumbs>
+  <div class="home-cards">
+    <div class="card-container">
+      <template v-for="product in catProducts" :key="product.id">
+        <div
+          class="card-item card-hover"
+          :class="{ 'card-checked': isActiveButton(product.id) }"
+        >
+          <div class="card-photo">
+            <router-link
+              :to="`/catalog/${product.category}/${product.title.replace(
+                /[/ ]/g,
+                '_'
+              )}`"
+              ><img
+                class="card-img"
+                :src="product.thumbnail"
+                :alt="product.title"
+            /></router-link>
+          </div>
+          <div class="card-info">
+            <p class="card-name">
+              <span>{{ product.title }}</span>
+            </p>
+            <p class="card-brand">
+              Brand: <span>{{ product.brand }}</span>
+            </p>
+            <p class="card-category">
+              Category: <span>{{ product.category }}</span>
+            </p>
+            <p class="card-rating">
+              Rating: <span>{{ product.rating }}</span>
+            </p>
+            <p class="card-stock">
+              Stock: <span>{{ product.stock }}</span>
+            </p>
 
-          <button
-            class="delete__button"
-            v-if="isActive(product.id)"
-            @click="delCart(product.id)"
-            :ref="`id-${product.id}`"
-          >
-            Delete from cart
-          </button>
-        </p>
-        <p>
-          <router-link
-            :to="`/catalog/${product.category}/product/${product.id}`"
-            >Details</router-link
-          >
-        </p>
-      </div>
-    </template>
+            <div class="price-container">
+              <div class="price-price">
+                <span class="card-price">€{{ product.price }}</span>
+                <span class="card-discount"
+                  >-{{ product.discountPercentage }}%</span
+                >
+              </div>
+              <div class="btn-card">
+                <button
+                  title="Delete from cart"
+                  class="btn-less"
+                  v-if="isActiveButton(product.id)"
+                  @click="delCart(product.id)"
+                >
+                  <img src="@/assets/icon/cart-btn.svg" alt="" />
+                </button>
+                <button
+                  title="Add to cart"
+                  class="btn-more"
+                  v-if="!isActiveButton(product.id)"
+                  @click="addToCart(product)"
+                >
+                  <img src="@/assets/icon/cart-btn.svg" alt="" />
+                </button>
+              </div>
+            </div>
+            <div class="card-btn-container">
+              <div class="card-link-more">
+                <router-link
+                  :to="`/catalog/${product.category}/${product.title.replace(
+                    /[/ ]/g,
+                    '_'
+                  )}`"
+                  >More Info</router-link
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-
+import BreadCrumbs from "@/components/breadcrumbs/BreadCrumbs";
 export default {
   props: ["id"],
   data() {
     return {
       isLoader: false,
       catProducts: [],
+      links: {
+        pageName: this.$route.params.id
+          ? this.$route.params.id
+          : this.$route.name,
+        currentLink: {
+          routeName: this.$route.name,
+          link: this.$route.params.id
+            ? this.$route.params.id
+            : this.$route.path.replace(/\//g, ""),
+        },
+        previousLinks: [
+          {
+            routeName: "categories",
+            linkName: "Catalog",
+          },
+        ],
+      },
     };
   },
   async mounted() {
@@ -105,6 +142,11 @@ export default {
         return product.id === val;
       });
     },
+    isActiveButton(val) {
+      return this.getCartArray.find((product) => {
+        return product.id === val;
+      });
+    },
     async addToCart(val) {
       val.quantity = 1;
       await this.pushToCart(val);
@@ -118,6 +160,9 @@ export default {
       this.catProducts = this.getSingleCategory;
       this.isLoader = false;
     },
+  },
+  components: {
+    BreadCrumbs,
   },
 };
 </script>

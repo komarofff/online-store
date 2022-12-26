@@ -130,6 +130,7 @@ export default {
         if (data.find((elem) => elem.promo === el.promo)) {
           el.isAdded = true;
           this.isAppliedPromoCode = true;
+          this.calculateDiscount();
         }
       });
     }

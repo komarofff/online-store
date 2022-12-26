@@ -58,7 +58,10 @@
           >
             <div class="card-photo">
               <router-link
-                :to="`/catalog/${product.category}/product/${product.id}`"
+                :to="`/catalog/${product.category}/${product.title.replace(
+                  /[/ ]/g,
+                  '_'
+                )}`"
                 ><img
                   class="card-img"
                   :src="product.thumbnail"
@@ -111,7 +114,10 @@
               <div class="card-btn-container">
                 <div class="card-link-more">
                   <router-link
-                    :to="`/catalog/${product.category}/product/${product.id}`"
+                    :to="`/catalog/${product.category}/${product.title.replace(
+                      /[/ ]/g,
+                      '_'
+                    )}`"
                     >More Info</router-link
                   >
                 </div>
