@@ -54,6 +54,7 @@ export default {
   display: none !important;
   position: absolute !important;
   right: -35px;
+  top: -23px;
 }
 .home-menu {
   gap: 10px;
