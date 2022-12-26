@@ -35,9 +35,9 @@
 
       <div class="product">
         <img v-if="isLoader" src="@/assets/loader.gif" alt="loader" />
-        <p class="product__brand">{{ getSingleProductNew[0].brand }}</p>
-        <p class="product__link">
-          Shop <img src="@/assets/icon/arrow-link-right.svg" alt="" />
+        <!--        <p class="product__brand">{{ getSingleProductNew[0].brand }}</p>-->
+        <p class="product__link capitalize">
+          {{ getSingleProductNew[0].brand }}
         </p>
 
         <div class="product__content">
@@ -193,5 +193,11 @@ export default {
 }
 .capitalize:first-letter {
   text-transform: uppercase;
+}
+.product__photo-big {
+  filter: drop-shadow(0 0 10px #ccc);
+}
+.product__photo-small-div {
+  border: 1px solid #ede7f6;
 }
 </style>
