@@ -32,10 +32,11 @@ const routes: Array<RouteRecordRaw> = [
     props: true,
   },
   {
-    path: "/catalog/:cat/:id",
+    path: "/product-details/:id",
     component: ProductPage,
     props: true,
   },
+
   {
     path: "/search",
     name: "search",

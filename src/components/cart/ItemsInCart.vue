@@ -33,14 +33,14 @@
           {{ getCartArray.indexOf(prod) + 1 }}
         </div>
         <router-link
-          :to="`/catalog/${prod.category}/${prod.title.replace(/[/ ]/g, '_')}`"
+          :to="`/product-details/${prod.id}`"
           class="cart__item-photo"
         >
           <img :src="prod.thumbnail" alt="" />
         </router-link>
         <router-link
           class="cart__item-info"
-          :to="`/catalog/${prod.category}/${prod.title.replace(/[/ ]/g, '_')}`"
+          :to="`/product-details/${prod.id}`"
         >
           <p class="cart-name">
             <span>{{ prod.title }}</span>

@@ -57,11 +57,7 @@
             :class="{ 'card-checked': isActiveButton(product.id) }"
           >
             <div class="card-photo">
-              <router-link
-                :to="`/catalog/${product.category}/${product.title.replace(
-                  /[/ ]/g,
-                  '_'
-                )}`"
+              <router-link :to="`/product-details/${product.id}`"
                 ><img
                   class="card-img"
                   :src="product.thumbnail"
@@ -113,11 +109,7 @@
               </div>
               <div class="card-btn-container">
                 <div class="card-link-more">
-                  <router-link
-                    :to="`/catalog/${product.category}/${product.title.replace(
-                      /[/ ]/g,
-                      '_'
-                    )}`"
+                  <router-link :to="`/product-details/${product.id}`"
                     >More Info</router-link
                   >
                 </div>
