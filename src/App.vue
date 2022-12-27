@@ -29,18 +29,11 @@ export default {
       menuModal.classList.toggle("active");
       contentBody.classList.toggle("lock");
     };
-    // menuButton1.onclick = function () {
-    //   menuButton.classList.remove("active");
-    //   menuButton1.classList.remove("active");
-    //   menuModal.classList.remove("active");
-    //   contentBody.classList.remove("lock");
-    // };
-    // menuModal.onclick = function () {
-    //   menuButton.classList.remove("active");
-    //   menuButton1.classList.remove("active");
-    //   menuModal.classList.remove("active");
-    //   contentBody.classList.remove("lock");
-    // };
+  },
+  data() {
+    return {
+      images: [],
+    };
   },
   computed: {
     ...mapGetters("Filter", ["getAllProducts"]),

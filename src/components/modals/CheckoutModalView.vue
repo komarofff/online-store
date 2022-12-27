@@ -88,8 +88,9 @@
             <input
               id="validThru"
               type="text"
-              placeholder="25 12"
+              placeholder="12 23"
               v-model="creditCardValid"
+              @input="isValidValid()"
             />
           </div>
 
@@ -204,7 +205,7 @@ export default {
     },
     isNumberValid() {
       this.creditCardNumber = this.creditCardNumber.replace(/[^0-9]/g, "");
-      if (this.creditCardNumber.length > 16) {
+      if (this.creditCardNumber.length >= 16) {
         this.creditCardNumber = this.creditCardNumber.substring(0, 16);
         this.cardNumberValid = true;
       }
@@ -217,6 +218,23 @@ export default {
         this.cardCvvValid = true;
       }
       if (this.creditCardCvv.length < 3) this.cardCvvValid = false;
+    },
+    isValidValid() {
+      this.creditCardValid = this.creditCardValid.replace(/[^0-9/]/g, "");
+      if (this.creditCardValid.length === 2) {
+        this.creditCardValid += "/";
+      }
+      if (this.creditCardValid.length >= 5) {
+        this.creditCardValid = this.creditCardValid.substring(0, 5);
+      }
+      if (
+        this.creditCardValid.length < 5 ||
+        Number(this.creditCardValid.split("").slice(0, 2).join("")) > 12
+      ) {
+        this.cardValidValid = false;
+      } else {
+        this.cardValidValid = true;
+      }
     },
   },
 };

@@ -6,6 +6,7 @@ export interface CatArr {
   name: string;
   image: string;
 }
+
 export type BrandArr = string[];
 export type Price = number[];
 export type Stock = number[];
@@ -124,7 +125,15 @@ const actions: ActionTree<RootState, RootState> = {
       .then((response) => {
         response.data.products.forEach((el: ProdArr) => {
           el.brand = el.brand.toLowerCase();
+          el.thumbnail = el.thumbnail.replace(
+            "https://i.dummyjson.com/data/",
+            "/"
+          );
+          el.images.forEach((elem) => {
+            elem = elem.replace("https://i.dummyjson.com/data/", "/");
+          });
         });
+
         commit("setAllProducts", response.data.products as ProdArr[]);
       });
     // }
@@ -314,17 +323,3 @@ const store = {
 };
 export type State = typeof state;
 export default store;
-// if (payload && payload.search) {
-//   state.products.forEach((el) => {
-//     if (
-//         el.brand.includes(payload.search as string) ||
-//         el.category.includes(payload.search as string) ||
-//         el.title.includes(payload.search as string) ||
-//         el.description.includes(payload.search as string) ||
-//         el.price.toString().indexOf(payload.search as string) > -1 ||
-//         el.stock === Number(payload.search as number)
-//     ) {
-//       arr.push(el);
-//     }
-//   });
-// }
