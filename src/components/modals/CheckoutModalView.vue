@@ -1,8 +1,12 @@
 <template>
   <div class="modal" @click="closeModal()" @keyup.esc="closeModal()"></div>
   <div class="modal-content">
-    <p class="modal__title">Personal details</p>
-    <form action="#">
+    <h1 v-if="isShowLastMessage">
+      Thank you for your order. You will be sent to the main page in
+      {{ sec }} seconds
+    </h1>
+    <p v-if="isShowModal" class="modal__title">Personal details</p>
+    <form v-if="isShowModal" action="#">
       <div class="modal__name" :class="{ error: !nameValid }">
         <!-- валидация: для modal__name добавить error; для <p> is-invalid -->
         <input
@@ -111,15 +115,20 @@
         <p class="is-invalid">Card invalid</p>
       </div>
       {{ isCanSend }}
-      <button class="modal__submit">Confirm</button>
+      <button class="modal__submit" @click.prevent="submit()">Confirm</button>
     </form>
   </div>
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
+
 export default {
   data() {
     return {
+      sec: 3,
+      isShowModal: true,
+      isShowLastMessage: false,
       name: "",
       nameValid: true,
       phone: "",
@@ -129,19 +138,39 @@ export default {
       email: "",
       emailValid: true,
       creditCardNumber: "",
-      creditCardValid: "",
-      creditCardCvv: "",
       cardNumberValid: true,
+      creditCardValid: "",
       cardValidValid: true,
+      creditCardCvv: "",
       cardCvvValid: true,
       isCanSend: false,
     };
   },
+  computed: {
+    ...mapGetters("Cart", ["getCartArray"]),
+  },
   methods: {
+    ...mapActions("Cart", ["clearCart"]),
     closeModal() {
       this.emitter.emit("closeModal");
     },
     checkSenderAbility() {
+      console.log(
+        this.nameValid,
+        this.name,
+        this.phoneValid,
+        this.phone,
+        this.addressValid,
+        this.address,
+        this.emailValid,
+        this.email,
+        this.creditCardNumber,
+        this.cardNumberValid,
+        this.creditCardValid,
+        this.cardValidValid,
+        this.creditCardCvv,
+        this.cardCvvValid
+      );
       if (
         this.nameValid &&
         this.name &&
@@ -153,10 +182,10 @@ export default {
         this.email &&
         this.creditCardNumber &&
         this.cardNumberValid &&
-        this.cardValidValid &&
-        this.cardCvvValid &&
         this.creditCardValid &&
-        this.creditCardCvv
+        this.cardValidValid &&
+        this.creditCardCvv &&
+        this.cardCvvValid
       ) {
         this.isCanSend = true;
       } else {
@@ -210,12 +239,14 @@ export default {
         this.cardNumberValid = true;
       }
       if (this.creditCardNumber.length < 16) this.cardNumberValid = false;
+      this.checkSenderAbility();
     },
     isCvvValid() {
       this.creditCardCvv = this.creditCardCvv.replace(/[^0-9]/g, "");
       if (this.creditCardCvv.length >= 3) {
         this.creditCardCvv = this.creditCardCvv.substring(0, 3);
         this.cardCvvValid = true;
+        this.checkSenderAbility();
       }
       if (this.creditCardCvv.length < 3) this.cardCvvValid = false;
     },
@@ -235,6 +266,48 @@ export default {
       } else {
         this.cardValidValid = true;
       }
+      this.checkSenderAbility();
+    },
+    async submit() {
+      if (!this.name && this.nameValid) {
+        this.nameValid = false;
+      }
+      if (!this.phone && this.phoneValid) {
+        this.phoneValid = false;
+      }
+      if (!this.address && this.addressValid) {
+        this.addressValid = false;
+      }
+      if (!this.email && this.emailValid) {
+        this.emailValid = false;
+      }
+      if (!this.creditCardNumber && this.cardNumberValid) {
+        this.cardNumberValid = false;
+      }
+      if (!this.creditCardValid && this.cardValidValid) {
+        this.cardValidValid = false;
+      }
+      if (!this.creditCardCvv && this.cardCvvValid) {
+        this.cardCvvValid = false;
+      }
+      this.checkSenderAbility();
+      if (this.isCanSend) {
+        await this.clearCart();
+        this.isShowModal = false;
+        this.isShowLastMessage = true;
+        let interval = setInterval(this.timer, 1000);
+
+        setTimeout(() => {
+          this.isShowLastMessage = false;
+          clearInterval(interval);
+          this.emitter.emit("closeModal");
+          this.$router.push({ name: "home" });
+        }, 3000);
+        // надпись товары отправлены и через пару секунд переход на главную
+      }
+    },
+    timer() {
+      this.sec = this.sec - 1;
     },
   },
 };

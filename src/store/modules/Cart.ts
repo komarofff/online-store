@@ -74,6 +74,10 @@ export const mutations: MutationTree<State> = {
     state.cartArray[idd].quantity = counter;
     localStorage.setItem("cart", JSON.stringify(state.cartArray));
   },
+  delFromCart(state: State) {
+    localStorage.removeItem("cart");
+    state.cartArray = [];
+  },
 };
 
 const actions: ActionTree<RootState, RootState> = {
@@ -91,6 +95,9 @@ const actions: ActionTree<RootState, RootState> = {
   },
   minusQuantity({ commit }, payload: number) {
     commit("minusItemQuantity", payload);
+  },
+  clearCart({ commit }) {
+    commit("delFromCart");
   },
 };
 
