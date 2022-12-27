@@ -3,7 +3,6 @@
   <header class="header">
     <div class="container">
       <div class="header__body">
-        <LogoSection></LogoSection>
         <NavLinks></NavLinks>
         <CartPlaceView></CartPlaceView>
 
@@ -15,17 +14,15 @@
   </header>
 </template>
 
-<script>
-import CartPlaceView from "@/components/cart/CartPlaceView";
-import NavLinks from "@/components/header/NavLinks";
-import LogoSection from "@/components/header/LogoSection";
+<script lang="ts">
+import CartPlaceView from "@/components/cart/CartPlaceView.vue";
+import NavLinks from "@/components/header/NavLinks.vue";
 
 export default {
   name: "HeaderView",
   components: {
     CartPlaceView,
     NavLinks,
-    LogoSection,
   },
 };
 </script>

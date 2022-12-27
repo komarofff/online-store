@@ -172,7 +172,7 @@ export default {
     this.cart = this.getCartArray;
     this.isLoader = false;
     this.emitter.on("clearUrls", () => {
-      console.log("clear from center");
+      //console.log("clear from center");
       setTimeout(() => {
         this.$router.push({
           query: {},
@@ -218,7 +218,7 @@ export default {
     ...mapActions("Filter", ["getQuery", "getFilterParameters"]),
     ...mapActions("Cart", ["pushToCart", "delFromCart"]),
     changeCountry(event) {
-      console.log("event", event);
+      // console.log("event", event);
     },
     changeBigCards() {
       this.isBigCards = !this.isBigCards;
@@ -242,7 +242,7 @@ export default {
       this.emitter.emit("changeSearch", this.searchText);
     },
     async changesToSort() {
-      console.log("sort was changed");
+      //console.log("sort was changed");
       if (this.sort.length > 0) {
         this.getQueryForFilters.sort = this.sort;
       } else {

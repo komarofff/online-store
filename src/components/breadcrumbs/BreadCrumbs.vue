@@ -35,9 +35,9 @@ export default {
     this.pageName = this.$route.params.id
       ? this.$route.params.id
       : this.$route.name;
-    //console.log("this.pageName", this.pageName);
+    console.log("this.pageName", this.pageName);
     this.links = this.$route.fullPath.split("/").filter((el) => el);
-    //console.log("this.links", this.links);
+    console.log("this.links", this.links);
   },
 };
 </script>

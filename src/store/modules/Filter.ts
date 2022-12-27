@@ -129,7 +129,7 @@ const actions: ActionTree<RootState, RootState> = {
             "https://i.dummyjson.com/data/",
             "/"
           );
-          el.images.forEach((elem) => {
+          el.images.forEach((elem: string) => {
             elem = elem.replace("https://i.dummyjson.com/data/", "/");
           });
         });
@@ -148,7 +148,7 @@ const actions: ActionTree<RootState, RootState> = {
     //     });
     // } else {
     const cat = [] as CatArr[];
-    state.products.forEach((el) => {
+    state.products.forEach((el: ProdArr) => {
       if (!cat.some((elem) => elem.name === el.category)) {
         cat.push({
           name: el.category,
@@ -161,13 +161,15 @@ const actions: ActionTree<RootState, RootState> = {
   },
   async getSingleCat({ commit }, payload: string) {
     if (state.products) {
-      const arr = state.products.filter((el) => el.category === payload);
+      const arr = state.products.filter(
+        (el: ProdArr) => el.category === payload
+      );
       commit("setSingleCategory", arr);
     }
   },
   async getSingleProd({ commit }, payload: number) {
     if (state.products) {
-      const val = state.products.filter((el) => el.id === payload);
+      const val = state.products.filter((el: ProdArr) => el.id === payload);
       commit("setSingleProduct", val[0]);
     }
   },
@@ -175,7 +177,7 @@ const actions: ActionTree<RootState, RootState> = {
   async getAllBrands({ commit }) {
     if (state.products) {
       const brand = [] as BrandArr;
-      state.products.forEach((el) => {
+      state.products.forEach((el: ProdArr) => {
         if (!brand.includes(el.brand)) {
           brand.push(el.brand);
         }
@@ -186,16 +188,24 @@ const actions: ActionTree<RootState, RootState> = {
 
   async getPriceDiff({ commit }, payload: ProdArr[]) {
     if (payload.length) {
-      const min: number = Math.min(...payload.map((item) => item.price));
-      const max: number = Math.max(...payload.map((item) => item.price));
+      const min: number = Math.min(
+        ...payload.map((item: ProdArr) => item.price)
+      );
+      const max: number = Math.max(
+        ...payload.map((item: ProdArr) => item.price)
+      );
       const arr: Price = [min, max];
       commit("setPrice", arr);
     }
   },
   async getStockDiff({ commit }, payload: ProdArr[]) {
     if (payload.length) {
-      const min: number = Math.min(...payload.map((item) => item.stock));
-      const max: number = Math.max(...payload.map((item) => item.stock));
+      const min: number = Math.min(
+        ...payload.map((item: ProdArr) => item.stock)
+      );
+      const max: number = Math.max(
+        ...payload.map((item: ProdArr) => item.stock)
+      );
       const arr: Stock = [min, max];
       commit("setStock", arr);
     }
@@ -205,21 +215,21 @@ const actions: ActionTree<RootState, RootState> = {
       let arr: ProdArr[] = state.products;
 
       if (payload.categories && payload.categories.length) {
-        arr = arr.filter((el) => {
+        arr = arr.filter((el: ProdArr) => {
           if (payload.categories.includes(el.category)) {
             return el;
           }
         });
       }
       if (payload.brands && payload.brands.length) {
-        arr = arr.filter((el) => {
+        arr = arr.filter((el: ProdArr) => {
           if (payload.brands.includes(el.brand)) {
             return el;
           }
         });
       }
       if (payload.price && payload.price.length) {
-        arr = arr.filter((el) => {
+        arr = arr.filter((el: ProdArr) => {
           if (el.price >= payload.price[0] && el.price <= payload.price[1]) {
             return el;
           }
@@ -227,14 +237,14 @@ const actions: ActionTree<RootState, RootState> = {
       }
 
       if (payload.stock && payload.stock.length) {
-        arr = arr.filter((el) => {
+        arr = arr.filter((el: ProdArr) => {
           if (el.stock >= payload.stock[0] && el.stock <= payload.stock[1]) {
             return el;
           }
         });
       }
       if ((payload.search as string) && payload.search.length) {
-        arr = arr.filter((el) => {
+        arr = arr.filter((el: ProdArr) => {
           if (
             el.brand
               .toUpperCase()
@@ -262,22 +272,28 @@ const actions: ActionTree<RootState, RootState> = {
         const items: string[] = payload.sort.split("-");
         //sort=price-ASC sort=price-DESC
         if (items[0] === "price" && items[1] === "ASC") {
-          arr.sort((a, b) => a.price - b.price);
+          arr.sort((a: ProdArr, b: ProdArr) => a.price - b.price);
         } else if (items[0] === "price" && items[1] === "DESC") {
-          arr.sort((a, b) => b.price - a.price);
+          arr.sort((a: ProdArr, b: ProdArr) => b.price - a.price);
         }
         //sort=discount-ASC sort=discount-DESC
         if (items[0] === "discount" && items[1] === "ASC") {
-          arr.sort((a, b) => a.discountPercentage - b.discountPercentage);
+          arr.sort(
+            (a: ProdArr, b: ProdArr) =>
+              a.discountPercentage - b.discountPercentage
+          );
         } else if (items[0] === "discount" && items[1] === "DESC") {
-          arr.sort((a, b) => b.discountPercentage - a.discountPercentage);
+          arr.sort(
+            (a: ProdArr, b: ProdArr) =>
+              b.discountPercentage - a.discountPercentage
+          );
         }
 
         //sort=rating-ASC sort=rating-DESC
         if (items[0] === "rating" && items[1] === "ASC") {
-          arr.sort((a, b) => a.rating - b.rating);
+          arr.sort((a: ProdArr, b: ProdArr) => a.rating - b.rating);
         } else if (items[0] === "rating" && items[1] === "DESC") {
-          arr.sort((a, b) => b.rating - a.rating);
+          arr.sort((a: ProdArr, b: ProdArr) => b.rating - a.rating);
         }
       }
 
@@ -289,7 +305,7 @@ const actions: ActionTree<RootState, RootState> = {
       let arr: ProdArr[] = state.products;
 
       if (payload && payload.length) {
-        arr = arr.filter((el) => {
+        arr = arr.filter((el: ProdArr) => {
           if (
             el.brand.toUpperCase().includes(payload.toUpperCase() as string) ||
             el.category

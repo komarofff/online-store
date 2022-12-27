@@ -1,6 +1,18 @@
 <template>
   <img v-if="isLoader" src="@/assets/loader.gif" alt="loader" />
-  <BreadCrumbs></BreadCrumbs>
+  <!--  <BreadCrumbs></BreadCrumbs>-->
+  <div class="home-menu-crumbs">
+    <p class="crumbs-start">{{ pageName.toUpperCase() }}</p>
+    <div class="crumbs-address">
+      <router-link class="img-address" :to="{ name: 'home' }"
+        ><img src="@/assets/icon/address-svg.svg" alt=""
+      /></router-link>
+      <img class="img-arrow" src="@/assets/icon/arrow-link-right.svg" alt="" />
+      <router-link :to="{ name: 'categories' }">Catalog</router-link>
+      <img class="img-arrow" src="@/assets/icon/arrow-link-right.svg" alt="" />
+      <p>{{ pageName.toUpperCase() }}</p>
+    </div>
+  </div>
   <div class="home-cards">
     <div class="card-container">
       <template v-for="product in catProducts" :key="product.id">
@@ -75,13 +87,13 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import BreadCrumbs from "@/components/breadcrumbs/BreadCrumbs";
 export default {
   props: ["id"],
   data() {
     return {
       isLoader: false,
       catProducts: [],
+      pageName: this.id,
       links: {
         pageName: this.$route.params.id
           ? this.$route.params.id
@@ -107,6 +119,8 @@ export default {
       await this.getSingleCat(this.id);
       //this.catProducts = this.$store.getters["Categories/getSingleCategory"];
       this.catProducts = this.getSingleCategory; // getSingleCategory from mapGetters
+      this.pageName = this.id;
+      //console.log("pageName: " + this.pageName);
       if (this.catProducts.length === 0) {
         this.catProducts = [];
         this.$router.push({ name: "error" });
@@ -118,8 +132,9 @@ export default {
   },
   watch: {
     id() {
-      console.log("id changed");
+      // console.log("id changed", this.id);
       this.newData(this.id);
+      this.pageName = this.id;
     },
   },
   computed: {
@@ -152,9 +167,6 @@ export default {
       this.catProducts = this.getSingleCategory;
       this.isLoader = false;
     },
-  },
-  components: {
-    BreadCrumbs,
   },
 };
 </script>

@@ -6,10 +6,9 @@
   <FooterView></FooterView>
 </template>
 <script>
-import HeaderView from "./components/HeaderView";
-import FooterView from "./components/FooterView";
+import HeaderView from "./components/HeaderView.vue";
+import FooterView from "./components/FooterView.vue";
 import { mapActions, mapGetters } from "vuex";
-
 export default {
   async created() {
     await this.getAllProd();

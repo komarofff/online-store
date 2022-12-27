@@ -89,13 +89,19 @@
 
 <script>
 import { mapGetters } from "vuex";
-
+// export interface IPromoCodes{
+//   name: string,
+//   promo: string,
+//   discount: number,
+//   isAdded: boolean,
+//   isShow: boolean,
+// }
 export default {
   name: "CartPay",
   data() {
     return {
       isAppliedPromoCode: false,
-      promoValue: null,
+      promoValue: "",
       priceDiscount: 0,
       clearInput: false,
       promoCodes: [

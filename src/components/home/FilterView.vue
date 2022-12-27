@@ -181,7 +181,7 @@ export default {
     //  делаем startQuery в зависимости от адресной строки
     this.startQueryData = Object.entries(this.$route.query);
     if (this.startQueryData.length > 0) {
-      console.log("start with query parameters");
+      // console.log("start with query parameters");
       this.startQueryData.forEach((el) => {
         if (el[1] && !el[1].includes("||")) {
           this.startQuery[el[0]] = el[1];
@@ -392,7 +392,7 @@ export default {
 
       this.changeForPriceAndStock();
       this.emitter.emit("clearSearch");
-      console.log("clear all filters");
+      //console.log("clear all filters");
       this.$router.push({
         query: {},
       });

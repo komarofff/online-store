@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import FilterView from "@/components/home/FilterView";
-import CenterSection from "@/components/home/CenterSection";
+import FilterView from "@/components/home/FilterView.vue";
+import CenterSection from "@/components/home/CenterSection.vue";
 
 export default {
   data() {
