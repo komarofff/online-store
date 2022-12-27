@@ -159,7 +159,7 @@ const actions: ActionTree<RootState, RootState> = {
   async getSingleProd({ commit }, payload: number) {
     if (state.products) {
       const val = state.products.filter((el) => el.id === payload);
-      commit("setSingleProduct", val);
+      commit("setSingleProduct", val[0]);
     }
   },
 

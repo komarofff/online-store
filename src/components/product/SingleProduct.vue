@@ -1,10 +1,10 @@
 <template>
   <img v-if="isLoader" src="@/assets/loader.gif" alt="loader" />
 
-  <section class="container" v-if="isCatHere">
+  <section class="container" v-if="getSingleProduct">
     <div class="main__home-content-product">
       <div class="home-menu-crumbs">
-        <p class="crumbs-start">{{ getSingleProduct[0].title }}</p>
+        <p class="crumbs-start">{{ getSingleProduct.title }}</p>
         <div class="crumbs-address">
           <router-link class="img-address" :to="{ name: 'home' }"
             ><img src="@/assets/icon/address-svg.svg" alt=""
@@ -22,23 +22,23 @@
           />
           <router-link
             class="capitalize"
-            :to="{ path: `/catalog/${getSingleProduct[0].category}` }"
-            >{{ getSingleProduct[0].category }}</router-link
+            :to="{ path: `/catalog/${getSingleProduct.category}` }"
+            >{{ getSingleProduct.category }}</router-link
           >
           <img
             class="img-arrow"
             src="@/assets/icon/arrow-link-right.svg"
             alt=""
           />
-          <p>{{ getSingleProduct[0].title }}</p>
+          <p>{{ getSingleProduct.title }}</p>
         </div>
       </div>
 
       <div class="product">
         <img v-if="isLoader" src="@/assets/loader.gif" alt="loader" />
-        <!--        <p class="product__brand">{{ getSingleProduct[0].brand }}</p>-->
+        <!--        <p class="product__brand">{{ getSingleProduct.brand }}</p>-->
         <p class="product__link capitalize">
-          {{ getSingleProduct[0].brand }}
+          {{ getSingleProduct.brand }}
         </p>
 
         <div class="product__content">
@@ -47,30 +47,30 @@
               <img
                 class="fade-innn"
                 :src="bigImage"
-                :alt="getSingleProduct[0].title"
+                :alt="getSingleProduct.title"
               />
             </div>
             <div class="product__photo-small">
               <div
                 class="product__photo-small-div"
-                :class="{ active: isBigImage(getSingleProduct[0].thumbnail) }"
+                :class="{ active: isBigImage(getSingleProduct.thumbnail) }"
               >
                 <img
-                  @click="changeBigPhoto(getSingleProduct[0].thumbnail)"
-                  :src="getSingleProduct[0].thumbnail"
-                  :alt="getSingleProduct[0].title"
+                  @click="changeBigPhoto(getSingleProduct.thumbnail)"
+                  :src="getSingleProduct.thumbnail"
+                  :alt="getSingleProduct.title"
                 />
               </div>
               <div
                 class="product__photo-small-div"
                 :class="{ active: isBigImage(image) }"
-                v-for="image in getSingleProduct[0].images"
+                v-for="image in getSingleProduct.images"
                 :key="image"
               >
                 <img
                   @click="changeBigPhoto(image)"
                   :src="image"
-                  :alt="getSingleProduct[0].title"
+                  :alt="getSingleProduct.title"
                 />
               </div>
 
@@ -79,45 +79,45 @@
           </div>
 
           <div class="product__info">
-            <p class="product__name">{{ getSingleProduct[0].title }}</p>
+            <p class="product__name">{{ getSingleProduct.title }}</p>
             <p class="product__description">
-              {{ getSingleProduct[0].description }}
+              {{ getSingleProduct.description }}
             </p>
             <p class="product__brand-name">
-              Brand: <span>{{ getSingleProduct[0].brand }}</span>
+              Brand: <span>{{ getSingleProduct.brand }}</span>
             </p>
             <p class="product__category">
-              Category: <span>{{ getSingleProduct[0].category }}</span>
+              Category: <span>{{ getSingleProduct.category }}</span>
             </p>
             <p class="product__rating">
               Rating:
               <span class="product__rating-score">{{
-                getSingleProduct[0].rating
+                getSingleProduct.rating
               }}</span>
             </p>
             <p class="product__stock">
-              Stock: <span>{{ getSingleProduct[0].stock }}</span>
+              Stock: <span>{{ getSingleProduct.stock }}</span>
             </p>
-            <p class="product__price">€{{ getSingleProduct[0].price }}</p>
+            <p class="product__price">€{{ getSingleProduct.price }}</p>
 
             <div class="product__btn">
               <button
                 class="product__button btn-pay"
-                v-if="!isActive(getSingleProduct[0].id)"
-                @click="addToCart(getSingleProduct[0])"
+                v-if="!isActive(getSingleProduct.id)"
+                @click="addToCart(getSingleProduct)"
               >
                 ADD TO CART
               </button>
               <button
                 class="product__button btn-del"
-                v-if="isActive(getSingleProduct[0].id)"
-                @click="delCart(getSingleProduct[0].id)"
+                v-if="isActive(getSingleProduct.id)"
+                @click="delCart(getSingleProduct.id)"
               >
                 DROP FROM CART
               </button>
               <button
                 class="product__button btn-pay"
-                @click="openCheckout(getSingleProduct[0])"
+                @click="openCheckout(getSingleProduct)"
               >
                 BUY NOW
               </button>
@@ -137,7 +137,6 @@ export default {
   data() {
     return {
       isLoader: false,
-      isCatHere: false,
       bigImage: null,
     };
   },
@@ -148,7 +147,7 @@ export default {
     //await this.getSingleCat(this.cat);
     if (!isNaN(+this.id) && parseInt(this.id) > 0 && parseInt(this.id) < 100) {
       await this.getSingleProd(Number(this.id));
-      this.bigImage = this.getSingleProduct[0].thumbnail;
+      this.bigImage = this.getSingleProduct.thumbnail;
     } else {
       this.$router.push({ name: "error" });
     }
@@ -159,10 +158,10 @@ export default {
     }
   },
   watch: {
-    getSingleProduct() {
-      this.isCatHere = !!this.getSingleProduct.length;
-      return this.getSingleProduct;
-    },
+    // getSingleProduct() {
+    //
+    //   return this.getSingleProduct;
+    // },
   },
   computed: {
     ...mapGetters("Filter", ["getSingleProduct"]),
