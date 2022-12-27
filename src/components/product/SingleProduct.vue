@@ -145,7 +145,7 @@ export default {
     this.isLoader = true;
     // console.log("this.id", this.id);
     //await this.getSingleCat(this.cat);
-    if (!isNaN(+this.id) && parseInt(this.id) > 0 && parseInt(this.id) < 100) {
+    if (!isNaN(+this.id) && parseInt(this.id) > 0 && parseInt(this.id) < 101) {
       await this.getSingleProd(Number(this.id));
       this.bigImage = this.getSingleProduct.thumbnail;
     } else {
