@@ -5,10 +5,11 @@
   </main>
   <FooterView></FooterView>
 </template>
-<script>
+<script lang="ts">
 import HeaderView from "./components/HeaderView.vue";
 import FooterView from "./components/FooterView.vue";
 import { mapActions, mapGetters } from "vuex";
+
 export default {
   async created() {
     await this.getAllProd();
@@ -28,6 +29,12 @@ export default {
       menuModal.classList.toggle("active");
       contentBody.classList.toggle("lock");
     };
+    // menuButton1.onclick = function () {
+    //   menuButton.classList.remove("active");
+    //   menuButton1.classList.remove("active");
+    //   menuModal.classList.remove("active");
+    //   contentBody.classList.remove("lock");
+    // };
   },
   data() {
     return {
