@@ -79,10 +79,6 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .home-menu-crumbs {
-    align-items: center;
-    flex-direction: column;
-  }
   .header__menu {
     right: -115%;
   }
