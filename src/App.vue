@@ -5,7 +5,7 @@
   </main>
   <FooterView></FooterView>
 </template>
-<script lang="ts">
+<script>
 import HeaderView from "./components/HeaderView.vue";
 import FooterView from "./components/FooterView.vue";
 import { mapActions, mapGetters } from "vuex";
