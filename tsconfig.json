@@ -34,7 +34,8 @@
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",
-    "tests/**/*.tsx"
+    "tests/**/*.tsx",
+    "node_modules/highlight.js/types/index.d.ts"
   ],
   "exclude": [
     "node_modules"

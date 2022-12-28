@@ -114,7 +114,6 @@
         </div>
         <p class="is-invalid">Card invalid</p>
       </div>
-      {{ isCanSend }}
       <button class="modal__submit" @click.prevent="submit()">Confirm</button>
     </form>
   </div>
@@ -155,23 +154,7 @@ export default {
       this.emitter.emit("closeModal");
     },
     checkSenderAbility() {
-      console.log(
-        this.nameValid,
-        this.name,
-        this.phoneValid,
-        this.phone,
-        this.addressValid,
-        this.address,
-        this.emailValid,
-        this.email,
-        this.creditCardNumber,
-        this.cardNumberValid,
-        this.creditCardValid,
-        this.cardValidValid,
-        this.creditCardCvv,
-        this.cardCvvValid
-      );
-      if (
+      this.isCanSend = !!(
         this.nameValid &&
         this.name &&
         this.phoneValid &&
@@ -186,11 +169,7 @@ export default {
         this.cardValidValid &&
         this.creditCardCvv &&
         this.cardCvvValid
-      ) {
-        this.isCanSend = true;
-      } else {
-        this.isCanSend = false;
-      }
+      );
     },
     isNameInvalid() {
       let separated = this.name
@@ -218,17 +197,11 @@ export default {
       this.checkSenderAbility();
     },
     isEmailInvalid() {
-      if (
-        this.email
-          .toLowerCase()
-          .match(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-          )
-      ) {
-        this.emailValid = true;
-      } else {
-        this.emailValid = false;
-      }
+      this.emailValid = !!this.email
+        .toLowerCase()
+        .match(
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+        );
 
       this.checkSenderAbility();
     },
@@ -236,6 +209,7 @@ export default {
       this.creditCardNumber = this.creditCardNumber.replace(/[^0-9]/g, "");
       if (this.creditCardNumber.length >= 16) {
         this.creditCardNumber = this.creditCardNumber.substring(0, 16);
+        //replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, "$1 ")
         this.cardNumberValid = true;
       }
       if (this.creditCardNumber.length < 16) this.cardNumberValid = false;
@@ -252,11 +226,25 @@ export default {
     },
     isValidValid() {
       this.creditCardValid = this.creditCardValid.replace(/[^0-9/]/g, "");
-      if (this.creditCardValid.length === 2) {
-        this.creditCardValid += "/";
-      }
-      if (this.creditCardValid.length >= 5) {
-        this.creditCardValid = this.creditCardValid.substring(0, 5);
+      // if (
+      //   this.creditCardValid.length > 2 &&
+      //   !this.creditCardValid.split("").includes("/")
+      // ) {
+      //   this.creditCardValid = this.creditCardValid.replace(
+      //     /(\d)(?=(\d{2})+(?!\d))/g,
+      //     "$1/"
+      //   );
+      // }
+
+      if (
+        this.creditCardValid.length >= 4 &&
+        !this.creditCardValid.split("").includes("/")
+      ) {
+        this.creditCardValid = this.creditCardValid.substring(0, 4);
+        this.creditCardValid = this.creditCardValid.replace(
+          /(\d)(?=(\d{2})+(?!\d))/g,
+          "$1/"
+        );
       }
       if (
         this.creditCardValid.length < 5 ||

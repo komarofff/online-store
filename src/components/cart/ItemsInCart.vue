@@ -9,21 +9,25 @@
         Products In Cart - <span>{{ getCartLength }}</span>
       </p>
       <div class="cart__product-control">
-        <span class="small">Items per page: </span>
-        <input
-          type="number"
-          min="1"
-          class="count-item-pages small"
-          v-model="itemsPerPage"
-        />
-        <span>Page</span>
-        <button class="control-arrow arrow-to-left" @click="goToPageLeft()">
-          <img src="@/assets/icon/arrow-link-right.svg" alt="" />
-        </button>
-        <span class="page-counter">{{ page }}</span>
-        <button class="control-arrow" @click="goToPageRight()">
-          <img src="@/assets/icon/arrow-link-right.svg" alt="" />
-        </button>
+        <div>
+          <span class="small">Items per page: </span>
+          <input
+            type="number"
+            min="1"
+            class="count-item-pages small"
+            v-model="itemsPerPage"
+          />
+        </div>
+        <div>
+          <span>Page</span>
+          <button class="control-arrow arrow-to-left" @click="goToPageLeft()">
+            <img src="@/assets/icon/arrow-link-right.svg" alt="" />
+          </button>
+          <span class="page-counter">{{ page }}</span>
+          <button class="control-arrow" @click="goToPageRight()">
+            <img src="@/assets/icon/arrow-link-right.svg" alt="" />
+          </button>
+        </div>
       </div>
     </div>
 

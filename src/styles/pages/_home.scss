@@ -205,6 +205,7 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
    background-color: $background;
    padding: 5px 15px;
    border-radius: 10px;
+   flex-wrap: wrap;
 }
 
 .crumbs-start{
@@ -228,7 +229,25 @@ ul.checkbox-categories li input[type="checkbox"]:hover + label {
          color: $color-blue;
       }
    }
+   p{
+      margin-top:0;
+      margin-bottom:0;
+   }
 }
+@media(max-width:920px){
+   .home-menu-crumbs {
+      align-items: start;
+      flex-direction: column;
+   }
+   .crumbs-address {
+      justify-content: start !important;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+   }
+}
+
 
 .img-address{
    width: 13px;

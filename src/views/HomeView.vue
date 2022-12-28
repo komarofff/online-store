@@ -38,10 +38,6 @@ export default {
 };
 </script>
 <style lang="scss">
-::placeholder {
-  font-size: 13px;
-  color: #bbb;
-}
 .card-brand,
 .card-category,
 .card-rating,
@@ -72,6 +68,7 @@ export default {
     margin: 4px 0 0 0;
     writing-mode: vertical-rl;
     font-size: 11px;
+    font-weight: bold;
   }
 }
 .home-menu {
@@ -93,7 +90,7 @@ export default {
     order: -1;
   }
 }
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .filter {
     display: block !important;
   }
@@ -101,7 +98,7 @@ export default {
     transition: 0.3s ease-in-out;
     position: absolute;
     transform: translateX(-101.5%);
-    min-width: 75vw;
+    width: 55vw;
   }
   .filter-hide {
     transform: translateX(-101.5%);
@@ -111,6 +108,9 @@ export default {
   }
 }
 @media (max-width: 625px) {
+  .main__home-filter {
+    width: 75vw;
+  }
   .card-container {
     grid-template-columns: 1fr;
     .card-item {

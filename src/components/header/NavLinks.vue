@@ -12,7 +12,7 @@
           <!--            >Home</a-->
           <!--          >-->
           <router-link
-            class="header__link"
+            class="header__link mobile__link"
             :to="{ name: 'home' }"
             @click="isSubmenuOpen = false"
             >Home</router-link
@@ -33,13 +33,15 @@
             v-if="getCategories"
           >
             <li>
-              <router-link class="sub-header__link" :to="{ name: 'categories' }"
+              <router-link
+                class="sub-header__link mobile__link"
+                :to="{ name: 'categories' }"
                 >All categories</router-link
               >
             </li>
             <li v-for="category in getCategories" :key="category">
               <router-link
-                class="sub-header__link"
+                class="sub-header__link mobile__link"
                 :to="`/catalog/${category.name}`"
                 >{{ category.name }}</router-link
               >
@@ -48,7 +50,7 @@
         </li>
         <li>
           <router-link
-            class="header__link"
+            class="header__link mobile__link"
             :to="{ name: 'cart' }"
             @click="isSubmenuOpen = false"
             >Cart</router-link

@@ -42,20 +42,4 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.home-menu-crumbs {
-  align-items: center;
-}
-.crumbs-address {
-  display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  align-items: center;
-}
-.capitalize {
-  text-transform: lowercase;
-}
-.capitalize:first-letter {
-  text-transform: uppercase;
-}
-</style>
+<style lang="scss"></style>
