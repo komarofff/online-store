@@ -386,13 +386,13 @@ export default {
         price: [],
         stock: [],
         search: "",
-        sort: "",
+        sort: " ",
       });
       await this.getFilterParameters(this.getQueryForFilters);
 
       this.changeForPriceAndStock();
       this.emitter.emit("clearSearch");
-      //console.log("clear all filters");
+      console.log("clear all filters");
       this.$router.push({
         query: {},
       });

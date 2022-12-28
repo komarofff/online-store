@@ -187,6 +187,7 @@ export default {
     );
     this.emitter.on("clearSelect", () => {
       this.sort = "";
+      this.data = this.getAllProducts;
     });
     this.emitter.on("needChangeTextInSelect", (val) => {
       this.sort = val;

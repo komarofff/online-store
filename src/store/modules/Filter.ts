@@ -212,7 +212,7 @@ const actions: ActionTree<RootState, RootState> = {
   },
   async getFilterParameters({ commit }, payload: FilterQuery) {
     if (state.products.length) {
-      let arr: ProdArr[] = state.products;
+      let arr: ProdArr[] = JSON.parse(JSON.stringify(state.products));
 
       if (payload.categories && payload.categories.length) {
         arr = arr.filter((el: ProdArr) => {
