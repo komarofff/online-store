@@ -122,15 +122,17 @@
   </section>
 </template>
 
-<script>
+<script lang="ts">
 import { mapActions, mapGetters } from "vuex";
 
-export default {
+import { defineComponent } from "vue";
+import { CartArr } from "@/store/modules/Cart";
+export default defineComponent({
   data() {
     return {
       data: [],
       isLoader: false,
-      searchText: null,
+      searchText: "" as string,
       cart: [],
       dataItems: 0,
       sort: "",
@@ -180,7 +182,7 @@ export default {
       }, 50);
     });
     if (this.$route.query.search) {
-      this.searchText = this.$route.query.search;
+      this.searchText = this.$route.query.search as string;
     }
     this.isBigCards = !(
       this.$route.query.big && this.$route.query.big === "false"
@@ -218,9 +220,7 @@ export default {
   methods: {
     ...mapActions("Filter", ["getQuery", "getFilterParameters"]),
     ...mapActions("Cart", ["pushToCart", "delFromCart"]),
-    changeCountry(event) {
-      // console.log("event", event);
-    },
+
     changeBigCards() {
       this.isBigCards = !this.isBigCards;
       this.getQueryForFilters.big = this.isBigCards;
@@ -255,21 +255,21 @@ export default {
       this.data = this.getFilterData;
       this.emitter.emit("changeSort", this.sort);
     },
-    async addToCart(val) {
+    async addToCart(val: CartArr) {
       val.quantity = 1;
       await this.pushToCart(val);
     },
-    async delCart(val) {
+    async delCart(val: number) {
       await this.delFromCart(val);
     },
-    isActiveButton(val) {
-      return this.getCartArray.find((product) => {
+    isActiveButton(val: number) {
+      return this.getCartArray.find((product: CartArr) => {
         return product.id === val;
       });
     },
   },
   components: {},
-};
+});
 </script>
 
 <style lang="scss">

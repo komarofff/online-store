@@ -29,10 +29,10 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { mapGetters } from "vuex";
-
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "CartPlaceView",
   data() {
     return {};
@@ -41,7 +41,7 @@ export default {
   computed: {
     ...mapGetters("Cart", ["getCartLength", "getCartSum"]),
   },
-};
+});
 </script>
 
 <style scoped>

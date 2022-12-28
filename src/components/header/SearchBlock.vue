@@ -28,16 +28,17 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { mapActions, mapGetters } from "vuex";
 
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "SearchBlock",
   data() {
     return {
-      search: "",
+      search: "" as string,
       data: [],
-      isSearchOpen: false,
+      isSearchOpen: false as boolean,
     };
   },
   watch: {
@@ -45,7 +46,9 @@ export default {
       if (this.search) {
         await this.getSearchParameters(this.search);
         this.data = this.getSearchData;
-        this.isSearchOpen = this.data;
+        if (this.data) {
+          this.isSearchOpen = true;
+        }
       } else {
         this.isSearchOpen = false;
       }
@@ -64,7 +67,7 @@ export default {
       }, 500);
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

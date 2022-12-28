@@ -7,11 +7,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import FilterView from "@/components/home/FilterView.vue";
 import CenterSection from "@/components/home/CenterSection.vue";
 
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   data() {
     return {
       isLoader: false,
@@ -35,7 +36,7 @@ export default {
     },
   },
   components: { FilterView, CenterSection },
-};
+});
 </script>
 <style lang="scss">
 .card-brand,

@@ -119,10 +119,11 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { mapActions, mapGetters } from "vuex";
 
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   data() {
     return {
       sec: 3,
@@ -130,7 +131,7 @@ export default {
       isShowLastMessage: false,
       name: "",
       nameValid: true,
-      phone: "",
+      phone: "" as string,
       phoneValid: true,
       address: "",
       addressValid: true,
@@ -182,12 +183,16 @@ export default {
       this.checkSenderAbility();
     },
     isPhoneInvalid() {
-      let isNumbers = false;
+      let isNumbers = false as boolean;
       let isPlusStartLetter = this.phone.startsWith("+");
       let isNormalLength = this.phone.length >= 10;
-      for (let i = 1; i < this.phone.length; i++) {
-        isNumbers = !isNaN(this.phone[i]);
-      }
+      isNumbers = /^\d+$/.test(this.phone.split("").slice(1, -1).join(""));
+
+      // for (let i = 1; i < this.phone.length; i++) {
+      //   if(Number(this.phone[i])){
+      //     isNumbers = true;
+      //   }
+      // }
       this.phoneValid = isNumbers && isPlusStartLetter && isNormalLength;
       this.checkSenderAbility();
     },
@@ -298,7 +303,7 @@ export default {
       this.sec = this.sec - 1;
     },
   },
-};
+});
 </script>
 
 <style scoped lang="scss">

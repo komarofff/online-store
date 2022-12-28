@@ -130,10 +130,20 @@
   </aside>
 </template>
 
-<script>
+<script lang="ts">
+export interface IQuery {
+  categories: string[];
+  brands: string[];
+  price: string[];
+  stock: string[];
+  search: string;
+  sort: string;
+  big: string;
+}
 import { mapActions, mapGetters } from "vuex";
-
-export default {
+import { ProdArr } from "@/store/modules/Filter";
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "FilterView",
   //props: ["products"],
   data() {
@@ -150,16 +160,8 @@ export default {
       },
       startPrice: [],
       startStock: [],
-      startQuery: {
-        categories: [],
-        brands: [],
-        price: [],
-        stock: [],
-        search: "",
-        sort: "",
-        big: "",
-      },
-      startQueryData: null,
+      startQuery: {} as ReturnType<typeof Object>,
+      startQueryData: {} as ReturnType<typeof Object>,
       url: window.location.href,
       successCopyLink: false,
       big: true,
@@ -169,6 +171,7 @@ export default {
       stockMax: 0,
       dataItems: 0,
       isFound: true,
+      isLoader: true,
     };
   },
   async mounted() {
@@ -182,7 +185,7 @@ export default {
     this.startQueryData = Object.entries(this.$route.query);
     if (this.startQueryData.length > 0) {
       // console.log("start with query parameters");
-      this.startQueryData.forEach((el) => {
+      this.startQueryData.forEach((el: string[]) => {
         if (el[1] && !el[1].includes("||")) {
           this.startQuery[el[0]] = el[1];
           if (!this.getQueryForFilters[el[0]]) {
@@ -230,7 +233,7 @@ export default {
       await this.changeForPriceAndStock();
     }
 
-    this.emitter.on("changeSearch", (data) => {
+    this.emitter.on("changeSearch", (data: string) => {
       this.pushToRouter("search", data);
     });
     this.emitter.on("changePriceData", () => {
@@ -239,10 +242,10 @@ export default {
     this.emitter.on("resetFilters", () => {
       this.clearFilters();
     });
-    this.emitter.on("changeSort", (val) => {
+    this.emitter.on("changeSort", (val: string) => {
       this.changeSort(val);
     });
-    this.emitter.on("changeCards", (val) => {
+    this.emitter.on("changeCards", (val: string) => {
       this.changeSizeOfCards(val);
     });
   },
@@ -324,37 +327,77 @@ export default {
       "getStockDiff",
       "getFilterParameters",
     ]),
-    showAllInItem(item, val) {
-      return this.getAllProducts.filter((el) => el[item] === val).length;
+    // showAllInItem(item: string, val: string) {
+    //   // return this.getAllProducts.filter((el: ProdArr) => el[item] === val)
+    //   //   .length;
+    //   if (item === "category") {
+    //     return this.getAllProducts.filter((el: ProdArr) => el.category === val)
+    //       .length;
+    //   }
+    //   if (item === "brand") {
+    //     return this.getAllProducts.filter((el: ProdArr) => el.brand === val)
+    //       .length;
+    //   }
+    // },
+    showAllInItem<T extends keyof ProdArr>(item: T, val: string) {
+      return this.getAllProducts.filter((el: ProdArr) => el[item] === val)
+        .length;
     },
-    showAllInFilter(item, val) {
-      return this.getFilterData.filter((el) => el[item] === val).length;
+    showAllInFilter<T extends keyof ProdArr>(item: T, val: string) {
+      return this.getFilterData.filter((el: ProdArr) => el[item] === val)
+        .length;
     },
-    isActiveCat(val) {
+    // showAllInFilter(item: string, val: string) {
+    //   // return this.getFilterData.filter((el: ProdArr) => el[item] === val)
+    //   //   .length;
+    //   if (item === "category") {
+    //     return this.getFilterData.filter((el: ProdArr) => el.category === val)
+    //       .length;
+    //   }
+    //   if (item === "brand") {
+    //     return this.getFilterData.filter((el: ProdArr) => el.brand === val)
+    //       .length;
+    //   }
+    // },
+    isActiveCat(val: string) {
       //console.log("this.getQueryForFilters", this.getQueryForFilters);
       if (this.getQueryForFilters.categories) {
-        if (typeof this.getQueryForFilters.categories === "string") {
+        // if (typeof this.getQueryForFilters.categories === "string") {
+        //   return this.getQueryForFilters.categories === val;
+        // } else {
+        //   return this.getQueryForFilters.categories.find((el: string) => {
+        //     return el === val;
+        //   });
+        // }
+        if (!Array.isArray(this.getQueryForFilters.categories)) {
           return this.getQueryForFilters.categories === val;
         } else {
-          return this.getQueryForFilters.categories.find((el) => {
+          return this.getQueryForFilters.categories.find((el: string) => {
             return el === val;
           });
         }
       }
     },
-    isActiveBrand(val) {
+    isActiveBrand(val: string) {
       if (this.getQueryForFilters.brands) {
-        if (typeof this.getQueryForFilters.brands === "string") {
+        // if (typeof this.getQueryForFilters.brands === "string") {
+        //   return this.getQueryForFilters.brands === val;
+        // } else {
+        //   return this.getQueryForFilters.brands.find((el: string) => {
+        //     return el === val;
+        //   });
+        // }
+        if (!Array.isArray(this.getQueryForFilters.brands)) {
           return this.getQueryForFilters.brands === val;
         } else {
-          return this.getQueryForFilters.brands.find((el) => {
+          return this.getQueryForFilters.brands.find((el: string) => {
             return el === val;
           });
         }
       }
     },
 
-    pushToRouter(key, value) {
+    pushToRouter(key: string, value: string | []) {
       let queries = JSON.parse(JSON.stringify(this.$route.query));
       if (value.length) {
         if (value && typeof value === "string") {
@@ -401,7 +444,7 @@ export default {
 
       this.$router.push(this.$route.path);
     },
-    async changeCat(val) {
+    async changeCat(val: string) {
       if (!this.getQueryForFilters.categories) {
         this.getQueryForFilters.categories = [val];
       } else {
@@ -423,7 +466,7 @@ export default {
       this.changeForPriceAndStock();
       this.pushToRouter("categories", this.getQueryForFilters.categories);
     },
-    async changeBrand(val) {
+    async changeBrand(val: string) {
       if (!this.getQueryForFilters.brands) {
         this.getQueryForFilters.brands = [val];
       } else {
@@ -456,12 +499,12 @@ export default {
       this.changeForPrice();
       this.pushToRouter("stock", this.getQueryForFilters.stock);
     },
-    async changeSort(sortVariable) {
+    async changeSort(sortVariable: string) {
       this.getQueryForFilters.sort = sortVariable;
       //await this.changeQuery();
       this.pushToRouter("sort", sortVariable);
     },
-    async changeSizeOfCards(big) {
+    async changeSizeOfCards(big: string) {
       let bigData;
       big ? (bigData = "true") : (bigData = "false");
       this.getQueryForFilters.big = bigData;
@@ -492,7 +535,7 @@ export default {
       //this.pushToRouter();
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

@@ -63,10 +63,11 @@
   </div>
 </template>
 
-<script>
-import SearchBlock from "@/components/header/SearchBlock";
+<script lang="ts">
+import SearchBlock from "@/components/header/SearchBlock.vue";
 import { mapActions, mapGetters } from "vuex";
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   async mounted() {
     await this.getAllCat();
   },
@@ -90,7 +91,7 @@ export default {
   components: {
     SearchBlock,
   },
-};
+});
 </script>
 
 <style lang="scss">

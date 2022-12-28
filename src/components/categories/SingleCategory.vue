@@ -85,9 +85,12 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { mapActions, mapGetters } from "vuex";
-export default {
+import { ProdArr } from "@/store/modules/Filter";
+import { CartArr } from "@/store/modules/Cart";
+import { defineComponent } from "vue";
+export default defineComponent({
   props: ["id"],
   data() {
     return {
@@ -144,31 +147,31 @@ export default {
   methods: {
     ...mapActions("Filter", ["getSingleCat"]),
     ...mapActions("Cart", ["pushToCart", "delFromCart"]),
-    isActive(val) {
-      return this.getCartArray.find((product) => {
+    isActive(val: number) {
+      return this.getCartArray.find((product: ProdArr) => {
         return product.id === val;
       });
     },
-    isActiveButton(val) {
-      return this.getCartArray.find((product) => {
+    isActiveButton(val: number) {
+      return this.getCartArray.find((product: ProdArr) => {
         return product.id === val;
       });
     },
-    async addToCart(val) {
+    async addToCart(val: CartArr) {
       val.quantity = 1;
       await this.pushToCart(val);
     },
-    async delCart(val) {
+    async delCart(val: number) {
       await this.delFromCart(val);
     },
-    async newData(idd) {
+    async newData(idd: string) {
       this.isLoader = true;
       await this.getSingleCat(idd);
       this.catProducts = this.getSingleCategory;
       this.isLoader = false;
     },
   },
-};
+});
 </script>
 
 <style scoped lang="scss">

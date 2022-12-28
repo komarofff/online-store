@@ -19,10 +19,11 @@
     </div>
   </div>
 </template>
-<script>
+<script lang="ts">
 import { mapGetters } from "vuex";
-import BreadCrumbs from "@/components/breadcrumbs/BreadCrumbs";
-export default {
+import BreadCrumbs from "@/components/breadcrumbs/BreadCrumbs.vue";
+import { defineComponent } from "vue";
+export default defineComponent({
   data() {
     return {
       isLoader: false,
@@ -56,7 +57,7 @@ export default {
   components: {
     BreadCrumbs,
   },
-};
+});
 </script>
 
 <style scoped lang="scss">

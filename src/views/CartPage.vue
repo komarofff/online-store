@@ -26,16 +26,20 @@
   <CheckoutModalView v-if="isShowCheckoutModal"></CheckoutModalView>
 </template>
 
-<script>
-import ItemsInCart from "@/components/cart/ItemsInCart";
-import CartPay from "@/components/cart/CartPay";
-import CheckoutModalView from "@/components/modals/CheckoutModalView";
+<script lang="ts">
+import ItemsInCart from "@/components/cart/ItemsInCart.vue";
+import CartPay from "@/components/cart/CartPay.vue";
+import CheckoutModalView from "@/components/modals/CheckoutModalView.vue";
 import { mapGetters } from "vuex";
-export default {
+
+/*import mitt, { Emitter, EventType } from "mitt";
+emitter: mitt() as Emitter<Record<EventType, unknown>>,*/
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "CartPage",
   data() {
     return {
-      isShowCheckoutModal: false,
+      isShowCheckoutModal: false as boolean,
     };
   },
   mounted() {
@@ -56,7 +60,7 @@ export default {
     ...mapGetters("Cart", ["getCartArray", "getCartLength", "getCartSum"]),
   },
   components: { ItemsInCart, CartPay, CheckoutModalView },
-};
+});
 </script>
 
 <style scoped lang="scss">

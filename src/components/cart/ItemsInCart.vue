@@ -87,25 +87,26 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { mapActions, mapGetters } from "vuex";
-
-export default {
+import { CartArr } from "@/store/modules/Cart";
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "CartPage",
   data() {
     return {
       itemsInCart: [],
-      page: 1,
-      maxPage: 1,
-      itemsPerPage: 5,
-      startQuery: {},
-      currentPage: 1,
+      page: 1 as number,
+      maxPage: 1 as number,
+      itemsPerPage: 5 as number,
+      startQuery: 1 as number,
+      currentPage: 1 as number,
     };
   },
   mounted() {
-    this.startQuery = this.$route.query.page;
+    this.startQuery = Number(this.$route.query.page);
     if (this.$route.query.limit && +this.$route.query.limit > 0) {
-      this.itemsPerPage = this.$route.query.limit;
+      this.itemsPerPage = Number(this.$route.query.limit as string);
     } else {
       this.itemsPerPage = 5;
     }
@@ -113,7 +114,7 @@ export default {
   },
   watch: {
     getCartArray() {
-      this.startQuery = this.$route.query.page;
+      this.startQuery = Number(this.$route.query.page);
       this.itemsInCart = this.getCartArray;
       this.startCart(this.startQuery);
     },
@@ -139,7 +140,7 @@ export default {
   },
   methods: {
     ...mapActions("Cart", ["plusQuantity", "minusQuantity", "delFromCart"]),
-    goToPage(val) {
+    goToPage(val: number) {
       let queries = JSON.parse(JSON.stringify(this.$route.query));
       if (val) {
         queries.page = val;
@@ -170,14 +171,14 @@ export default {
     showAllItems() {
       this.itemsInCart = this.getCartArray;
     },
-    showPaginatedItems(page) {
+    showPaginatedItems(page: number) {
       let start = page * this.itemsPerPage - this.itemsPerPage;
       let end = page * this.itemsPerPage;
       //console.log("start: " + start + " end: " + end);
       this.itemsInCart = this.getCartArray.slice(start, end);
     },
-    async quantityMinus(id) {
-      let idx = this.getCartArray.findIndex((el) => el.id === id);
+    async quantityMinus(id: number) {
+      let idx = this.getCartArray.findIndex((el: CartArr) => el.id === id);
       if (this.getCartArray[idx].quantity > 1) {
         await this.minusQuantity(id);
       } else {
@@ -194,19 +195,19 @@ export default {
         this.showPaginatedItems(this.page);
       }
     },
-    async quantityPlus(id) {
-      let idx = this.getCartArray.findIndex((el) => el.id === id);
+    async quantityPlus(id: number) {
+      let idx = this.getCartArray.findIndex((el: CartArr) => el.id === id);
       if (this.getCartArray[idx].quantity < this.getCartArray[idx].stock) {
         await this.plusQuantity(id);
       }
     },
-    changeQuery(newPage) {
+    changeQuery(newPage: number) {
       let queries = JSON.parse(JSON.stringify(this.$route.query));
       queries.page = newPage;
       this.$router.replace({ query: queries });
       this.showPaginatedItems(newPage);
     },
-    startCart(pageNumber) {
+    startCart(pageNumber: number) {
       pageNumber = Number(pageNumber);
       this.itemsInCart = this.getCartArray;
       this.maxPage = Math.ceil(this.itemsInCart.length / this.itemsPerPage);
@@ -238,7 +239,7 @@ export default {
       this.showPaginatedItems(this.page);
     },
   },
-};
+});
 </script>
 
 <style scoped lang="scss">

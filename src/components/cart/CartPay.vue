@@ -87,23 +87,24 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+export interface IPromo {
+  name: string;
+  promo: string;
+  discount: number;
+  isAdded: boolean;
+  isShow: boolean;
+}
 import { mapGetters } from "vuex";
-// export interface IPromoCodes{
-//   name: string,
-//   promo: string,
-//   discount: number,
-//   isAdded: boolean,
-//   isShow: boolean,
-// }
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   name: "CartPay",
   data() {
     return {
-      isAppliedPromoCode: false,
-      promoValue: "",
-      priceDiscount: 0,
-      clearInput: false,
+      isAppliedPromoCode: false as boolean,
+      promoValue: "" as string,
+      priceDiscount: 0 as number,
+      clearInput: false as boolean,
       promoCodes: [
         {
           name: "Rolling Scopes School",
@@ -126,14 +127,14 @@ export default {
           isAdded: false,
           isShow: false,
         },
-      ],
+      ] as IPromo[],
     };
   },
   mounted() {
     if (localStorage.getItem("discount")) {
-      let data = JSON.parse(localStorage.getItem("discount"));
-      this.promoCodes.forEach((el) => {
-        if (data.find((elem) => elem.promo === el.promo)) {
+      let data = JSON.parse(localStorage.getItem("discount") || "");
+      this.promoCodes.forEach((el: IPromo) => {
+        if (data.find((elem: IPromo) => elem.promo === el.promo)) {
           el.isAdded = true;
           this.isAppliedPromoCode = true;
           this.calculateDiscount();
@@ -165,11 +166,11 @@ export default {
       this.emitter.emit("openCheckout");
     },
     clearField() {
-      this.promoValue = null;
+      this.promoValue = "";
       this.clearInput = false;
       this.promoCodes.forEach((el) => (el.isShow = false));
     },
-    changePromoValue(val) {
+    changePromoValue(val: string | boolean) {
       this.promoCodes.forEach((el) => {
         if (el.promo === val && el.isShow === false && el.isAdded === false) {
           el.isShow = true;
@@ -179,19 +180,19 @@ export default {
         }
       });
     },
-    promoAdd(val) {
+    promoAdd(val: string | boolean | null) {
       this.promoCodes.find((el) => {
         if (el.promo === val) {
           el.isShow = false;
           el.isAdded = true;
-          this.promoValue = null;
+          this.promoValue = "";
           this.isAppliedPromoCode = true;
         }
       });
       this.calculateDiscount();
       this.saveDiscount();
     },
-    promoDel(val) {
+    promoDel(val: string | boolean | null) {
       this.priceDiscount = this.getCartSum;
       this.promoCodes.find((el) => {
         if (el.promo === val) {
@@ -206,7 +207,7 @@ export default {
       if (this.priceDiscount === this.getCartSum) {
         this.priceDiscount = 0;
       }
-      this.promoValue = null;
+      this.promoValue = "";
       this.saveDiscount();
     },
     calculateDiscount() {
@@ -230,7 +231,7 @@ export default {
       }
     },
   },
-};
+});
 </script>
 
 <style lang="scss">

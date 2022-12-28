@@ -131,15 +131,17 @@
   </section>
 </template>
 
-<script>
+<script lang="ts">
 import { mapActions, mapGetters } from "vuex";
-
-export default {
+import { ProdArr } from "@/store/modules/Filter";
+import { CartArr } from "@/store/modules/Cart";
+import { defineComponent } from "vue";
+export default defineComponent({
   props: ["id"],
   data() {
     return {
-      isLoader: false,
-      bigImage: null,
+      isLoader: false as boolean,
+      bigImage: "" as string,
     };
   },
 
@@ -172,31 +174,31 @@ export default {
   methods: {
     ...mapActions("Filter", ["getSingleProd"]),
     ...mapActions("Cart", ["pushToCart", "delFromCart"]),
-    changeBigPhoto(src) {
+    changeBigPhoto(src: string) {
       this.bigImage = src;
     },
-    isBigImage(src) {
+    isBigImage(src: string) {
       return src === this.bigImage;
     },
-    isActive(val) {
-      return this.getCartArray.find((product) => {
+    isActive(val: number) {
+      return this.getCartArray.find((product: ProdArr) => {
         return product.id === val;
       });
     },
-    async addToCart(val) {
+    async addToCart(val: CartArr) {
       val.quantity = 1;
       await this.pushToCart(val);
     },
-    async delCart(val) {
+    async delCart(val: number) {
       await this.delFromCart(val);
     },
-    async openCheckout(val) {
+    async openCheckout(val: CartArr) {
       val.quantity = 1;
       await this.pushToCart(val);
       this.$router.push({ name: "cart", query: { byeNow: "true" } });
     },
   },
-};
+});
 </script>
 
 <style lang="scss"></style>

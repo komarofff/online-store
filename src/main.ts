@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import mitt, { EventType, Emitter } from "mitt";
 const emitter: Emitter<Record<EventType, unknown>> = mitt();
+//const emitter: Emitter<any> = mitt<any>();
 import router from "./router";
 import store from "./store";
 const app = createApp(App);

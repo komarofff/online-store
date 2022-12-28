@@ -7,16 +7,17 @@
   </section>
 </template>
 
-<script>
-import ListOfCategories from "../components/categories/ListOfCategories";
-import SingleCategory from "../components/categories/SingleCategory";
-export default {
+<script lang="ts">
+import ListOfCategories from "../components/categories/ListOfCategories.vue";
+import SingleCategory from "../components/categories/SingleCategory.vue";
+import { defineComponent } from "vue";
+export default defineComponent({
   props: ["id"],
   components: {
     ListOfCategories,
     SingleCategory,
   },
-};
+});
 </script>
 
 <style scoped lang="scss">

@@ -1,28 +1,43 @@
 <template>
   <HeaderView></HeaderView>
   <main class="main">
+    <div class="container" v-if="isLoader">
+      <img src="@/assets/loader.gif" alt="loader" />
+    </div>
     <router-view v-if="getAllProducts.length" />
   </main>
   <FooterView></FooterView>
 </template>
-<script>
+<script lang="ts">
 import HeaderView from "./components/HeaderView.vue";
 import FooterView from "./components/FooterView.vue";
 import { mapActions, mapGetters } from "vuex";
-
-export default {
+import { defineComponent } from "vue";
+export default defineComponent({
   async created() {
+    this.isLoader = true;
     await this.getAllProd();
     await this.getFromStorage();
     await this.getAllBrands();
     await this.getAllCat();
+    this.isLoader = false;
   },
   async mounted() {
-    const menuButton = document.querySelector(".header__burger");
-    const menuButton1 = document.querySelector(".header__menu");
-    const menuModal = document.querySelector(".header__modal");
-    const contentBody = document.querySelector("body");
-    const linksList = document.querySelector(".header__list");
+    const menuButton: HTMLElement | null = document.querySelector(
+      ".header__burger"
+    ) as HTMLElement;
+    const menuButton1: HTMLElement | null = document.querySelector(
+      ".header__menu"
+    ) as HTMLElement;
+    const menuModal: HTMLElement | null = document.querySelector(
+      ".header__modal"
+    ) as HTMLElement;
+    const contentBody: HTMLElement | null = document.querySelector(
+      "body"
+    ) as HTMLElement;
+    const linksList: HTMLElement | null = document.querySelector(
+      ".header__list"
+    ) as HTMLElement;
 
     menuButton.onclick = function () {
       menuButton.classList.toggle("active");
@@ -30,8 +45,9 @@ export default {
       menuModal.classList.toggle("active");
       contentBody.classList.toggle("lock");
     };
-    linksList.onclick = function (el) {
-      if (el.target.classList.contains("mobile__link")) {
+    linksList.onclick = function (el: Event) {
+      let target: HTMLElement = el.target as HTMLElement;
+      if (target.classList.contains("mobile__link")) {
         menuButton.classList.toggle("active");
         menuButton1.classList.toggle("active");
         menuModal.classList.toggle("active");
@@ -48,6 +64,7 @@ export default {
   data() {
     return {
       images: [],
+      isLoader: false,
     };
   },
   computed: {
@@ -66,7 +83,7 @@ export default {
     HeaderView,
     FooterView,
   },
-};
+});
 </script>
 <style lang="scss">
 @import "./styles/style";
