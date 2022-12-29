@@ -153,10 +153,10 @@ export default defineComponent({
       await this.getSingleProd(Number(this.id));
       this.bigImage = this.getSingleProduct.thumbnail;
     } else {
-      this.$router.push({ name: "error" });
+      this.$router.push({ name: "error", params: { pathMatch: this.id } });
     }
     if (!this.getSingleProduct) {
-      this.$router.push({ name: "error" });
+      this.$router.push({ name: "error", params: { pathMatch: this.id } });
     } else {
       this.isLoader = false;
     }

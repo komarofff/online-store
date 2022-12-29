@@ -235,6 +235,7 @@ export default defineComponent({
 
     this.emitter.on("changeSearch", (data: string) => {
       this.pushToRouter("search", data);
+      this.changeForPriceAndStock();
     });
     this.emitter.on("changePriceData", () => {
       this.changeForPriceAndStock();

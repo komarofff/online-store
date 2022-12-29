@@ -32,6 +32,7 @@ const routes: Array<RouteRecordRaw> = [
     path: "/:pathMatch(.*)*",
     name: "error",
     component: ErrorPage,
+    props: true,
   },
 ];
 

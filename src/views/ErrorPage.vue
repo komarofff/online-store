@@ -8,7 +8,10 @@
 
         <div class="error__text">
           <p class="error__text-404">404</p>
-          <p class="error__text-page">Page not found</p>
+          <p class="error__text-page">
+            Page {{ Array.isArray(pathMatch) ? pathMatch[0] : pathMatch }} not
+            found
+          </p>
         </div>
       </div>
     </div>
@@ -18,6 +21,7 @@
 <script>
 export default {
   name: "ErrorPage",
+  props: ["pathMatch"],
 };
 </script>
 

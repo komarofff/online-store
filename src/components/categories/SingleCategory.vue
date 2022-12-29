@@ -126,7 +126,10 @@ export default defineComponent({
       //console.log("pageName: " + this.pageName);
       if (this.catProducts.length === 0) {
         this.catProducts = [];
-        this.$router.push({ name: "error" });
+        this.$router.push({
+          name: "error",
+          params: { pathMatch: this.id },
+        });
       }
     } else {
       this.catProducts = [];
