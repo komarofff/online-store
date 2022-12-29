@@ -186,13 +186,8 @@ export default defineComponent({
       let isNumbers = false as boolean;
       let isPlusStartLetter = this.phone.startsWith("+");
       let isNormalLength = this.phone.length >= 10;
-      isNumbers = /^\d+$/.test(this.phone.split("").slice(1, -1).join(""));
-
-      // for (let i = 1; i < this.phone.length; i++) {
-      //   if(Number(this.phone[i])){
-      //     isNumbers = true;
-      //   }
-      // }
+      let digits = this.phone.replace(/.(?=(.*))/, "").split("");
+      isNumbers = digits.every((el) => /[0-9]/.test(el));
       this.phoneValid = isNumbers && isPlusStartLetter && isNormalLength;
       this.checkSenderAbility();
     },
