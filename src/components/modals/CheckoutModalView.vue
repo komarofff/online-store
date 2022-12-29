@@ -172,7 +172,7 @@ export default defineComponent({
         this.cardCvvValid
       );
     },
-    isNameInvalid() {
+    isNameInvalid(): void {
       let separated = this.name
         .split(" ")
         .filter((el) => el.length >= 3)
@@ -180,7 +180,21 @@ export default defineComponent({
       this.nameValid =
         separated.length >= 2 &&
         this.name.split(" ").length === separated.length;
+
+      // let arr: string[] | null = this.name.match(/(\p{L}+){5}/gu);
+      // if (
+      //   arr &&
+      //   arr.length >= 2 &&
+      //   arr.every((el) => el[0].toUpperCase() === el[0])
+      // ) {
+      //   this.nameValid = true;
+      // } else {
+      //   this.nameValid = false;
+      // }
       this.checkSenderAbility();
+      //console.log(this.name.match(/\p{L}+/gu)); // сколько слов
+      //console.log(this.name.match(/(\p{L}+){5}/gu)); // сколько слов и указываем сколько букв должно быть в слове
+      //console.log(this.name.match(/(\p{L}+){5}/gu).length); // сколько слов и указываем сколько букв должно быть в слове
     },
     isPhoneInvalid() {
       let isNumbers = false as boolean;
