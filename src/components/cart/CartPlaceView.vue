@@ -49,4 +49,10 @@ export default defineComponent({
   width: 73px;
   height: 55px;
 }
+@media (max-width: 768px) {
+  .header__cart-svg {
+    width: 80px;
+    height: 45px;
+  }
+}
 </style>
