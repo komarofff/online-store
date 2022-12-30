@@ -173,41 +173,28 @@ export default defineComponent({
       );
     },
     isNameInvalid(): void {
-      let separated = this.name
-        .split(" ")
-        .filter((el) => el.length >= 3)
-        .filter((el) => el[0].toUpperCase() === el[0]);
-      this.nameValid =
-        separated.length >= 2 &&
-        this.name.split(" ").length === separated.length;
-
-      // let arr: string[] | null = this.name.match(/(\p{L}+){5}/gu);
-      // if (
-      //   arr &&
-      //   arr.length >= 2 &&
-      //   arr.every((el) => el[0].toUpperCase() === el[0])
-      // ) {
-      //   this.nameValid = true;
-      // } else {
-      //   this.nameValid = false;
-      // }
+      let matcher: RegExpMatchArray | null = this.name.match(/(\p{L}+)/gu);
+      if (matcher) {
+        this.nameValid =
+          matcher.length >= 2 &&
+          matcher.every(
+            (el) => el[0].toUpperCase() === el[0] && el.length >= 3
+          );
+      }
       this.checkSenderAbility();
       //console.log(this.name.match(/\p{L}+/gu)); // сколько слов
       //console.log(this.name.match(/(\p{L}+){5}/gu)); // сколько слов и указываем сколько букв должно быть в слове
       //console.log(this.name.match(/(\p{L}+){5}/gu).length); // сколько слов и указываем сколько букв должно быть в слове
     },
-    isPhoneInvalid() {
-      let isNumbers = false as boolean;
-      let isPlusStartLetter = this.phone.startsWith("+");
-      let isNormalLength = this.phone.length >= 10;
-      let digits = this.phone.replace(/.(?=(.*))/, "").split("");
-      isNumbers = digits.every((el) => /[0-9]/.test(el));
-      this.phoneValid = isNumbers && isPlusStartLetter && isNormalLength;
+    isPhoneInvalid(): void {
+      this.phoneValid = this.phone.match(/^\+(\d{9,})$/g) !== null;
       this.checkSenderAbility();
     },
     isAddressInvalid() {
-      let separated = this.address.split(" ").filter((el) => el.length >= 5);
-      this.addressValid = separated.length >= 3;
+      let matcher: number | null = (
+        this.address.match(/[^\s]{5,}/g) as RegExpMatchArray
+      )?.length;
+      this.addressValid = matcher >= 3;
       this.checkSenderAbility();
     },
     isEmailInvalid() {
@@ -223,7 +210,7 @@ export default defineComponent({
       this.creditCardNumber = this.creditCardNumber.replace(/[^0-9]/g, "");
       if (this.creditCardNumber.length >= 16) {
         this.creditCardNumber = this.creditCardNumber.substring(0, 16);
-        //replace(/(\d)(?=(\d\d\d)+([^\d]|$))/g, "$1 ")
+        //replace(/(\d)(?=(\d\d\d\d)+([^\d]|$))/g, "$1 ")
         this.cardNumberValid = true;
       }
       if (this.creditCardNumber.length < 16) this.cardNumberValid = false;
@@ -239,17 +226,7 @@ export default defineComponent({
       if (this.creditCardCvv.length < 3) this.cardCvvValid = false;
     },
     isValidValid() {
-      this.creditCardValid = this.creditCardValid.replace(/[^0-9/]/g, "");
-      // if (
-      //   this.creditCardValid.length > 2 &&
-      //   !this.creditCardValid.split("").includes("/")
-      // ) {
-      //   this.creditCardValid = this.creditCardValid.replace(
-      //     /(\d)(?=(\d{2})+(?!\d))/g,
-      //     "$1/"
-      //   );
-      // }
-
+      this.creditCardValid = this.creditCardValid.replace(/[^0-9]/g, "");
       if (
         this.creditCardValid.length >= 4 &&
         !this.creditCardValid.split("").includes("/")
