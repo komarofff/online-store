@@ -130,8 +130,14 @@
       <div class="swiper__box" v-if="viewedProducts.length > 0">
         <div class="swiper__box-title">
           Viewed Products
-          <div class="myPrev"></div>
-          <div class="myNext"></div>
+          <!--          <div class="myPrev"></div>-->
+          <!--          <div class="myNext"></div>-->
+          <button class="control-arrow arrow-to-left myPrev">
+            <img src="@/assets/icon/arrow-link-right.svg" alt="" />
+          </button>
+          <button class="control-arrow myNext">
+            <img src="@/assets/icon/arrow-link-right.svg" alt="" />
+          </button>
         </div>
         <swiper
           :slidesPerView="1"
@@ -360,7 +366,7 @@ export default defineComponent({
 
 .swiper__box-title {
   background: #fff;
-  padding: 5px 50px 2px;
+  padding: 5px 80px 2px;
   font-size: 18px;
   font-weight: bold;
   display: flex;
@@ -406,15 +412,15 @@ export default defineComponent({
 .myPrev,
 .myNext {
   position: absolute;
-  top: 5px;
-  width: 20px;
-  height: 20px;
+  top: 0;
+  //width: 20px;
+  //height: 20px;
   z-index: 10;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid #2196f3;
+  //border: 1px solid #2196f3;
   transition: 0.3s linear;
   &:hover {
     background-color: rgba(33, 150, 243, 0.5);
@@ -422,23 +428,26 @@ export default defineComponent({
 }
 
 .myPrev {
-  right: 20px;
-  background-image: url(~@/assets/icon/arrow-link-right.svg);
-  background-repeat: no-repeat;
-  transform: rotate(180deg);
-  background-position: center;
+  right: 45px;
+  //background-image: url(~@/assets/icon/arrow-link-right.svg);
+  //background-repeat: no-repeat;
+  //transform: rotate(180deg);
+  //background-position: center;
   z-index: 10;
 }
 
 .myNext {
-  right: 2px;
-  background-image: url(~@/assets/icon/arrow-link-right.svg);
-  background-repeat: no-repeat;
-  background-position: center;
+  right: 11px;
+  //background-image: url(~@/assets/icon/arrow-link-right.svg);
+  //background-repeat: no-repeat;
+  //background-position: center;
   z-index: 10;
 }
 .swiper-button-disabled {
   background-color: rgba(204, 204, 204, 0.3);
   z-index: 9;
+  &:hover {
+    background-color: rgba(204, 204, 204, 0.3);
+  }
 }
 </style>
