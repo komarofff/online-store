@@ -176,10 +176,6 @@ export default defineComponent({
   },
   async mounted() {
     this.isLoader = true;
-    //await this.getAllBrands();
-    // await this.getFilterParameters(this.firstQuery);
-    ////////////////////////////
-    // price and stock
     this.changeForPriceAndStock();
     //  делаем startQuery в зависимости от адресной строки
     this.startQueryData = Object.entries(this.$route.query);
@@ -279,13 +275,6 @@ export default defineComponent({
         }
       }
     },
-    $route() {
-      //console.log("route", this.$route);
-      //this.clearFilters();
-      // this.emitter.on("changeSort", (val) => {
-      //   this.changeSort(val);
-      // });
-    },
     getFilterData() {
       if (this.startPrice.length === 0 && this.startStock.length === 0) {
         this.getPriceDiff(this.getAllProducts);
@@ -328,18 +317,6 @@ export default defineComponent({
       "getStockDiff",
       "getFilterParameters",
     ]),
-    // showAllInItem(item: string, val: string) {
-    //   // return this.getAllProducts.filter((el: ProdArr) => el[item] === val)
-    //   //   .length;
-    //   if (item === "category") {
-    //     return this.getAllProducts.filter((el: ProdArr) => el.category === val)
-    //       .length;
-    //   }
-    //   if (item === "brand") {
-    //     return this.getAllProducts.filter((el: ProdArr) => el.brand === val)
-    //       .length;
-    //   }
-    // },
     showAllInItem<T extends keyof ProdArr>(item: T, val: string) {
       return this.getAllProducts.filter((el: ProdArr) => el[item] === val)
         .length;
@@ -348,28 +325,8 @@ export default defineComponent({
       return this.getFilterData.filter((el: ProdArr) => el[item] === val)
         .length;
     },
-    // showAllInFilter(item: string, val: string) {
-    //   // return this.getFilterData.filter((el: ProdArr) => el[item] === val)
-    //   //   .length;
-    //   if (item === "category") {
-    //     return this.getFilterData.filter((el: ProdArr) => el.category === val)
-    //       .length;
-    //   }
-    //   if (item === "brand") {
-    //     return this.getFilterData.filter((el: ProdArr) => el.brand === val)
-    //       .length;
-    //   }
-    // },
     isActiveCat(val: string) {
-      //console.log("this.getQueryForFilters", this.getQueryForFilters);
       if (this.getQueryForFilters.categories) {
-        // if (typeof this.getQueryForFilters.categories === "string") {
-        //   return this.getQueryForFilters.categories === val;
-        // } else {
-        //   return this.getQueryForFilters.categories.find((el: string) => {
-        //     return el === val;
-        //   });
-        // }
         if (!Array.isArray(this.getQueryForFilters.categories)) {
           return this.getQueryForFilters.categories === val;
         } else {
@@ -381,13 +338,6 @@ export default defineComponent({
     },
     isActiveBrand(val: string) {
       if (this.getQueryForFilters.brands) {
-        // if (typeof this.getQueryForFilters.brands === "string") {
-        //   return this.getQueryForFilters.brands === val;
-        // } else {
-        //   return this.getQueryForFilters.brands.find((el: string) => {
-        //     return el === val;
-        //   });
-        // }
         if (!Array.isArray(this.getQueryForFilters.brands)) {
           return this.getQueryForFilters.brands === val;
         } else {
@@ -466,6 +416,7 @@ export default defineComponent({
       await this.changeQuery();
       this.changeForPriceAndStock();
       this.pushToRouter("categories", this.getQueryForFilters.categories);
+      window.scrollTo(0, 0);
     },
     async changeBrand(val: string) {
       if (!this.getQueryForFilters.brands) {
@@ -487,6 +438,7 @@ export default defineComponent({
       await this.changeQuery();
       this.changeForPriceAndStock();
       this.pushToRouter("brands", this.getQueryForFilters.brands);
+      window.scrollTo(0, 0);
     },
     async changePriceRange() {
       this.getQueryForFilters.price = [this.priceMin, this.priceMax];
