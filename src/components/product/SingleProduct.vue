@@ -262,6 +262,7 @@ export default defineComponent({
       await this.getSingleProd(Number(this.id));
       this.bigImage = this.getSingleProduct.thumbnail;
       window.scrollTo(0, 0);
+      this.pushToViewed();
     },
   },
   computed: {
@@ -288,11 +289,12 @@ export default defineComponent({
           )
         ) {
           if (fromStorage.length >= 10) {
-            fromStorage.unshift({ id: this.getSingleProduct.id });
-            fromStorage.pop();
+            fromStorage.push({ id: this.getSingleProduct.id });
+            fromStorage.shift();
           } else {
             fromStorage.push({ id: this.getSingleProduct.id });
           }
+
           localStorage.setItem("viewed", JSON.stringify(fromStorage));
         }
       } else {
