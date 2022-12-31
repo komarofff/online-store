@@ -24,6 +24,7 @@ export default defineComponent({
     this.isLoader = false;
   },
   async mounted() {
+    window.scrollTo(0, 0);
     const menuButton: HTMLElement | null = document.querySelector(
       ".header__burger"
     ) as HTMLElement;

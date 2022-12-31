@@ -247,6 +247,7 @@ export default defineComponent({
   },
 
   async mounted() {
+    window.scrollTo(0, 0);
     this.isLoader = true;
     // console.log("this.id", this.id);
     //await this.getSingleCat(this.cat);
