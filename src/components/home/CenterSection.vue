@@ -60,7 +60,7 @@
               <router-link :to="`/product-details/${product.id}`"
                 ><img
                   class="card-img"
-                  :src="product.thumbnail"
+                  v-lazy="product.thumbnail"
                   :alt="product.title"
               /></router-link>
             </div>

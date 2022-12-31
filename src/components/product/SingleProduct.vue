@@ -68,7 +68,7 @@
               >
                 <img
                   @click="changeBigPhoto(image)"
-                  :src="image"
+                  v-lazy="image"
                   :alt="getSingleProduct.title"
                 />
               </div>
