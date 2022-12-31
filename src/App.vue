@@ -69,7 +69,7 @@ export default defineComponent({
     };
   },
   watch: {
-    $route(to, from) {
+    $route() {
       if (this.getAllProducts.length) {
         this.setTitle();
       }

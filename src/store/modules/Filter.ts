@@ -129,15 +129,37 @@ const actions: ActionTree<RootState, RootState> = {
             "https://i.dummyjson.com/data/",
             "/"
           );
-          el.images.forEach((elem: string) => {
+          const images = el.images.map((elem: string) => {
             elem = elem.replace("https://i.dummyjson.com/data/", "/");
+            return elem;
           });
+          el.images = images;
         });
 
         commit("setAllProducts", response.data.products as ProdArr[]);
       });
     // }
   },
+  // async getAllProd({ commit }) {
+  //   // if (!state.products.length) {
+  //   return await axios
+  //     .get("https://dummyjson.com/products?limit=100")
+  //     .then((response) => {
+  //       response.data.products.forEach((el: ProdArr) => {
+  //         el.brand = el.brand.toLowerCase();
+  //         el.thumbnail = el.thumbnail.replace(
+  //           "https://i.dummyjson.com/data/",
+  //           "/"
+  //         );
+  //         el.images.forEach((elem: string) => {
+  //           elem = elem.replace("https://i.dummyjson.com/data/", "/");
+  //         });
+  //       });
+  //
+  //       commit("setAllProducts", response.data.products as ProdArr[]);
+  //     });
+  //   // }
+  // },
   async getAllCat({ commit }) {
     // if (!state.categories.length) {
     //   console.log("get categories from server");
