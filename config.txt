@@ -1,3 +1,4 @@
+//"serve": "vue-cli-service lint --fix --fix && vue-cli-service serve",
 ////
 https://dummyjson.com/products?limit=100
 "id":1,

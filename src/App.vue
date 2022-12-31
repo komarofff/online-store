@@ -13,6 +13,7 @@ import HeaderView from "./components/HeaderView.vue";
 import FooterView from "./components/FooterView.vue";
 import { mapActions, mapGetters } from "vuex";
 import { defineComponent } from "vue";
+import { ProdArr } from "@/store/modules/Filter";
 export default defineComponent({
   async created() {
     this.isLoader = true;
@@ -67,6 +68,16 @@ export default defineComponent({
       isLoader: false,
     };
   },
+  watch: {
+    $route(to, from) {
+      if (this.getAllProducts.length) {
+        this.setTitle();
+      }
+    },
+    getAllProducts() {
+      this.setTitle();
+    },
+  },
   computed: {
     ...mapGetters("Filter", ["getAllProducts"]),
   },
@@ -78,6 +89,38 @@ export default defineComponent({
       "getAllCat",
       "getAllBrands",
     ]),
+    setTitle() {
+      if (this.getAllProducts) {
+        //console.log(this.$route);
+        if (this.$route.meta.title) {
+          document.title = this.$route.meta.title as string;
+        } else {
+          if (this.$route.params.id && this.$route.name === "categories") {
+            document.title =
+              "Category -  " +
+              (this.$route.params.id as string) +
+              " | K&K Online Store";
+          } else if (this.$route.name === "categories") {
+            document.title = "Catalog" + " | K&K Online Store";
+          } else if (
+            this.$route.params.id &&
+            this.$route.name === "product-page"
+          ) {
+            document.title =
+              this.getAllProducts.find(
+                (el: ProdArr) => el.id === Number(this.$route.params.id)
+              ).title +
+              " | " +
+              this.getAllProducts.find(
+                (el: ProdArr) => el.id === Number(this.$route.params.id)
+              ).category +
+              " | K&K Online Store";
+          } else {
+            document.title = "K&K Online Store";
+          }
+        }
+      }
+    },
   },
   components: {
     HeaderView,
