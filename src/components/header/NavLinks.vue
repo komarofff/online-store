@@ -70,6 +70,9 @@ import { defineComponent } from "vue";
 export default defineComponent({
   async mounted() {
     await this.getAllCat();
+    this.emitter.on("closeMenus", () => {
+      this.isSubmenuOpen = false;
+    });
   },
   data() {
     return {

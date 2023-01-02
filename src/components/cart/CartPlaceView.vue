@@ -6,7 +6,7 @@
     <div class="header__cart-count-item">
       <p>{{ getCartLength }}</p>
     </div>
-    <router-link :to="{ name: 'cart' }">
+    <router-link :to="{ name: 'cart' }" @click="emitter.emit('closeMenus')">
       <svg
         class="header__cart-svg"
         width="512"
