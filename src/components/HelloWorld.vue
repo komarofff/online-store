@@ -13,8 +13,9 @@
   </div>
 </template>
 
-<script>
-export default {
+<script lang="ts">
+import { defineComponent } from "vue";
+export default defineComponent( {
   props: {
     msg: String,
   },
@@ -24,14 +25,14 @@ export default {
     };
   },
   methods: {
-    addToCart(val) {
+    addToCart(val: number) {
       this.emitter.emit("addToCart", val);
     },
-    delFromCart(val) {
+    delFromCart(val: number) {
       this.emitter.emit("delFromCart", val);
     },
   },
-};
+});
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
