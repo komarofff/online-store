@@ -50,16 +50,16 @@
               />
             </div>
             <div class="product__photo-small">
-              <div
-                class="product__photo-small-div"
-                :class="{ active: isBigImage(getSingleProduct.thumbnail) }"
-              >
-                <img
-                  @click="changeBigPhoto(getSingleProduct.thumbnail)"
-                  :src="getSingleProduct.thumbnail"
-                  :alt="getSingleProduct.title"
-                />
-              </div>
+              <!--              <div-->
+              <!--                class="product__photo-small-div"-->
+              <!--                :class="{ active: isBigImage(getSingleProduct.thumbnail) }"-->
+              <!--              >-->
+              <!--                <img-->
+              <!--                  @click="changeBigPhoto(getSingleProduct.thumbnail)"-->
+              <!--                  :src="getSingleProduct.thumbnail"-->
+              <!--                  :alt="getSingleProduct.title"-->
+              <!--                />-->
+              <!--              </div>-->
               <div
                 class="product__photo-small-div"
                 :class="{ active: isBigImage(image) }"

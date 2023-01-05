@@ -402,16 +402,34 @@ export default defineComponent({
       if (!this.getQueryForFilters.categories) {
         this.getQueryForFilters.categories = [val];
       } else {
-        if (!this.getQueryForFilters.categories.includes(val)) {
-          this.getQueryForFilters.categories.push(val);
-        } else {
-          if (Array.isArray(this.getQueryForFilters.categories)) {
-            this.getQueryForFilters.categories.splice(
-              this.getQueryForFilters.categories.indexOf(val),
-              1
-            );
+        if (Array.isArray(this.getQueryForFilters.categories)) {
+          if (!this.getQueryForFilters.categories.includes(val)) {
+            this.getQueryForFilters.categories.push(val);
           } else {
-            this.getQueryForFilters.categories = "";
+            if (Array.isArray(this.getQueryForFilters.categories)) {
+              this.getQueryForFilters.categories.splice(
+                this.getQueryForFilters.categories.indexOf(val),
+                1
+              );
+            } else {
+              this.getQueryForFilters.categories = "";
+            }
+          }
+        } else {
+          this.getQueryForFilters.categories = [
+            this.getQueryForFilters.categories,
+          ];
+          if (!this.getQueryForFilters.categories.includes(val)) {
+            this.getQueryForFilters.categories.push(val);
+          } else {
+            if (Array.isArray(this.getQueryForFilters.categories)) {
+              this.getQueryForFilters.categories.splice(
+                this.getQueryForFilters.categories.indexOf(val),
+                1
+              );
+            } else {
+              this.getQueryForFilters.categories = "";
+            }
           }
         }
       }
@@ -422,19 +440,51 @@ export default defineComponent({
       window.scrollTo(0, 0);
     },
     async changeBrand(val: string) {
+      // if (!this.getQueryForFilters.brands) {
+      //   this.getQueryForFilters.brands = [val];
+      // } else {
+      //   if (!this.getQueryForFilters.brands.includes(val)) {
+      //     this.getQueryForFilters.brands.push(val);
+      //   } else {
+      //     if (Array.isArray(this.getQueryForFilters.brands)) {
+      //       this.getQueryForFilters.brands.splice(
+      //         this.getQueryForFilters.brands.indexOf(val),
+      //         1
+      //       );
+      //     } else {
+      //       this.getQueryForFilters.brands = "";
+      //     }
+      //   }
+      // }
       if (!this.getQueryForFilters.brands) {
         this.getQueryForFilters.brands = [val];
       } else {
-        if (!this.getQueryForFilters.brands.includes(val)) {
-          this.getQueryForFilters.brands.push(val);
-        } else {
-          if (Array.isArray(this.getQueryForFilters.brands)) {
-            this.getQueryForFilters.brands.splice(
-              this.getQueryForFilters.brands.indexOf(val),
-              1
-            );
+        if (Array.isArray(this.getQueryForFilters.brands)) {
+          if (!this.getQueryForFilters.brands.includes(val)) {
+            this.getQueryForFilters.brands.push(val);
           } else {
-            this.getQueryForFilters.brands = "";
+            if (Array.isArray(this.getQueryForFilters.brands)) {
+              this.getQueryForFilters.brands.splice(
+                this.getQueryForFilters.brands.indexOf(val),
+                1
+              );
+            } else {
+              this.getQueryForFilters.brands = "";
+            }
+          }
+        } else {
+          this.getQueryForFilters.brands = [this.getQueryForFilters.brands];
+          if (!this.getQueryForFilters.brands.includes(val)) {
+            this.getQueryForFilters.brands.push(val);
+          } else {
+            if (Array.isArray(this.getQueryForFilters.brands)) {
+              this.getQueryForFilters.brands.splice(
+                this.getQueryForFilters.brands.indexOf(val),
+                1
+              );
+            } else {
+              this.getQueryForFilters.brands = "";
+            }
           }
         }
       }
