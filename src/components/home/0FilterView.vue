@@ -87,16 +87,15 @@
         <p class="range-price-from">€{{ priceMax }}</p>
       </div>
       <div class="multi-range border-bottom">
-        <div class="min-range">
-          <input
-            type="range"
-            :min="startPrice[0]"
-            :max="startPrice[1]"
-            v-model="priceMin"
-            @input="changePriceRange()"
-          />
-        </div>
         <input
+          type="range"
+          :min="startPrice[0]"
+          :max="startPrice[1]"
+          v-model="priceMin"
+          @input="changePriceRange()"
+        />
+        <input
+          id="555"
           type="range"
           :min="startPrice[0]"
           :max="startPrice[1]"
@@ -112,15 +111,13 @@
         <p class="range-stock-from">{{ stockMax }}</p>
       </div>
       <div class="multi-range">
-        <div class="min-range">
-          <input
-            type="range"
-            :min="startStock[0]"
-            :max="startStock[1]"
-            v-model="stockMin"
-            @input="changeStockRange()"
-          />
-        </div>
+        <input
+          type="range"
+          :min="startStock[0]"
+          :max="startStock[1]"
+          v-model="stockMin"
+          @input="changeStockRange()"
+        />
         <input
           type="range"
           :min="startStock[0]"
@@ -183,7 +180,7 @@ export default defineComponent({
     //  делаем startQuery в зависимости от адресной строки
     this.startQueryData = Object.entries(this.$route.query);
     if (this.startQueryData.length > 0) {
-      console.log("start with query parameters");
+      // console.log("start with query parameters");
       this.startQueryData.forEach((el: string[]) => {
         if (el[1] && !el[1].includes("||")) {
           this.startQuery[el[0]] = el[1];
@@ -251,29 +248,29 @@ export default defineComponent({
   },
   watch: {
     priceMin() {
-      if (this.priceMin > this.priceMax) {
-        while (this.priceMin > this.priceMax) {
+      if (this.priceMin >= this.priceMax) {
+        while (this.priceMin >= this.priceMax - 50) {
           this.priceMin--;
         }
       }
     },
     priceMax() {
-      if (this.priceMax < this.priceMin) {
-        while (this.priceMax < this.priceMin) {
+      if (this.priceMax <= this.priceMin) {
+        while (this.priceMax <= this.priceMin) {
           this.priceMax++;
         }
       }
     },
     stockMin() {
-      if (this.stockMin > this.stockMax) {
-        while (this.stockMin > this.stockMax) {
+      if (this.stockMin >= this.stockMax) {
+        while (this.stockMin >= this.stockMax) {
           this.stockMin--;
         }
       }
     },
     stockMax() {
-      if (this.stockMax < this.stockMin) {
-        while (this.stockMax < this.stockMin) {
+      if (this.stockMax <= this.stockMin) {
+        while (this.stockMax <= this.stockMin) {
           this.stockMax++;
         }
       }
@@ -469,26 +466,10 @@ export default defineComponent({
     async changeForPriceAndStock() {
       await this.getPriceDiff(this.getFilterData);
       await this.getStockDiff(this.getFilterData);
-      if (
-        this.getQueryForFilters.price &&
-        this.getQueryForFilters.price.length
-      ) {
-        this.priceMax = this.getQueryForFilters.price[1];
-        this.priceMin = this.getQueryForFilters.price[0];
-      } else {
-        this.priceMax = this.getPrice[1];
-        this.priceMin = this.getPrice[0];
-      }
-      if (
-        this.getQueryForFilters.stock &&
-        this.getQueryForFilters.stock.length
-      ) {
-        this.stockMin = this.getQueryForFilters.stock[0];
-        this.stockMax = this.getQueryForFilters.stock[1];
-      } else {
-        this.stockMin = this.getStock[0];
-        this.stockMax = this.getStock[1];
-      }
+      this.priceMax = this.getPrice[1];
+      this.priceMin = this.getPrice[0];
+      this.stockMin = this.getStock[0];
+      this.stockMax = this.getStock[1];
     },
     async changeForStock() {
       await this.getStockDiff(this.getFilterData);

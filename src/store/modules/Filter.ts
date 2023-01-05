@@ -237,18 +237,34 @@ const actions: ActionTree<RootState, RootState> = {
       let arr: ProdArr[] = JSON.parse(JSON.stringify(state.products));
 
       if (payload.categories && payload.categories.length) {
-        arr = arr.filter((el: ProdArr) => {
-          if (payload.categories.includes(el.category)) {
-            return el;
-          }
-        });
+        if (Array.isArray(payload.categories)) {
+          arr = arr.filter((el: ProdArr) => {
+            if (payload.categories.includes(el.category)) {
+              return el;
+            }
+          });
+        } else {
+          arr = arr.filter((el: ProdArr) => {
+            if (el.category === (payload.categories as any)) {
+              return el;
+            }
+          });
+        }
       }
       if (payload.brands && payload.brands.length) {
-        arr = arr.filter((el: ProdArr) => {
-          if (payload.brands.includes(el.brand)) {
-            return el;
-          }
-        });
+        if (Array.isArray(payload.brands)) {
+          arr = arr.filter((el: ProdArr) => {
+            if (payload.brands.includes(el.brand)) {
+              return el;
+            }
+          });
+        } else {
+          arr = arr.filter((el: ProdArr) => {
+            if ((payload.brands as any) === el.brand) {
+              return el;
+            }
+          });
+        }
       }
       if (payload.price && payload.price.length) {
         arr = arr.filter((el: ProdArr) => {
