@@ -245,7 +245,7 @@ const actions: ActionTree<RootState, RootState> = {
           });
         } else {
           arr = arr.filter((el: ProdArr) => {
-            if (el.category === (payload.categories as any)) {
+            if (el.category === (payload.categories as unknown)) {
               return el;
             }
           });
@@ -260,7 +260,7 @@ const actions: ActionTree<RootState, RootState> = {
           });
         } else {
           arr = arr.filter((el: ProdArr) => {
-            if ((payload.brands as any) === el.brand) {
+            if ((payload.brands as unknown) === el.brand) {
               return el;
             }
           });

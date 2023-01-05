@@ -63,7 +63,7 @@
               <div
                 class="product__photo-small-div"
                 :class="{ active: isBigImage(image) }"
-                v-for="image in getSingleProduct.images"
+                v-for="image in images"
                 :key="image"
               >
                 <img
@@ -236,12 +236,19 @@ export interface IStorageViewed {
   id: number;
 }
 
+export interface IArr {
+  id: number;
+  length: number;
+}
+
 export default defineComponent({
   props: ["id"],
   data() {
     return {
       isLoader: false as boolean,
       bigImage: "" as string,
+      images: [] as string[],
+      comparedImages: [] as string[],
       viewedProducts: [] as string[],
     };
   },
@@ -253,7 +260,7 @@ export default defineComponent({
     //await this.getSingleCat(this.cat);
     if (!isNaN(+this.id) && parseInt(this.id) > 0 && parseInt(this.id) < 101) {
       await this.getSingleProd(Number(this.id));
-      this.bigImage = this.getSingleProduct.thumbnail;
+      this.selectImages();
     } else {
       this.$router.push({ name: "error", params: { pathMatch: this.id } });
     }
@@ -267,7 +274,9 @@ export default defineComponent({
   watch: {
     async id() {
       await this.getSingleProd(Number(this.id));
-      this.bigImage = this.getSingleProduct.thumbnail;
+      this.selectImages();
+
+      //this.bigImage = this.getSingleProduct.thumbnail;
       window.scrollTo(0, 0);
       this.pushToViewed();
     },
@@ -277,6 +286,53 @@ export default defineComponent({
     ...mapGetters("Cart", ["getCartArray"]),
   },
   methods: {
+    async selectImages() {
+      this.comparedImages = [];
+      let arr: IArr[] = [];
+      let compare: string[] = this.getSingleProduct.images;
+      for (let i = 0; i < compare.length; i++) {
+        await this.toDataURL(compare[i], function (dataUrl: string) {
+          if (dataUrl) {
+            let base = dataUrl.split(",")[1].split("=")[0];
+            let strLength = base.length;
+            let fileLength = strLength - (strLength / 8) * 2;
+            arr.push({ id: i, length: Math.floor(fileLength) as number });
+          }
+        });
+      }
+      arr = arr.filter(
+        (value, index, self) =>
+          index === self.findIndex((t) => t.length === value.length)
+      );
+      // console.log("arr", arr, arr[0]);
+
+      arr.forEach((el) => {
+        for (let i = 0; i < this.getSingleProduct.images.length; i++) {
+          if (el.id === i) {
+            this.comparedImages.push(this.getSingleProduct.images[i]);
+          }
+        }
+      });
+      this.images = this.comparedImages;
+      this.bigImage = this.images.filter((el) => el.includes("thumb"))[0]
+        ? this.images.filter((el) => el.includes("thumb"))[0]
+        : this.images[0];
+    },
+    toDataURL(url: string, callback: any) {
+      return new Promise(function (resolve) {
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function () {
+          var reader = new FileReader();
+          reader.onloadend = function () {
+            resolve(callback(reader.result));
+          };
+          reader.readAsDataURL(xhr.response);
+        };
+        xhr.open("GET", url);
+        xhr.responseType = "blob";
+        xhr.send();
+      });
+    },
     ...mapActions("Filter", ["getSingleProd"]),
     ...mapActions("Cart", ["pushToCart", "delFromCart"]),
     pushToViewed() {
@@ -352,9 +408,11 @@ export default defineComponent({
   margin: 15px 0;
   background: #fff;
   border-radius: 15px;
+
   .price-container {
     justify-content: center;
   }
+
   .card-info {
     align-self: stretch;
     min-height: 100%;
@@ -410,6 +468,7 @@ export default defineComponent({
   height: 100%;
   object-fit: cover;
 }
+
 .myPrev,
 .myNext {
   position: absolute;
@@ -423,6 +482,7 @@ export default defineComponent({
   align-items: center;
   //border: 1px solid #2196f3;
   transition: 0.3s linear;
+
   &:hover {
     background-color: rgba(33, 150, 243, 0.5);
   }
@@ -444,9 +504,11 @@ export default defineComponent({
   //background-position: center;
   z-index: 10;
 }
+
 .swiper-button-disabled {
   background-color: rgba(204, 204, 204, 0.3);
   z-index: 9;
+
   &:hover {
     background-color: rgba(204, 204, 204, 0.3);
   }
