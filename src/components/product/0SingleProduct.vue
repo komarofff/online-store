@@ -1,5 +1,5 @@
 <template>
-  <!--  <img v-if="isLoader" src="@/assets/loader.gif" alt="loader" />-->
+  <img v-if="isLoader" src="@/assets/loader.gif" alt="loader" />
 
   <section class="container" v-if="getSingleProduct">
     <div class="main__home-content-product">
@@ -34,7 +34,7 @@
         </div>
       </div>
       <div class="product">
-        <!--        <img v-if="isLoader" src="@/assets/loader.gif" alt="loader" />-->
+        <img v-if="isLoader" src="@/assets/loader.gif" alt="loader" />
         <img v-if="!images.length" src="@/assets/loader.gif" alt="loader" />
         <!--        <p class="product__brand">{{ getSingleProduct.brand }}</p>-->
         <p class="product__link capitalize">
@@ -261,8 +261,7 @@ export default defineComponent({
     //await this.getSingleCat(this.cat);
     if (!isNaN(+this.id) && parseInt(this.id) > 0 && parseInt(this.id) < 101) {
       await this.getSingleProd(Number(this.id));
-      await this.delSimilarImages();
-      //await this.selectImages();
+      this.selectImages();
     } else {
       this.$router.push({ name: "error", params: { pathMatch: this.id } });
     }
@@ -276,8 +275,7 @@ export default defineComponent({
   watch: {
     async id() {
       await this.getSingleProd(Number(this.id));
-      await this.delSimilarImages();
-      //await this.selectImages();
+      this.selectImages();
 
       //this.bigImage = this.getSingleProduct.thumbnail;
       window.scrollTo(0, 0);
@@ -289,36 +287,6 @@ export default defineComponent({
     ...mapGetters("Cart", ["getCartArray"]),
   },
   methods: {
-    async delSimilarImages() {
-      this.comparedImages = [];
-      this.images = [];
-      let arr: IArr[] = [];
-      for (let i = 0; i < this.getSingleProduct.images.length; i++) {
-        await fetch(this.getSingleProduct.images[i])
-          .then((response) => response.blob())
-          .then((imageBlob) => {
-            //console.log(imageBlob.size);
-            arr.push({ id: i, length: imageBlob.size as number });
-          });
-      }
-      arr = arr.filter(
-        (value, index, self) =>
-          index === self.findIndex((t) => t.length === value.length)
-      );
-      // console.log("arr", arr, arr[0]);
-
-      arr.forEach((el) => {
-        for (let i = 0; i < this.getSingleProduct.images.length; i++) {
-          if (el.id === i) {
-            this.comparedImages.push(this.getSingleProduct.images[i]);
-          }
-        }
-      });
-      this.images = this.comparedImages;
-      this.bigImage = this.images.filter((el) => el.includes("thumb"))[0]
-        ? this.images.filter((el) => el.includes("thumb"))[0]
-        : this.images[0];
-    },
     async selectImages() {
       this.comparedImages = [];
       this.images = [];

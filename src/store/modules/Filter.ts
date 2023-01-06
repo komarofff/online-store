@@ -120,55 +120,14 @@ const actions: ActionTree<RootState, RootState> = {
   },
   async getAllProd({ commit }) {
     // if (!state.products.length) {
-    return await axios
-      .get("https://dummyjson.com/products?limit=100")
-      .then((response) => {
-        response.data.products.forEach((el: ProdArr) => {
-          el.brand = el.brand.toLowerCase();
-          el.thumbnail = el.thumbnail.replace(
-            "https://i.dummyjson.com/data/",
-            "/"
-          );
-          const images = el.images.map((elem: string) => {
-            elem = elem.replace("https://i.dummyjson.com/data/", "/");
-            return elem;
-          });
-          el.images = images;
-        });
-
-        commit("setAllProducts", response.data.products as ProdArr[]);
+    return await axios.get("/data.txt").then((response) => {
+      response.data.products.forEach((el: ProdArr) => {
+        el.brand = el.brand.toLowerCase();
       });
-    // }
+      commit("setAllProducts", response.data.products as ProdArr[]);
+    });
   },
-  // async getAllProd({ commit }) {
-  //   // if (!state.products.length) {
-  //   return await axios
-  //     .get("https://dummyjson.com/products?limit=100")
-  //     .then((response) => {
-  //       response.data.products.forEach((el: ProdArr) => {
-  //         el.brand = el.brand.toLowerCase();
-  //         el.thumbnail = el.thumbnail.replace(
-  //           "https://i.dummyjson.com/data/",
-  //           "/"
-  //         );
-  //         el.images.forEach((elem: string) => {
-  //           elem = elem.replace("https://i.dummyjson.com/data/", "/");
-  //         });
-  //       });
-  //
-  //       commit("setAllProducts", response.data.products as ProdArr[]);
-  //     });
-  //   // }
-  // },
   async getAllCat({ commit }) {
-    // if (!state.categories.length) {
-    //   console.log("get categories from server");
-    //   return await axios
-    //     .get("https://dummyjson.com/products/categories")
-    //     .then((response) => {
-    //       commit("setAllCategories", response.data as CatArr[]);
-    //     });
-    // } else {
     const cat = [] as CatArr[];
     state.products.forEach((el: ProdArr) => {
       if (!cat.some((elem) => elem.name === el.category)) {
@@ -179,7 +138,6 @@ const actions: ActionTree<RootState, RootState> = {
       }
     });
     commit("setAllCategories", cat);
-    //}
   },
   async getSingleCat({ commit }, payload: string) {
     if (state.products) {
