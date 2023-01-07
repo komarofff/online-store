@@ -14,6 +14,7 @@ import FooterView from "./components/FooterView.vue";
 import { mapActions, mapGetters } from "vuex";
 import { defineComponent } from "vue";
 import { ProdArr } from "@/store/modules/Filter";
+import { IArr } from "@/components/product/SingleProduct.vue";
 export default defineComponent({
   async created() {
     this.isLoader = true;
@@ -67,6 +68,7 @@ export default defineComponent({
     return {
       images: [],
       isLoader: false,
+      dat: [],
     };
   },
   watch: {
@@ -75,14 +77,50 @@ export default defineComponent({
         this.setTitle();
       }
     },
-    getAllProducts() {
+    async getAllProducts() {
       this.setTitle();
+      // if (this.getAllProducts) {
+      //   let data = this.getAllProducts;
+      //   for (let q = 0; q < data.length; q++) {
+      //     let images = await this.getImages(data[q]);
+      //     data[q].images = images;
+      //   }
+      //   this.dat = data;
+      // }
     },
   },
   computed: {
     ...mapGetters("Filter", ["getAllProducts"]),
   },
   methods: {
+    async getImages(el: any) {
+      const comparedImages = [] as string[];
+      let arr: IArr[] = [];
+      for (let i = 0; i < el.images.length; i++) {
+        await fetch(el.images[i])
+          .then((response) => response.blob())
+          .then((imageBlob) => {
+            //console.log(imageBlob.size);
+            arr.push({ id: i, length: imageBlob.size as number });
+          });
+      }
+      arr = arr.filter(
+        (value, index, self) =>
+          index === self.findIndex((t) => t.length === value.length)
+      );
+      //console.log("arr", arr, arr[0]);
+
+      arr.forEach((ell) => {
+        for (let i = 0; i < el.images.length; i++) {
+          if (ell.id === i) {
+            comparedImages.push(el.images[i]);
+          }
+        }
+      });
+      el.images = comparedImages;
+      //console.log("comparedImages", comparedImages);
+      return comparedImages;
+    },
     ...mapActions("Cart", ["getFromStorage"]),
     ...mapActions("Filter", [
       "getAllProd",

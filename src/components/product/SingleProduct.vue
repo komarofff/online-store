@@ -35,13 +35,13 @@
       </div>
       <div class="product">
         <!--        <img v-if="isLoader" src="@/assets/loader.gif" alt="loader" />-->
-        <img v-if="!images.length" src="@/assets/loader.gif" alt="loader" />
+        <!--        <img v-if="!images.length" src="@/assets/loader.gif" alt="loader" />-->
         <!--        <p class="product__brand">{{ getSingleProduct.brand }}</p>-->
         <p class="product__link capitalize">
           {{ getSingleProduct.brand }}
         </p>
 
-        <div class="product__content" v-if="images.length">
+        <div class="product__content">
           <div class="product__photo-main">
             <div class="product__photo-big">
               <img
@@ -64,7 +64,7 @@
               <div
                 class="product__photo-small-div"
                 :class="{ active: isBigImage(image) }"
-                v-for="image in images"
+                v-for="image in getSingleProduct.images"
                 :key="image"
               >
                 <img
@@ -261,7 +261,16 @@ export default defineComponent({
     //await this.getSingleCat(this.cat);
     if (!isNaN(+this.id) && parseInt(this.id) > 0 && parseInt(this.id) < 101) {
       await this.getSingleProd(Number(this.id));
-      await this.delSimilarImages();
+
+      this.bigImage = this.getSingleProduct.images.filter((el: string) =>
+        el.includes("thumb")
+      )[0]
+        ? this.getSingleProduct.images.filter((el: string) =>
+            el.includes("thumb")
+          )[0]
+        : this.getSingleProduct.images[0];
+      //await this.delSimilarImages();
+
       //await this.selectImages();
     } else {
       this.$router.push({ name: "error", params: { pathMatch: this.id } });
@@ -276,7 +285,17 @@ export default defineComponent({
   watch: {
     async id() {
       await this.getSingleProd(Number(this.id));
-      await this.delSimilarImages();
+
+      this.bigImage = this.getSingleProduct.images.filter((el: string) =>
+        el.includes("thumb")
+      )[0]
+        ? this.getSingleProduct.images.filter((el: string) =>
+            el.includes("thumb")
+          )[0]
+        : this.getSingleProduct.images[0];
+
+      // await this.delSimilarImages();
+
       //await this.selectImages();
 
       //this.bigImage = this.getSingleProduct.thumbnail;

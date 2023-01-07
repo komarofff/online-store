@@ -1,6 +1,7 @@
 import { RootState } from "@/store";
 import { ActionTree, GetterTree, MutationTree } from "vuex";
 import axios from "axios";
+import { IArr } from "@/components/product/SingleProduct.vue";
 
 export interface CatArr {
   name: string;
@@ -85,7 +86,7 @@ export const mutations: MutationTree<State> = {
   setQueryForFilters(state: State, val: FilterQuery) {
     state.queryForFilter = val;
   },
-  setAllProducts(state: State, val: ProdArr[]) {
+  async setAllProducts(state: State, val: ProdArr[]) {
     state.products = val;
   },
   setAllCategories(state: State, val: CatArr[]) {
